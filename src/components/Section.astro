@@ -1,0 +1,47 @@
+---
+import Icon from './Icon.astro';
+interface Props {
+  eyebrow?: string;
+  eyebrowIcon?: string;
+  title?: string;
+  subtitle?: string;
+  align?: 'left' | 'center';
+  id?: string;
+  class?: string;
+  container?: boolean;
+}
+const {
+  eyebrow,
+  eyebrowIcon,
+  title,
+  subtitle,
+  align = 'center',
+  id,
+  class: className = '',
+  container = true,
+} = Astro.props;
+const headAlign = align === 'center' ? 'mx-auto text-center items-center' : 'text-left items-start';
+---
+<section id={id} class:list={['section', className]}>
+  <div class:list={[container && 'container-page']}>
+    {
+      (eyebrow || title || subtitle) && (
+        <div class:list={['flex max-w-2xl flex-col gap-4', headAlign]}>
+          {eyebrow && (
+            <span class="eyebrow">
+              {eyebrowIcon && <Icon name={eyebrowIcon} size={14} />}
+              {eyebrow}
+            </span>
+          )}
+          {title && (
+            <h2 class="text-balance text-3xl font-bold tracking-tight text-fg sm:text-4xl">{title}</h2>
+          )}
+          {subtitle && <p class="text-pretty text-lg leading-relaxed text-fg-muted">{subtitle}</p>}
+        </div>
+      )
+    }
+    <div class:list={[(eyebrow || title || subtitle) && 'mt-12 sm:mt-16']}>
+      <slot />
+    </div>
+  </div>
+</section>

@@ -1,0 +1,37 @@
+---
+import Icon from './Icon.astro';
+import { SITE } from '../data/site.ts';
+interface Props {
+  title?: string;
+  subtitle?: string;
+}
+const {
+  title = 'Bring your APIs under version control',
+  subtitle = 'Open the web app in your browser, or grab the desktop build. No account, no setup — your first workspace is created the moment you arrive.',
+} = Astro.props;
+---
+<section class="section">
+  <div class="container-page">
+    <div class="relative overflow-hidden rounded-3xl border border-edge bg-panel px-6 py-16 text-center shadow-panel sm:px-12">
+      <div class="pointer-events-none absolute inset-0 -z-10 bg-grid opacity-[0.18] mask-radial"></div>
+      <div
+        class="pointer-events-none absolute left-1/2 top-0 -z-10 h-64 w-[42rem] max-w-full -translate-x-1/2 rounded-full bg-brand/25 blur-[100px]"
+      >
+      </div>
+      <h2 class="mx-auto max-w-2xl text-balance text-3xl font-bold tracking-tight text-fg sm:text-4xl">
+        {title}
+      </h2>
+      <p class="mx-auto mt-4 max-w-xl text-pretty text-lg leading-relaxed text-fg-muted">{subtitle}</p>
+      <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <a href={SITE.appUrl} target="_blank" rel="noopener" class="btn-primary w-full sm:w-auto">
+          Open the web app
+          <Icon name="arrow-up-right" size={16} />
+        </a>
+        <a href="/download" class="btn-secondary w-full sm:w-auto">
+          <Icon name="download" size={16} />
+          Download for desktop
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

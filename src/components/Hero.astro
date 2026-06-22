@@ -1,0 +1,72 @@
+---
+import Icon from './Icon.astro';
+import AppFrame from './AppFrame.astro';
+import Screenshot from './Screenshot.astro';
+import CodeBlock from './CodeBlock.astro';
+import { SITE } from '../data/site.ts';
+---
+<section class="relative overflow-hidden">
+  <!-- Background decoration -->
+  <div class="pointer-events-none absolute inset-0 -z-10">
+    <div class="absolute inset-0 bg-grid opacity-[0.15] mask-fade-b"></div>
+    <div class="absolute -top-40 left-1/2 h-[36rem] w-[60rem] max-w-full -translate-x-1/2 rounded-full bg-brand/20 blur-[120px]"></div>
+    <div class="absolute right-0 top-40 h-72 w-72 rounded-full bg-node-sky/15 blur-[90px]"></div>
+  </div>
+
+  <div class="container-page pb-16 pt-16 sm:pb-24 sm:pt-24">
+    <div class="mx-auto max-w-3xl text-center">
+      <a
+        href={SITE.links.releases}
+        target="_blank"
+        rel="noopener"
+        class="inline-flex items-center gap-2 rounded-full border border-edge bg-panel/80 px-3 py-1 text-xs font-medium text-fg-muted backdrop-blur transition-colors hover:border-brand hover:text-brand"
+      >
+        <span class="relative flex h-1.5 w-1.5">
+          <span class="absolute inline-flex h-full w-full animate-pulse-ring rounded-full bg-node-green"></span>
+          <span class="relative inline-flex h-1.5 w-1.5 rounded-full bg-node-green"></span>
+        </span>
+        Open · Self-funded · Built in the open
+        <Icon name="arrow-right" size={12} />
+      </a>
+
+      <h1 class="mt-6 text-balance text-4xl font-bold leading-[1.08] tracking-tight text-fg sm:text-6xl">
+        An API workspace you can
+        <span class="gradient-text">git diff</span>
+        — and an AI can drive
+      </h1>
+
+      <p class="mx-auto mt-6 max-w-2xl text-pretty text-lg leading-relaxed text-fg-muted sm:text-xl">
+        API Circle is an open API client where your collections live in your own Git repo,
+        and a built-in MCP server lets any AI client read, author, and run requests. Desktop, web,
+        CLI, and VS Code — no cloud account, no lock-in.
+      </p>
+
+      <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <a href={SITE.appUrl} target="_blank" rel="noopener" class="btn-primary w-full sm:w-auto">
+          Open the web app
+          <Icon name="arrow-up-right" size={16} />
+        </a>
+        <a href="/download" class="btn-secondary w-full sm:w-auto">
+          <Icon name="download" size={16} />
+          Download desktop
+        </a>
+      </div>
+
+      <div class="mx-auto mt-6 max-w-md">
+        <CodeBlock code="npx @apicircle/cli mcp" prompt lang="Start the MCP server" />
+      </div>
+    </div>
+
+    <!-- Hero product shot -->
+    <div class="relative mx-auto mt-16 max-w-5xl">
+      <div class="pointer-events-none absolute -inset-x-8 -top-8 bottom-0 -z-10 rounded-[2rem] bg-gradient-to-b from-brand/15 to-transparent blur-2xl"></div>
+      <AppFrame label="API Circle — Editor" class="animate-fade-up">
+        <Screenshot
+          name="request-editor"
+          alt="API Circle request editor showing a request, its response, and the workspace sidebar"
+          eager
+        />
+      </AppFrame>
+    </div>
+  </div>
+</section>

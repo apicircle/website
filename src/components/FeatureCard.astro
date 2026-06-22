@@ -1,0 +1,47 @@
+---
+import Icon from './Icon.astro';
+import type { Feature } from '../data/features.ts';
+
+interface Props {
+  feature: Feature;
+}
+const { feature } = Astro.props;
+
+// Literal class strings so Tailwind's content scanner keeps them.
+const ACCENT: Record<string, { bg: string; text: string; ring: string }> = {
+  brand: { bg: 'bg-brand/10', text: 'text-brand', ring: 'group-hover:border-brand/60' },
+  green: { bg: 'bg-node-green/10', text: 'text-node-green', ring: 'group-hover:border-node-green/60' },
+  blue: { bg: 'bg-node-blue/10', text: 'text-node-blue', ring: 'group-hover:border-node-blue/60' },
+  amber: { bg: 'bg-node-amber/10', text: 'text-node-amber', ring: 'group-hover:border-node-amber/60' },
+  red: { bg: 'bg-node-red/10', text: 'text-node-red', ring: 'group-hover:border-node-red/60' },
+  sky: { bg: 'bg-node-sky/10', text: 'text-node-sky', ring: 'group-hover:border-node-sky/60' },
+};
+const a = ACCENT[feature.accent] ?? ACCENT.brand;
+---
+<a
+  href={`/features/${feature.slug}`}
+  class:list={[
+    'group relative flex h-full flex-col rounded-2xl border border-edge bg-panel p-6 shadow-card transition-all duration-200 hover:-translate-y-1 hover:shadow-glow',
+    a.ring,
+  ]}
+>
+  <div class:list={['mb-5 inline-flex h-11 w-11 items-center justify-center rounded-xl', a.bg, a.text]}>
+    <Icon name={feature.icon} size={22} />
+  </div>
+  <h3 class="text-lg font-semibold text-fg">{feature.title}</h3>
+  <p class="mt-2 text-sm leading-relaxed text-fg-muted">{feature.tagline}</p>
+  <ul class="mt-4 space-y-2">
+    {
+      feature.bullets.map((b) => (
+        <li class="flex items-start gap-2 text-sm text-fg-dim">
+          <Icon name="check" size={15} class={`mt-0.5 shrink-0 ${a.text}`} />
+          <span>{b}</span>
+        </li>
+      ))
+    }
+  </ul>
+  <span class:list={['mt-6 inline-flex items-center gap-1 text-sm font-semibold', a.text]}>
+    Learn more
+    <Icon name="arrow-right" size={15} class="transition-transform group-hover:translate-x-1" />
+  </span>
+</a>

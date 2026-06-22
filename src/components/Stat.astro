@@ -1,0 +1,14 @@
+---
+interface Props {
+  value: string;
+  label: string;
+  class?: string;
+}
+const { value, label, class: className = '' } = Astro.props;
+---
+<div class:list={['flex flex-col', className]}>
+  <span class="text-3xl font-bold tracking-tight text-fg sm:text-4xl">
+    <span class="gradient-text">{value}</span>
+  </span>
+  <span class="mt-1 text-sm text-fg-muted">{label}</span>
+</div>

@@ -1,0 +1,59 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Section from '../../components/Section.astro';
+import FeatureCard from '../../components/FeatureCard.astro';
+import CTA from '../../components/CTA.astro';
+import Icon from '../../components/Icon.astro';
+import { FEATURES } from '../../data/features.ts';
+import { SITE } from '../../data/site.ts';
+
+const toolkit = [
+  { icon: 'file-json', title: 'Imports', body: `cURL, OpenAPI/Swagger, Postman, Insomnia, HAR, and portable .apicircle.json — ${SITE.stats.importFormats} formats.` },
+  { icon: 'code', title: 'Code generation', body: 'Turn any saved request into cURL, fetch, Node (axios), Python, Go, or Rust.' },
+  { icon: 'layers', title: 'Environments', body: 'Priority ordering and cross-workspace variable sources, with encrypted secret rows.' },
+  { icon: 'shield-check', title: 'Assertions', body: 'Status, header, body, JSON-path, and duration checks on every response.' },
+  { icon: 'workflow', title: 'Execution plans', body: 'Chain requests into multi-step plans, run them with assertions, and replay from history.' },
+  { icon: 'boxes', title: 'Global assets', body: 'Reusable JSON Schemas, GraphQL definitions, and file assets tracked alongside the repo.' },
+  { icon: 'history', title: 'Request history', body: 'Full headers, body previews, and assertion results for every run — per device.' },
+  { icon: 'key', title: 'Secret vault', body: 'AES-GCM encryption, OS-keychain wrapping on desktop, passphrase model on web.' },
+];
+---
+<BaseLayout
+  title="Features"
+  description="Git-backed workspaces, an MCP server with 94 tools, local mock servers, 17 auth schemes, a CLI, and a VS Code extension — everything in API Circle."
+>
+  <Section
+    eyebrow="Features"
+    eyebrowIcon="boxes"
+    title="Everything in API Circle"
+    subtitle="A complete API client, rebuilt around two ideas the others miss: your workspace is a Git repo, and your workspace is an AI tool catalog."
+  >
+    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {FEATURES.map((feature) => <FeatureCard feature={feature} />)}
+    </div>
+  </Section>
+
+  <Section
+    class="!pt-0"
+    eyebrow="A complete request toolkit"
+    eyebrowIcon="zap"
+    title="And all the essentials, done right"
+    subtitle="The day-to-day capabilities you expect from a serious API client — none of them an afterthought."
+  >
+    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        toolkit.map((t) => (
+          <div class="card flex flex-col gap-3">
+            <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand/10 text-brand">
+              <Icon name={t.icon} size={20} />
+            </span>
+            <h3 class="text-base font-semibold text-fg">{t.title}</h3>
+            <p class="text-sm leading-relaxed text-fg-muted">{t.body}</p>
+          </div>
+        ))
+      }
+    </div>
+  </Section>
+
+  <CTA />
+</BaseLayout>

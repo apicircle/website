@@ -1,0 +1,57 @@
+---
+/**
+ * Theme-aware product screenshot. Renders both the light and dark capture and
+ * shows the one matching the active site theme (the `dark` class on <html>).
+ *
+ * Images live in /public/screenshots/{light,dark}/<name>.webp. Captured fresh
+ * from the running Studio app — light theme uses a light Studio theme, dark
+ * uses One Dark Pro — so the product always matches the page around it.
+ */
+interface Props {
+  name: string;
+  alt: string;
+  width?: number;
+  height?: number;
+  class?: string;
+  eager?: boolean;
+  rounded?: boolean;
+}
+const {
+  name,
+  alt,
+  width = 2560,
+  height = 1600,
+  class: className = '',
+  eager = false,
+  rounded = false,
+} = Astro.props;
+
+const imgClass = [
+  'block h-auto w-full',
+  rounded && 'rounded-xl',
+].filter(Boolean).join(' ');
+const loading = eager ? 'eager' : 'lazy';
+---
+<div
+  class:list={['relative w-full bg-surface', className]}
+  style={`aspect-ratio: ${width} / ${height};`}
+>
+  <img
+    src={`/screenshots/light/${name}.webp`}
+    alt={alt}
+    width={width}
+    height={height}
+    loading={loading}
+    decoding="async"
+    class:list={[imgClass, 'absolute inset-0 block dark:hidden']}
+  />
+  <img
+    src={`/screenshots/dark/${name}.webp`}
+    alt={alt}
+    width={width}
+    height={height}
+    loading={loading}
+    decoding="async"
+    class:list={[imgClass, 'absolute inset-0 hidden dark:block']}
+  />
+</div>

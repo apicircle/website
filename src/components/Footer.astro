@@ -1,0 +1,61 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { FOOTER_NAV } from '../data/nav.ts';
+import { SITE } from '../data/site.ts';
+const year = new Date().getFullYear();
+---
+<footer class="border-t border-edge bg-panel/40">
+  <div class="container-page py-16">
+    <div class="grid grid-cols-2 gap-10 md:grid-cols-6">
+      <div class="col-span-2">
+        <Logo />
+        <p class="mt-4 max-w-xs text-sm leading-relaxed text-fg-muted">
+          An API workspace you can <code class="rounded bg-surface px-1 py-0.5 text-[0.8em] text-brand">git diff</code> — and an AI can drive.
+        </p>
+        <p class="mt-4 inline-flex items-center gap-2 text-xs font-medium text-fg-dim">
+          <span class="inline-block h-2 w-3 rounded-sm bg-gradient-to-r from-[#ff9933] via-white to-[#138808]"></span>
+          {SITE.origin}
+        </p>
+      </div>
+
+      {
+        FOOTER_NAV.map((group) => (
+          <div>
+            <h3 class="text-xs font-semibold uppercase tracking-wider text-fg-dim">{group.title}</h3>
+            <ul class="mt-4 space-y-2.5">
+              {group.items.map((item) => (
+                <li>
+                  <a
+                    href={item.href}
+                    target={item.external ? '_blank' : undefined}
+                    rel={item.external ? 'noopener' : undefined}
+                    class="inline-flex items-center gap-1 text-sm text-fg-muted transition-colors hover:text-brand"
+                  >
+                    {item.label}
+                    {item.external && <Icon name="arrow-up-right" size={12} class="opacity-60" />}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="mt-14 flex flex-col items-start justify-between gap-4 border-t border-edge pt-8 sm:flex-row sm:items-center">
+      <p class="text-sm text-fg-dim">
+        © {year} API Circle · Source-available ·
+        <a href={SITE.links.license} target="_blank" rel="noopener" class="hover:text-brand">License</a>
+      </p>
+      <div class="flex items-center gap-3">
+        <a href={SITE.links.github} target="_blank" rel="noopener" class="text-fg-dim transition-colors hover:text-brand" aria-label="GitHub">
+          <Icon name="github" size={20} />
+        </a>
+        <a href={SITE.appUrl} target="_blank" rel="noopener" class="text-fg-dim transition-colors hover:text-brand" aria-label="Open the web app">
+          <Icon name="globe" size={20} />
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>

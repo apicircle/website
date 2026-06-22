@@ -1,0 +1,127 @@
+---
+import Logo from './Logo.astro';
+import ThemeToggle from './ThemeToggle.astro';
+import Icon from './Icon.astro';
+import { PRIMARY_NAV, FEATURE_NAV } from '../data/nav.ts';
+import { SITE } from '../data/site.ts';
+---
+<header
+  class="sticky top-0 z-50 border-b border-edge/70 bg-bg/80 backdrop-blur-xl supports-[backdrop-filter]:bg-bg/65"
+>
+  <div class="container-page flex h-16 items-center justify-between gap-4">
+    <Logo />
+
+    <nav class="hidden items-center gap-1 lg:flex" aria-label="Primary">
+      <!-- Features dropdown -->
+      <div class="group relative">
+        <button
+          type="button"
+          class="inline-flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium text-fg-muted transition-colors hover:text-fg"
+          aria-haspopup="true"
+        >
+          Features
+          <Icon name="chevron-down" size={15} class="transition-transform group-hover:rotate-180" />
+        </button>
+        <div
+          class="invisible absolute left-1/2 top-full w-[34rem] -translate-x-1/2 pt-3 opacity-0 transition-all duration-150 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100"
+        >
+          <div class="grid grid-cols-2 gap-1 rounded-2xl border border-edge bg-panel p-2 shadow-panel">
+            {
+              FEATURE_NAV.map((item) => (
+                <a
+                  href={item.href}
+                  class="flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium text-fg-muted transition-colors hover:bg-surface hover:text-brand"
+                >
+                  <span class="h-1.5 w-1.5 rounded-full bg-brand/70" />
+                  {item.label}
+                </a>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+
+      <a
+        href="/download"
+        class="rounded-lg px-3 py-2 text-sm font-medium text-fg-muted transition-colors hover:text-fg"
+        >Download</a
+      >
+      <a
+        href="/docs"
+        class="rounded-lg px-3 py-2 text-sm font-medium text-fg-muted transition-colors hover:text-fg"
+        >Docs</a
+      >
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <a
+        href={SITE.links.github}
+        target="_blank"
+        rel="noopener"
+        class="hidden h-9 w-9 items-center justify-center rounded-lg border border-edge bg-panel text-fg-muted transition-colors hover:border-brand hover:text-brand sm:inline-flex"
+        aria-label="API Circle on GitHub"
+      >
+        <Icon name="github" size={18} />
+      </a>
+      <ThemeToggle />
+      <a href={SITE.appUrl} target="_blank" rel="noopener" class="btn-primary hidden sm:inline-flex">
+        Open the app
+        <Icon name="arrow-up-right" size={16} />
+      </a>
+
+      <!-- Mobile menu button -->
+      <button
+        id="mobile-menu-btn"
+        type="button"
+        class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-edge bg-panel text-fg lg:hidden"
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <line x1="4" x2="20" y1="6" y2="6"></line>
+          <line x1="4" x2="20" y1="12" y2="12"></line>
+          <line x1="4" x2="20" y1="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile menu -->
+  <div id="mobile-menu" class="hidden border-t border-edge bg-panel lg:hidden">
+    <nav class="container-page flex flex-col gap-1 py-4" aria-label="Mobile">
+      <p class="px-3 pb-1 pt-2 text-xs font-semibold uppercase tracking-wider text-fg-dim">Features</p>
+      {
+        FEATURE_NAV.map((item) => (
+          <a href={item.href} class="rounded-lg px-3 py-2 text-sm font-medium text-fg-muted hover:bg-surface hover:text-fg">
+            {item.label}
+          </a>
+        ))
+      }
+      <div class="my-2 border-t border-edge"></div>
+      {
+        PRIMARY_NAV.filter((i) => i.href !== '/features').map((item) => (
+          <a href={item.href} class="rounded-lg px-3 py-2 text-sm font-medium text-fg-muted hover:bg-surface hover:text-fg">
+            {item.label}
+          </a>
+        ))
+      }
+      <a href={SITE.appUrl} target="_blank" rel="noopener" class="btn-primary mt-3 w-full">
+        Open the app
+        <Icon name="arrow-up-right" size={16} />
+      </a>
+    </nav>
+  </div>
+</header>
+
+<script is:inline>
+  (() => {
+    const btn = document.getElementById('mobile-menu-btn');
+    const menu = document.getElementById('mobile-menu');
+    if (!btn || !menu) return;
+    btn.addEventListener('click', () => {
+      const open = menu.classList.toggle('hidden');
+      btn.setAttribute('aria-expanded', String(!open));
+    });
+  })();
+</script>

@@ -1,0 +1,181 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import Section from '../components/Section.astro';
+import Spotlight from '../components/Spotlight.astro';
+import FeatureCard from '../components/FeatureCard.astro';
+import Stat from '../components/Stat.astro';
+import CTA from '../components/CTA.astro';
+import Icon from '../components/Icon.astro';
+import { FEATURES } from '../data/features.ts';
+import { SITE } from '../data/site.ts';
+
+const surfaces = [
+  { icon: 'monitor', title: 'Desktop app', body: 'Day-to-day development on Windows, macOS, and Linux — OS-keychain secrets and local mocks.' },
+  { icon: 'globe', title: 'Web app', body: 'Zero install. Open the browser, and your first workspace is created automatically.' },
+  { icon: 'code', title: 'VS Code extension', body: 'Edit the same workspace as YAML, right inside your editor — no webview, no separate sync.' },
+  { icon: 'terminal', title: 'CLI', body: 'Run collections, spin up mocks, and import specs in CI pipelines and headless agents.' },
+  { icon: 'package', title: 'npm packages', body: 'Embed the engine, mock server, and MCP host in your own tooling.' },
+];
+---
+<BaseLayout>
+  <Hero />
+
+  <!-- Works-with bar -->
+  <section class="border-y border-edge bg-panel/40 py-10">
+    <div class="container-page">
+      <p class="text-center text-xs font-semibold uppercase tracking-[0.16em] text-fg-dim">
+        Drives any Model Context Protocol client
+      </p>
+      <div class="mt-6 flex flex-wrap items-center justify-center gap-x-3 gap-y-3">
+        {
+          SITE.mcpClients.map((c) => (
+            <span class="chip">
+              <Icon name="plug" size={13} class="text-brand" />
+              {c}
+            </span>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section class="section">
+    <div class="container-page">
+      <div class="grid grid-cols-2 gap-8 rounded-3xl border border-edge bg-panel p-10 shadow-card sm:grid-cols-4">
+        <Stat value={`${SITE.stats.mcpTools}`} label="MCP tools in the catalog" />
+        <Stat value={`${SITE.stats.authSchemes}`} label="Auth schemes, all functional" />
+        <Stat value={`${SITE.stats.surfaces}`} label="Surfaces, one engine" />
+        <Stat value={`${SITE.stats.themes}+`} label="Themes to make it yours" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature pillars -->
+  <Section
+    eyebrow="Everything you expect — rebuilt around Git and AI"
+    eyebrowIcon="boxes"
+    title="One workspace, six superpowers"
+    subtitle="A full-featured API client in the spirit of Postman and Insomnia, with the two ideas the others miss baked into the core."
+  >
+    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {FEATURES.map((feature) => <FeatureCard feature={feature} />)}
+    </div>
+  </Section>
+
+  <!-- Spotlight: Git -->
+  <Section class="!pt-0">
+    <Spotlight
+      eyebrow="Version control, natively"
+      eyebrowIcon="git-branch"
+      title="Your workspace is a Git repo"
+      body="Collections, environments, and mock definitions are plain JSON pushed to your own GitHub repo on a working branch. Teams collaborate the way they collaborate on code — branches, diffs, pull requests, review."
+      points={[
+        'Auto-create a working branch from <code class=\"rounded bg-surface px-1 text-[0.85em] text-brand\">main</code>, push to save, open a PR',
+        'A visual three-way merge resolves conflicts in the folder tree, environments, and release ledger',
+        'Publish fingerprinted releases that linked consumers pin to — private or a public marketplace',
+      ]}
+      screenshot="git-workspace"
+      screenshotAlt="The Workspace panel showing GitHub connection, working branch, and releases"
+      frameLabel="Workspace · Git"
+      accent="brand"
+      ctaHref="/features/git-workspaces"
+      ctaLabel="Explore Git workspaces"
+    />
+  </Section>
+
+  <!-- Spotlight: MCP -->
+  <Section class="!pt-0">
+    <Spotlight
+      reverse
+      eyebrow="AI-native, not AI-bolted-on"
+      eyebrowIcon="sparkles"
+      title="Let an AI client drive your workspace"
+      body="The bundled MCP server speaks the open Model Context Protocol over stdio. Claude, ChatGPT, Cursor, Copilot, and any other MCP client can scan a codebase, propose a collection, generate runnable code, or spin up a mock — all from the chat."
+      points={[
+        '<strong class=\"text-fg\">94-tool catalog</strong> — request &amp; folder CRUD, environments, assertions, plans, history, mocks',
+        'A copy-paste config snippet for every supported AI client',
+        'Every AI write funnels through the same mutation API the UI uses — safe by construction',
+      ]}
+      screenshot="mcp-connection"
+      screenshotAlt="The MCP panel showing the workspace mirror and an AI client config snippet"
+      frameLabel="MCP · Connect your AI client"
+      accent="sky"
+      ctaHref="/features/mcp-ai"
+      ctaLabel="See the AI integration"
+    />
+  </Section>
+
+  <!-- Spotlight: Mock -->
+  <Section class="!pt-0">
+    <Spotlight
+      eyebrow="Local mock servers"
+      eyebrowIcon="server"
+      title="Mock any API in seconds"
+      body="Point API Circle at an OpenAPI, Swagger, Postman, or Insomnia file and get a running HTTP mock on localhost. The Hono-based engine handles $ref dereferencing, per-endpoint overrides, conditional rules, validation, and response multipliers."
+      points={[
+        'Flip a <code class=\"rounded bg-surface px-1 text-[0.85em] text-node-green\">200</code> to a <code class=\"rounded bg-surface px-1 text-[0.85em] text-node-red\">503</code> to exercise error paths',
+        'Mock definitions sync with the team; the runtime stays on your machine',
+        'The same engine runs in the app, the CLI, and via the MCP <code class=\"rounded bg-surface px-1 text-[0.85em] text-brand\">mock.start</code> tool',
+      ]}
+      screenshot="mock-server"
+      screenshotAlt="The Mocks panel showing a running mock server on localhost"
+      frameLabel="Mocks · localhost"
+      accent="green"
+      ctaHref="/features/mock-servers"
+      ctaLabel="Explore mock servers"
+    />
+  </Section>
+
+  <!-- Pick your surface -->
+  <Section
+    eyebrow="Runs everywhere you do"
+    eyebrowIcon="layers"
+    title="Pick your surface"
+    subtitle="One engine, one workspace format, one mutation API behind all of them. Switch surfaces without switching tools."
+  >
+    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
+      {
+        surfaces.map((s) => (
+          <div class="card flex flex-col gap-3">
+            <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand/10 text-brand">
+              <Icon name={s.icon} size={20} />
+            </span>
+            <h3 class="text-base font-semibold text-fg">{s.title}</h3>
+            <p class="text-sm leading-relaxed text-fg-muted">{s.body}</p>
+          </div>
+        ))
+      }
+    </div>
+  </Section>
+
+  <!-- How it works -->
+  <Section
+    eyebrow="How it works"
+    eyebrowIcon="workflow"
+    title="One engine behind every surface"
+    subtitle="Every write — from the UI, the CLI, or an AI tool call — funnels through a single mutation API in the core. An AI agent can never produce state the UI couldn't have produced, and vice versa."
+  >
+    <div class="grid gap-5 md:grid-cols-3">
+      {
+        [
+          { n: '01', icon: 'file-json', title: 'A workspace is JSON', body: 'Two documents — a synced collection tree and per-device runtime state. Readable, diffable, yours.' },
+          { n: '02', icon: 'git-merge', title: 'Git is the sync layer', body: 'Push the synced document to a repo on a working branch. Teammates pull, branch, and merge it like any file.' },
+          { n: '03', icon: 'sparkles', title: 'MCP is a first-class driver', body: 'The same parsers and mock engine back all surfaces, so an assistant drives exactly what you can.' },
+        ].map((step) => (
+          <div class="relative card">
+            <span class="text-xs font-bold tracking-widest text-fg-dim">{step.n}</span>
+            <span class="mt-4 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand/10 text-brand">
+              <Icon name={step.icon} size={20} />
+            </span>
+            <h3 class="mt-4 text-lg font-semibold text-fg">{step.title}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-fg-muted">{step.body}</p>
+          </div>
+        ))
+      }
+    </div>
+  </Section>
+
+  <CTA />
+</BaseLayout>

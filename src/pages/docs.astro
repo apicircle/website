@@ -1,0 +1,110 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/Section.astro';
+import CTA from '../components/CTA.astro';
+import Icon from '../components/Icon.astro';
+import { SITE } from '../data/site.ts';
+
+const d = SITE.docsBase;
+const groups = [
+  {
+    title: 'Getting started',
+    icon: 'play',
+    docs: [
+      { label: 'Installing the desktop app', href: `${d}/installing.md`, body: 'Download, first-launch prompt, and one-time setup.' },
+      { label: 'Connect your AI client', href: `${d}/connect-your-ai-client.md`, body: 'Per-client MCP setup for Claude, Cursor, Copilot, ChatGPT, and more.' },
+      { label: 'README & quick start', href: `${SITE.links.github}#quick-start`, body: 'The 60-second tour of both usage modes.' },
+    ],
+  },
+  {
+    title: 'Guides',
+    icon: 'boxes',
+    docs: [
+      { label: 'Mock server guide', href: `${d}/mock-server.md`, body: 'Spin up mocks, override responses, add rules and validation.' },
+      { label: 'Authentication matrix', href: `${d}/auth.md`, body: 'All 17 auth schemes and how each is configured.' },
+      { label: 'MCP tool catalog', href: `${d}/mcp-tools-reference.md`, body: 'Every tool the 94-tool MCP catalog exposes.' },
+    ],
+  },
+  {
+    title: 'Architecture & reference',
+    icon: 'workflow',
+    docs: [
+      { label: 'Platform architecture', href: `${d}/architecture/platform.md`, body: 'The design record behind MCP, the mock engine, CLI, and desktop.' },
+      { label: 'Migration guide', href: `${d}/migration.md`, body: 'Workspace storage relocation across versions.' },
+      { label: 'QA & coverage', href: `${d}/qa/README.md`, body: 'QA status, E2E CI reference, and coverage tooling.' },
+    ],
+  },
+];
+---
+<BaseLayout
+  title="Documentation"
+  description="Guides and reference for API Circle — installing, connecting your AI client, mock servers, the 17-scheme auth matrix, the MCP tool catalog, and platform architecture."
+>
+  <Section
+    eyebrow="Documentation"
+    eyebrowIcon="file-json"
+    title="Guides & reference"
+    subtitle="The full docs live alongside the source in the API Circle repository. Start with a guide below, or browse everything on GitHub."
+  >
+    <div class="space-y-10">
+      {
+        groups.map((group) => (
+          <div>
+            <h2 class="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-fg-dim">
+              <Icon name={group.icon} size={16} class="text-brand" />
+              {group.title}
+            </h2>
+            <div class="mt-4 grid gap-4 md:grid-cols-3">
+              {group.docs.map((doc) => (
+                <a
+                  href={doc.href}
+                  target="_blank"
+                  rel="noopener"
+                  class="group card-hover card flex flex-col"
+                >
+                  <div class="flex items-start justify-between gap-2">
+                    <h3 class="text-base font-semibold text-fg group-hover:text-brand">{doc.label}</h3>
+                    <Icon name="arrow-up-right" size={16} class="shrink-0 text-fg-dim transition-colors group-hover:text-brand" />
+                  </div>
+                  <p class="mt-2 text-sm leading-relaxed text-fg-muted">{doc.body}</p>
+                </a>
+              ))}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </Section>
+
+  <!-- Two modes -->
+  <Section
+    class="!pt-0"
+    eyebrow="Two ways to use it"
+    eyebrowIcon="layers"
+    title="Local, or Git-backed"
+    subtitle="The workspace lives in different places depending on what you're doing. Pick the mode that matches."
+    align="left"
+  >
+    <div class="grid gap-5 md:grid-cols-2">
+      <div class="card">
+        <span class="chip">Mode A</span>
+        <h3 class="mt-4 text-lg font-semibold text-fg">Local workspace</h3>
+        <p class="mt-2 text-sm leading-relaxed text-fg-muted">
+          Open the desktop or web app and a workspace is created automatically in browser storage. No folder to manage, no flags. The easiest way to start — and how you create the workspace you’ll later link to Git.
+        </p>
+      </div>
+      <div class="card">
+        <span class="chip">Mode B</span>
+        <h3 class="mt-4 text-lg font-semibold text-fg">Git-backed workspace</h3>
+        <p class="mt-2 text-sm leading-relaxed text-fg-muted">
+          Use <span class="font-medium text-fg">Link to Git</span> to bridge your workspace to a GitHub repo. The cloned directory <em>is</em> the workspace — pass it to the CLI or MCP server with <code class="rounded bg-surface px-1 text-[0.85em] text-brand">--workspace</code> for teams, CI, and headless agents.
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <CTA
+    title="Read the source, drive the product"
+    subtitle="API Circle is source-available and built in the open. Browse the code, file an issue, or open the app and start building."
+  />
+</BaseLayout>

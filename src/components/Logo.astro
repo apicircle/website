@@ -1,0 +1,62 @@
+---
+/** The API Circle mark (+ optional wordmark). The mark is the product favicon. */
+interface Props {
+  size?: number;
+  withWordmark?: boolean;
+  class?: string;
+}
+const { size = 32, withWordmark = true, class: className = '' } = Astro.props;
+---
+<a
+  href="/"
+  class:list={['group inline-flex items-center gap-2.5', className]}
+  aria-label="API Circle — home"
+>
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 100 100"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    class="shrink-0 transition-transform duration-300 group-hover:rotate-[30deg]"
+    aria-hidden="true"
+  >
+    <defs>
+      <radialGradient id="logoGlow" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#a78bfa" stop-opacity="0.55"></stop>
+        <stop offset="55%" stop-color="#a78bfa" stop-opacity="0.18"></stop>
+        <stop offset="100%" stop-color="#a78bfa" stop-opacity="0"></stop>
+      </radialGradient>
+    </defs>
+    <circle cx="50" cy="50" r="38" stroke="#94a3b8" stroke-opacity="0.45" stroke-width="1" stroke-dasharray="2 3"></circle>
+    <g stroke-width="2" stroke-linecap="round">
+      <line x1="50" y1="29" x2="50" y2="20" stroke="#a78bfa"></line>
+      <line x1="68.19" y1="39.5" x2="76.0" y2="35.0" stroke="#22c55e"></line>
+      <line x1="68.19" y1="60.5" x2="76.0" y2="65.0" stroke="#3b82f6"></line>
+      <line x1="50" y1="71" x2="50" y2="80" stroke="#f59e0b"></line>
+      <line x1="31.81" y1="60.5" x2="24.0" y2="65.0" stroke="#ef4444"></line>
+      <line x1="31.81" y1="39.5" x2="24.0" y2="35.0" stroke="#60a5fa"></line>
+    </g>
+    <g stroke-width="3" fill="none">
+      <circle cx="50" cy="12" r="6" stroke="#a78bfa"></circle>
+      <circle cx="82.91" cy="31" r="6" stroke="#22c55e"></circle>
+      <circle cx="82.91" cy="69" r="6" stroke="#3b82f6"></circle>
+      <circle cx="50" cy="88" r="6" stroke="#f59e0b"></circle>
+      <circle cx="17.09" cy="69" r="6" stroke="#ef4444"></circle>
+      <circle cx="17.09" cy="31" r="6" stroke="#60a5fa"></circle>
+    </g>
+    <circle cx="50" cy="50" r="27" fill="url(#logoGlow)"></circle>
+    <circle cx="50" cy="50" r="18" fill="#8b5cf6"></circle>
+    <path d="M44 41 L56 50 L44 59" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+    <circle cx="61" cy="50" r="2.4" fill="#22c55e"></circle>
+  </svg>
+  {
+    withWordmark && (
+      <span class="flex flex-col leading-none">
+        <span class="text-[15px] font-bold tracking-tight text-fg">
+          API <span class="text-brand">Circle</span>
+        </span>
+      </span>
+    )
+  }
+</a>

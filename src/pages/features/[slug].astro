@@ -1,0 +1,201 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import AppFrame from '../../components/AppFrame.astro';
+import Screenshot from '../../components/Screenshot.astro';
+import CodeBlock from '../../components/CodeBlock.astro';
+import CTA from '../../components/CTA.astro';
+import Icon from '../../components/Icon.astro';
+import { FEATURES, type Feature } from '../../data/features.ts';
+
+export function getStaticPaths() {
+  return FEATURES.map((feature, i) => ({
+    params: { slug: feature.slug },
+    props: { feature, next: FEATURES[(i + 1) % FEATURES.length] },
+  }));
+}
+
+interface Props {
+  feature: Feature;
+  next: Feature;
+}
+const { feature, next } = Astro.props;
+
+interface Sample {
+  code: string;
+  filename?: string;
+  lang?: string;
+  prompt?: boolean;
+}
+const SAMPLES: Record<string, { intro: string; blocks: Sample[] }> = {
+  'git-workspaces': {
+    intro: 'Clone a workspace repo and the directory is the workspace — drive it from the CLI or any AI client.',
+    blocks: [
+      {
+        code: `git clone https://github.com/you/your-workspace-repo\napicircle run "Smoke Tests" --workspace-path ./your-workspace-repo --reporter junit`,
+        prompt: true,
+        lang: 'Clone & run a collection',
+      },
+    ],
+  },
+  'mcp-ai': {
+    intro: 'Drop this into your AI client config, restart, and it can drive your workspace. Omit --workspace to boot in multi-workspace mode against the desktop registry.',
+    blocks: [
+      {
+        filename: 'claude_desktop_config.json',
+        lang: 'json',
+        code: `{\n  "mcpServers": {\n    "apicircle": {\n      "command": "apicircle-mcp",\n      "args": []\n    }\n  }\n}`,
+      },
+    ],
+  },
+  'mock-servers': {
+    intro: 'Start a mock straight from a spec file — no workspace required.',
+    blocks: [
+      {
+        code: `npx @apicircle/cli mock ./openapi.yaml`,
+        prompt: true,
+        lang: 'Mock an OpenAPI spec',
+      },
+    ],
+  },
+  authentication: {
+    intro: 'Folder-level auth cascades to descendant requests. Mark a request auth: inherit and it picks up the folder’s scheme automatically.',
+    blocks: [
+      {
+        filename: 'payments/charge.req.yaml',
+        lang: 'yaml',
+        code: `method: POST\nurl: https://api.example.com/charges\nauth:\n  type: inherit        # resolves from the Payments folder\nbody:\n  type: json\n  content: |\n    { "amount": 4200, "currency": "usd" }`,
+      },
+    ],
+  },
+  cli: {
+    intro: 'Address a registered workspace by name, or point at a git-cloned directory for CI.',
+    blocks: [
+      {
+        code: `npx @apicircle/cli workspaces use Petstore\nnpx @apicircle/cli import openapi ./openapi.yaml --workspace-name Petstore\nnpx @apicircle/cli run "Smoke Tests" --reporter junit`,
+        prompt: true,
+        lang: 'Import & run in CI',
+      },
+    ],
+  },
+  vscode: {
+    intro: 'Install from the Marketplace or Open VSX, then edit requests as YAML right in your editor.',
+    blocks: [
+      {
+        code: `code --install-extension apicircle.apicircle-vscode`,
+        prompt: true,
+        lang: 'Install the extension',
+      },
+    ],
+  },
+};
+const sample = SAMPLES[feature.slug];
+
+const ACCENT: Record<string, string> = {
+  brand: 'text-brand',
+  green: 'text-node-green',
+  blue: 'text-node-blue',
+  amber: 'text-node-amber',
+  red: 'text-node-red',
+  sky: 'text-node-sky',
+};
+const accentText = ACCENT[feature.accent] ?? ACCENT.brand;
+---
+<BaseLayout title={feature.title} description={feature.summary}>
+  <article>
+    <!-- Hero -->
+    <section class="relative overflow-hidden border-b border-edge">
+      <div class="pointer-events-none absolute inset-0 -z-10">
+        <div class="absolute inset-0 bg-grid opacity-[0.12] mask-fade-b"></div>
+        <div class="absolute -top-40 right-0 h-96 w-96 rounded-full bg-brand/15 blur-[120px]"></div>
+      </div>
+      <div class="container-page py-14 sm:py-20">
+        <nav class="mb-6 flex items-center gap-2 text-sm text-fg-dim" aria-label="Breadcrumb">
+          <a href="/features" class="hover:text-brand">Features</a>
+          <Icon name="chevron-down" size={14} class="-rotate-90" />
+          <span class="text-fg-muted">{feature.title}</span>
+        </nav>
+
+        <div class="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+          <div>
+            <span class:list={['eyebrow', accentText]}>
+              <Icon name={feature.icon} size={14} />
+              {feature.eyebrow}
+            </span>
+            <h1 class="mt-4 text-balance text-4xl font-bold tracking-tight text-fg sm:text-5xl">
+              {feature.title}
+            </h1>
+            <p class="mt-5 text-pretty text-lg leading-relaxed text-fg-muted">{feature.summary}</p>
+            <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+              <a href={feature.cta.href} target="_blank" rel="noopener" class="btn-primary">
+                {feature.cta.label}
+                <Icon name="arrow-up-right" size={16} />
+              </a>
+              <a href="/download" class="btn-secondary">All download options</a>
+            </div>
+          </div>
+          <AppFrame label={feature.title} class="animate-fade-up">
+            <Screenshot name={feature.screenshot ?? 'request-editor'} alt={feature.screenshotAlt ?? feature.title} eager />
+          </AppFrame>
+        </div>
+      </div>
+    </section>
+
+    <!-- Highlights -->
+    <section class="section">
+      <div class="container-page">
+        <div class="grid gap-5 md:grid-cols-2">
+          {
+            feature.highlights.map((h, i) => (
+              <div class="card">
+                <div class="flex items-center gap-3">
+                  <span class:list={['flex h-8 w-8 items-center justify-center rounded-lg bg-surface text-sm font-bold', accentText]}>
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <h3 class="text-lg font-semibold text-fg">{h.title}</h3>
+                </div>
+                <p class="mt-3 text-[15px] leading-relaxed text-fg-muted">{h.body}</p>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- Usage / code -->
+    {
+      sample && (
+        <section class="section !pt-0">
+          <div class="container-page">
+            <div class="mx-auto max-w-3xl rounded-3xl border border-edge bg-panel/50 p-8 sm:p-10">
+              <h2 class="text-2xl font-bold tracking-tight text-fg">Get going in one command</h2>
+              <p class="mt-3 text-[15px] leading-relaxed text-fg-muted">{sample.intro}</p>
+              <div class="mt-6 space-y-4">
+                {sample.blocks.map((b) => (
+                  <CodeBlock code={b.code} filename={b.filename} lang={b.lang} prompt={b.prompt} />
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      )
+    }
+
+    <!-- Next feature -->
+    <section class="section !pt-0">
+      <div class="container-page">
+        <a
+          href={`/features/${next.slug}`}
+          class="group flex items-center justify-between gap-4 rounded-2xl border border-edge bg-panel p-6 transition-colors hover:border-brand/60"
+        >
+          <div>
+            <span class="text-xs font-semibold uppercase tracking-wider text-fg-dim">Next feature</span>
+            <p class="mt-1 text-lg font-semibold text-fg group-hover:text-brand">{next.title}</p>
+          </div>
+          <Icon name="arrow-right" size={22} class="text-fg-dim transition-transform group-hover:translate-x-1 group-hover:text-brand" />
+        </a>
+      </div>
+    </section>
+
+    <CTA />
+  </article>
+</BaseLayout>

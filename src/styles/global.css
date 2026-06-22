@@ -1,0 +1,185 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * API Circle marketing-site theme tokens.
+ *
+ * Tokens are RGB triplets (no #, no rgb()) so Tailwind's
+ * `rgb(var(--token) / <alpha-value>)` syntax resolves opacity correctly.
+ * Light is the default (:root); dark is applied by toggling `class="dark"`
+ * on <html> (see ThemeToggle + the no-flash boot script in BaseLayout).
+ *
+ * The palette tracks API Circle Studio's own theme tokens: brand violet
+ * (#8b5cf6) plus the six connection-node accents lifted from the logo.
+ */
+
+@layer base {
+  :root {
+    /* Light theme (default) */
+    --bg: 255 255 255;
+    --panel: 250 250 252;
+    --surface: 244 245 248;
+    --edge: 226 230 237;
+    --edge-strong: 203 209 219;
+
+    --fg: 17 20 28;
+    --fg-muted: 75 86 104;
+    --fg-dim: 113 124 142;
+
+    --brand: 139 92 246;
+    --brand-soft: 167 139 250;
+    --accent: 124 58 237;
+    --accent-fg: 255 255 255;
+
+    --node-green: 22 130 76;
+    --node-blue: 37 99 235;
+    --node-amber: 180 120 12;
+    --node-red: 220 38 38;
+    --node-sky: 14 116 200;
+
+    color-scheme: light;
+  }
+
+  html.dark {
+    --bg: 9 12 19;
+    --panel: 16 21 31;
+    --surface: 23 30 44;
+    --edge: 38 46 63;
+    --edge-strong: 60 73 96;
+
+    --fg: 237 244 255;
+    --fg-muted: 165 182 207;
+    --fg-dim: 120 136 161;
+
+    --brand: 139 92 246;
+    --brand-soft: 167 139 250;
+    --accent: 167 139 250;
+    --accent-fg: 255 255 255;
+
+    --node-green: 63 185 80;
+    --node-blue: 88 166 255;
+    --node-amber: 230 180 80;
+    --node-red: 248 113 113;
+    --node-sky: 96 165 250;
+
+    color-scheme: dark;
+  }
+
+  * {
+    border-color: rgb(var(--edge));
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: 5rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+
+  body {
+    @apply bg-bg text-fg font-sans antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: rgb(var(--brand) / 0.28);
+    color: rgb(var(--fg));
+  }
+
+  :focus-visible {
+    outline: 2px solid rgb(var(--brand));
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Honour the no-JS / system fallback without layout shift */
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: rgb(var(--edge-strong));
+    border: 3px solid rgb(var(--bg));
+    border-radius: 99px;
+  }
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-content px-5 sm:px-6 lg:px-8;
+  }
+
+  .eyebrow {
+    @apply inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-brand;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-200 focus-visible:outline-none disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply btn bg-accent text-accent-fg shadow-glow hover:-translate-y-0.5 hover:brightness-110;
+  }
+  .btn-secondary {
+    @apply btn border border-edge-strong bg-panel text-fg hover:border-brand hover:text-brand;
+  }
+  .btn-ghost {
+    @apply btn text-fg-muted hover:bg-surface hover:text-fg;
+  }
+
+  .card {
+    @apply rounded-2xl border border-edge bg-panel p-6 shadow-card transition-all duration-200;
+  }
+  .card-hover {
+    @apply hover:-translate-y-1 hover:border-brand/60 hover:shadow-glow;
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-edge bg-surface px-3 py-1 text-xs font-medium text-fg-muted;
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-brand via-accent to-node-sky bg-clip-text text-transparent;
+  }
+
+  .section {
+    @apply py-20 sm:py-28;
+  }
+
+  .hr-soft {
+    @apply border-0 border-t border-edge;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .text-pretty {
+    text-wrap: pretty;
+  }
+  .bg-grid {
+    background-image: theme('backgroundImage.grid-fade');
+    background-size: 44px 44px;
+  }
+  .mask-fade-b {
+    -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+  }
+  .mask-radial {
+    -webkit-mask-image: radial-gradient(ellipse at center, black 55%, transparent 100%);
+    mask-image: radial-gradient(ellipse at center, black 55%, transparent 100%);
+  }
+}
