@@ -1,0 +1,27 @@
+{
+  "name": "API Circle — API Client for Testing, Mocking & AI",
+  "short_name": "API Circle",
+  "description": "Free, source-available API client for testing and mocking REST APIs. Git-backed collections and a built-in MCP server any AI can drive.",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#090c13",
+  "theme_color": "#8b5cf6",
+  "lang": "en-US",
+  "categories": ["developer", "productivity", "utilities"],
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any"
+    },
+    {
+      "src": "/logo.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "maskable"
+    }
+  ]
+}

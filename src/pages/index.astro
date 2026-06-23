@@ -7,7 +7,9 @@ import FeatureCard from '../components/FeatureCard.astro';
 import Stat from '../components/Stat.astro';
 import CTA from '../components/CTA.astro';
 import Icon from '../components/Icon.astro';
+import FAQ from '../components/FAQ.astro';
 import { FEATURES } from '../data/features.ts';
+import { FAQS } from '../data/faqs.ts';
 import { SITE } from '../data/site.ts';
 
 const surfaces = [
@@ -19,7 +21,8 @@ const surfaces = [
 ];
 ---
 <BaseLayout
-  description="API Circle is an open API client where your collections live in a Git repo and a built-in MCP server lets any AI client read, author, and run requests."
+  description="Free, source-available API client for testing & mocking REST APIs. Git-backed collections and a built-in MCP server any AI can drive — a modern Postman & Insomnia alternative."
+  faqs={FAQS}
 >
   <Hero />
 
@@ -177,6 +180,16 @@ const surfaces = [
         ))
       }
     </div>
+  </Section>
+
+  <!-- FAQ -->
+  <Section
+    eyebrow="FAQ"
+    eyebrowIcon="help-circle"
+    title="Frequently asked questions"
+    subtitle="What API Circle is, how it compares to Postman and Insomnia, and how teams and AI agents use it."
+  >
+    <FAQ items={FAQS} />
   </Section>
 
   <CTA />

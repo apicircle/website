@@ -1,0 +1,61 @@
+# API Circle
+
+> API Circle is a free, source-available API client for testing, mocking, and automating REST APIs. Its two defining ideas: your workspace is a Git repository (collections are plain JSON you branch, diff, review, and merge like code), and your workspace is an AI tool catalog (a built-in MCP server with 94 tools lets any AI client read, author, and run requests). It runs as a desktop app, a zero-install web app, a CLI, and a VS Code extension — with no cloud account and no lock-in.
+
+API Circle is a modern alternative to Postman and Insomnia for developers and AI agents. Official site: https://apicircle.dev. The web app: https://studio.apicircle.dev. Built in India, open to the world.
+
+## Key facts
+
+- Category: API client / API testing tool / API mock server / API development tools (devtools).
+- Price: free. No account required. The web app creates your first workspace automatically in local storage.
+- License: source-available, developed in the open on GitHub.
+- Surfaces (5): desktop app (Windows, macOS, Linux), web app, CLI, VS Code extension, and npm packages.
+- AI: a built-in MCP (Model Context Protocol) server exposes 94 tools. Works with Claude Desktop, Claude Code, ChatGPT, GitHub Copilot, Cursor, Continue, Cline, Zed, and Windsurf.
+- Git-native: collections, environments, and mock definitions are plain JSON pushed to your own GitHub repo; branch, diff, open pull requests, and resolve conflicts with a visual three-way merge.
+- Mock servers: turn an OpenAPI, Swagger, Postman, or Insomnia spec into a running localhost mock in seconds, with overrides, conditional rules, request validation, and response multipliers.
+- Authentication: 17 schemes, all functional — Bearer, Basic, API key, custom header, the full OAuth2 grant set (PKCE, device flow, auto-refresh), AWS SigV4, Digest, NTLM, Hawk, and JWT.
+- Imports: cURL, OpenAPI/Swagger, Postman, Insomnia, HAR, and .apicircle.json.
+- Code generation: cURL, fetch, Node (axios), Python (requests), Go, and Rust.
+- CLI: run collections, mocks, and imports headlessly; emits JUnit XML for CI.
+
+## Pages
+
+- [Home](https://apicircle.dev/): product overview, the five surfaces, and how it works.
+- [Features](https://apicircle.dev/features): every capability in API Circle.
+- [Git-backed workspaces](https://apicircle.dev/features/git-workspaces): collections as JSON in your own Git repo.
+- [AI integration (MCP)](https://apicircle.dev/features/mcp-ai): the 94-tool MCP server for AI clients.
+- [Local mock servers](https://apicircle.dev/features/mock-servers): mock any API from a spec on localhost.
+- [Authentication](https://apicircle.dev/features/authentication): the 17 functional auth schemes.
+- [CLI](https://apicircle.dev/features/cli): headless runs and CI pipelines.
+- [VS Code extension](https://apicircle.dev/features/vscode): edit the same workspace as YAML.
+- [Download](https://apicircle.dev/download): web, desktop, VS Code, CLI, and MCP server.
+- [Documentation](https://apicircle.dev/docs): guides and reference.
+
+## Resources
+
+- [GitHub](https://github.com/apicircle/studio): source-available repository and issues.
+- [CLI on npm](https://www.npmjs.com/package/@apicircle/cli): @apicircle/cli.
+- [MCP server on npm](https://www.npmjs.com/package/@apicircle/mcp-server): @apicircle/mcp-server.
+- [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=apicircle.apicircle-vscode): the extension.
+- [Connect your AI client](https://github.com/apicircle/studio/blob/main/docs/connect-your-ai-client.md): per-client MCP setup.
+- [MCP tool catalog](https://github.com/apicircle/studio/blob/main/docs/mcp-tools-reference.md): every MCP tool.
+
+## FAQ
+
+### What is API Circle?
+API Circle is a free, source-available API client for testing, mocking, and automating REST APIs. Collections live as plain JSON in your own Git repository, and a built-in MCP server lets any AI client read, author, and run requests. It runs as a desktop app, a web app, a CLI, and a VS Code extension.
+
+### Is API Circle free?
+Yes. API Circle is free across the web app, desktop app, CLI, and VS Code extension. There is no account and no cloud subscription.
+
+### How is API Circle different from Postman and Insomnia?
+It adds two ideas the others lack at the core: your workspace is a Git repo (branch, diff, review, and merge collections like code, with no mandatory cloud account), and your workspace is an AI tool catalog (a built-in MCP server with 94 tools any AI assistant can drive). Collections are plain JSON you own.
+
+### Can AI assistants like Claude, Cursor, or ChatGPT use API Circle?
+Yes. The built-in MCP server with 94 tools works with Claude Desktop, Claude Code, ChatGPT, GitHub Copilot, Cursor, Continue, Cline, Zed, and Windsurf. The app generates a copy-paste config for each client.
+
+### How do I mock an API with API Circle?
+Point it at an OpenAPI, Swagger, Postman, or Insomnia file and it starts a localhost mock in seconds — with response overrides, conditional rules, validation, and multipliers. From the CLI: npx @apicircle/cli mock ./openapi.yaml.
+
+### Can I run API Circle in CI or from the command line?
+Yes. The apicircle CLI runs collections, mocks, and imports headlessly and emits JUnit XML for CI, addressing a workspace by name or by a git-cloned directory path.

@@ -91,6 +91,14 @@ Pages on every push to `main`.
 Delete `public/CNAME`, then in `astro.config.mjs` set `site` to your Pages URL
 and `base: '/website/'`. Astro rewrites internal links accordingly.
 
+## SEO & AI-engine optimization
+
+On-page SEO and generative-engine optimization (structured data, FAQ, `llms.txt`,
+AI-crawler `robots.txt`, sitemap) are wired into the build. The **off-page steps**
+that actually get the site indexed and cited — Search Console verification,
+sitemap submission, and link/citation building — are documented in
+[`SEO.md`](SEO.md). Start there if `apicircle` isn't showing up in search yet.
+
 ## License
 
 Content and brand assets © API Circle Studio. See the

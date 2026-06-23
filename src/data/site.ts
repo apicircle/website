@@ -54,6 +54,60 @@ export const SITE = {
   ],
   importFormats: ['cURL', 'OpenAPI / Swagger', 'Postman', 'Insomnia', 'HAR', '.apicircle.json'],
   codegenTargets: ['cURL', 'fetch', 'Node (axios)', 'Python (requests)', 'Go', 'Rust'],
+
+  /* ---- SEO / GEO (search engine + AI engine) signals ---- */
+
+  /** Keyword-rich default <title> for the home page and untitled routes. */
+  defaultTitle: 'API Circle — Open API Client for Testing, Mocking & AI (MCP)',
+  /** Other names people search the product by — feeds schema `alternateName`. */
+  alternateNames: ['APICircle', 'API Circle Studio', 'apicircle.dev', 'apicircle'],
+  /** Target search keywords — used for the keywords meta tag and schema. */
+  keywords: [
+    'API client',
+    'API testing tool',
+    'API mock server',
+    'REST API client',
+    'API development tools',
+    'API devtools',
+    'MCP API client',
+    'AI API client',
+    'Model Context Protocol',
+    'Postman alternative',
+    'Insomnia alternative',
+    'OpenAPI client',
+    'Git API client',
+    'OAuth2 testing',
+    'CLI API client',
+    'free API client',
+    'API Circle',
+  ],
+  /** Canonical profiles that describe the same entity — feeds schema `sameAs`. */
+  sameAs: [
+    'https://github.com/apicircle',
+    'https://github.com/apicircle/studio',
+    'https://www.npmjs.com/package/@apicircle/cli',
+    'https://www.npmjs.com/package/@apicircle/mcp-server',
+    'https://marketplace.visualstudio.com/items?itemName=apicircle.apicircle-vscode',
+    'https://open-vsx.org/extension/apicircle/apicircle-vscode',
+  ],
+  /** Default alt text for the social / OG card. */
+  ogImageAlt:
+    'API Circle — a Git-backed, AI-native API client for testing and mocking APIs',
+  /** Optional social handle (without the @). Leave '' to omit Twitter attribution. */
+  social: { twitter: '' },
+  /**
+   * Search-engine ownership-verification tokens. Paste these from Google Search
+   * Console / Bing Webmaster Tools (or verify via DNS) and the matching <meta>
+   * tags render automatically. See SEO.md for the full off-page checklist.
+   */
+  verification: { google: '', bing: '', yandex: '' },
+  /**
+   * Google Analytics 4 Measurement ID (format: G-XXXXXXXXXX). Leave '' to
+   * disable. It loads only in production builds, never in `astro dev`, so local
+   * traffic never hits your stats. A GA4 Measurement ID is public (it ships in
+   * the page HTML), so committing it is fine. See SEO.md → "Analytics".
+   */
+  analytics: { googleAnalyticsId: 'G-WMTQXENJ8T' },
 } as const;
 
 export type SiteConfig = typeof SITE;

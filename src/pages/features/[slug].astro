@@ -6,6 +6,7 @@ import CodeBlock from '../../components/CodeBlock.astro';
 import CTA from '../../components/CTA.astro';
 import Icon from '../../components/Icon.astro';
 import { FEATURES, type Feature } from '../../data/features.ts';
+import { SITE } from '../../data/site.ts';
 
 export function getStaticPaths() {
   return FEATURES.map((feature, i) => ({
@@ -19,6 +20,13 @@ interface Props {
   next: Feature;
 }
 const { feature, next } = Astro.props;
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Features', url: '/features' },
+  { name: feature.title, url: `/features/${feature.slug}` },
+];
+const keywords = [feature.title, 'API Circle', ...SITE.keywords.slice(0, 8)].join(', ');
 
 interface Sample {
   code: string;
@@ -100,7 +108,12 @@ const ACCENT: Record<string, string> = {
 };
 const accentText = ACCENT[feature.accent] ?? ACCENT.brand;
 ---
-<BaseLayout title={feature.title} description={feature.metaDescription}>
+<BaseLayout
+  title={feature.title}
+  description={feature.metaDescription}
+  keywords={keywords}
+  breadcrumbs={breadcrumbs}
+>
   <article>
     <!-- Hero -->
     <section class="relative overflow-hidden border-b border-edge">

@@ -10,10 +10,16 @@ const desktop = [
   { os: 'macOS', icon: 'monitor', note: '.dmg (Apple Silicon & Intel)' },
   { os: 'Linux', icon: 'monitor', note: 'AppImage & .deb' },
 ];
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Download', url: '/download' },
+];
 ---
 <BaseLayout
   title="Download"
   description="Get API Circle Studio — desktop installers for Windows, macOS and Linux, the zero-install web app, the VS Code extension, and the CLI + MCP server on npm."
+  breadcrumbs={breadcrumbs}
 >
   <Section
     headingLevel="h1"

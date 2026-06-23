@@ -1,0 +1,26 @@
+---
+/**
+ * Google Analytics 4 (gtag.js).
+ *
+ * Renders only when a Measurement ID is configured AND this is a production
+ * build — so local `astro dev` traffic never reaches your analytics. Set the ID
+ * in src/data/site.ts → SITE.analytics.googleAnalyticsId (format: G-XXXXXXXXXX).
+ *
+ * To test it locally, build a production bundle: `pnpm build && pnpm preview`.
+ */
+import { SITE } from '../data/site.ts';
+
+const id = SITE.analytics.googleAnalyticsId;
+const enabled = Boolean(id) && import.meta.env.PROD;
+---
+{
+  enabled && (
+    <Fragment>
+      <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${id}`} />
+      <script
+        is:inline
+        set:html={`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${id}');`}
+      />
+    </Fragment>
+  )
+}

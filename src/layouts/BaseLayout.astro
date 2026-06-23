@@ -4,70 +4,111 @@ import '@fontsource-variable/jetbrains-mono';
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import Analytics from '../components/Analytics.astro';
 import { SITE } from '../data/site.ts';
+import { buildJsonLd, type Breadcrumb } from '../data/seo.ts';
+import type { Faq } from '../data/faqs.ts';
 
 interface Props {
   title?: string;
   description?: string;
   /** Path to an OG image relative to site root. */
   image?: string;
+  /** Alt text for the OG/Twitter image. */
+  imageAlt?: string;
+  /** Comma-separated keywords meta — defaults to the site-wide list. */
+  keywords?: string;
+  /** Open Graph object type (e.g. 'website', 'article'). */
+  ogType?: string;
   noindex?: boolean;
+  /** Breadcrumb trail → BreadcrumbList structured data. */
+  breadcrumbs?: Breadcrumb[];
+  /** FAQ items → FAQPage structured data (must match visible copy). */
+  faqs?: Faq[];
 }
 
 const {
   title,
   description = SITE.description,
   image = '/og.png',
+  imageAlt = SITE.ogImageAlt,
+  keywords = SITE.keywords.join(', '),
+  ogType = 'website',
   noindex = false,
+  breadcrumbs,
+  faqs,
 } = Astro.props;
 
-const pageTitle = title ? `${title} · ${SITE.name}` : `${SITE.name} — Git-backed, AI-native API client`;
+const pageTitle = title ? `${title} · ${SITE.name}` : SITE.defaultTitle;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? SITE.url).toString();
 const ogImage = new URL(image, Astro.site ?? SITE.url).toString();
 
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'SoftwareApplication',
-  name: SITE.productName,
-  applicationCategory: 'DeveloperApplication',
-  operatingSystem: 'Windows, macOS, Linux, Web',
-  description: SITE.description,
-  url: SITE.url,
-  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-};
+const jsonLd = buildJsonLd({
+  canonical,
+  title: pageTitle,
+  description,
+  image: ogImage,
+  breadcrumbs,
+  faqs,
+});
 ---
 <!doctype html>
 <html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <Analytics />
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
+    <meta name="keywords" content={keywords} />
+    <meta name="author" content={SITE.name} />
+    <meta name="publisher" content={SITE.name} />
     <link rel="canonical" href={canonical} />
-    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    {
+      noindex ? (
+        <meta name="robots" content="noindex, nofollow" />
+      ) : (
+        <meta
+          name="robots"
+          content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+        />
+      )
+    }
+
+    {SITE.verification.google && <meta name="google-site-verification" content={SITE.verification.google} />}
+    {SITE.verification.bing && <meta name="msvalidate.01" content={SITE.verification.bing} />}
+    {SITE.verification.yandex && <meta name="yandex-verification" content={SITE.verification.yandex} />}
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="manifest" href="/site.webmanifest" />
     <meta name="theme-color" content="#0a0d14" media="(prefers-color-scheme: dark)" />
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
     <meta name="generator" content={Astro.generator} />
+    <meta name="application-name" content={SITE.name} />
 
     <!-- Open Graph -->
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:site_name" content={SITE.name} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:alt" content={imageAlt} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en_US" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={imageAlt} />
+    {SITE.social.twitter && <meta name="twitter:site" content={`@${SITE.social.twitter}`} />}
+    {SITE.social.twitter && <meta name="twitter:creator" content={`@${SITE.social.twitter}`} />}
 
     <link rel="sitemap" href="/sitemap.xml" />
+    <link rel="alternate" type="text/markdown" href="/llms.txt" title="llms.txt — overview for AI engines" />
 
     <!-- No-flash theme boot: set the class before first paint. -->
     <script is:inline>

@@ -7,6 +7,11 @@ import Icon from '../../components/Icon.astro';
 import { FEATURES } from '../../data/features.ts';
 import { SITE } from '../../data/site.ts';
 
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Features', url: '/features' },
+];
+
 const toolkit = [
   { icon: 'file-json', title: 'Imports', body: `cURL, OpenAPI/Swagger, Postman, Insomnia, HAR, and portable .apicircle.json — ${SITE.stats.importFormats} formats.` },
   { icon: 'code', title: 'Code generation', body: 'Turn any saved request into cURL, fetch, Node (axios), Python, Go, or Rust.' },
@@ -21,6 +26,7 @@ const toolkit = [
 <BaseLayout
   title="Features"
   description="Git-backed workspaces, an MCP server with 94 tools, local mock servers, 17 auth schemes, a CLI, and a VS Code extension — everything in API Circle."
+  breadcrumbs={breadcrumbs}
 >
   <Section
     headingLevel="h1"

@@ -6,6 +6,10 @@ import Icon from '../components/Icon.astro';
 import { SITE } from '../data/site.ts';
 
 const d = SITE.docsBase;
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Documentation', url: '/docs' },
+];
 const groups = [
   {
     title: 'Getting started',
@@ -39,6 +43,7 @@ const groups = [
 <BaseLayout
   title="Documentation"
   description="Guides and reference for API Circle — installing, connecting your AI client, mock servers, the 17-scheme auth matrix, the MCP tool catalog, and platform architecture."
+  breadcrumbs={breadcrumbs}
 >
   <Section
     headingLevel="h1"
