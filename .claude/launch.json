@@ -3,8 +3,8 @@
   "configurations": [
     {
       "name": "website",
-      "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["run", "dev", "--port", "4321"],
+      "runtimeExecutable": "C:\\Users\\praka\\AppData\\Local\\nvm\\v20.19.2\\node.exe",
+      "runtimeArgs": ["node_modules/astro/astro.js", "dev", "--port", "4321"],
       "port": 4321
     }
   ]

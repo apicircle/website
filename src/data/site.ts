@@ -19,6 +19,7 @@ export const SITE = {
     releases: 'https://github.com/apicircle/studio/releases/latest',
     vscode: 'https://marketplace.visualstudio.com/items?itemName=apicircle.apicircle-vscode',
     openVsx: 'https://open-vsx.org/extension/apicircle/apicircle-vscode',
+    peerlist: 'https://peerlist.io/devaprakash0927/project/api-circle-studio',
     npmCli: 'https://www.npmjs.com/package/@apicircle/cli',
     npmMcp: 'https://www.npmjs.com/package/@apicircle/mcp-server',
     mcpSpec: 'https://modelcontextprotocol.io',
@@ -89,6 +90,7 @@ export const SITE = {
     'https://www.npmjs.com/package/@apicircle/mcp-server',
     'https://marketplace.visualstudio.com/items?itemName=apicircle.apicircle-vscode',
     'https://open-vsx.org/extension/apicircle/apicircle-vscode',
+    'https://peerlist.io/devaprakash0927/project/api-circle-studio',
   ],
   /** Default alt text for the social / OG card. */
   ogImageAlt:

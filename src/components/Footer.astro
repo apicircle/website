@@ -67,10 +67,15 @@ const year = new Date().getFullYear();
       <p class="text-sm text-fg-dim">
         © {year} API Circle · Source-available ·
         <a href={SITE.links.license} target="_blank" rel="noopener" class="hover:text-brand">License</a>
+        ·
+        <a href={SITE.links.peerlist} target="_blank" rel="noopener" class="hover:text-brand">Peerlist</a>
       </p>
       <div class="flex items-center gap-3">
         <a href={SITE.links.github} target="_blank" rel="noopener" class="text-fg-dim transition-colors hover:text-brand" aria-label="GitHub">
           <Icon name="github" size={20} />
+        </a>
+        <a href={SITE.links.peerlist} target="_blank" rel="noopener" class="text-fg-dim transition-colors hover:text-brand" aria-label="API Circle on Peerlist">
+          <Icon name="layers" size={20} />
         </a>
         <a href={SITE.appUrl} target="_blank" rel="noopener" class="text-fg-dim transition-colors hover:text-brand" aria-label="Open the web app">
           <Icon name="globe" size={20} />
