@@ -25,6 +25,7 @@ export const FOOTER_NAV: { title: string; items: NavItem[] }[] = [
     title: 'Product',
     items: [
       { label: 'Features', href: '/features' },
+      { label: 'Git-backed API client', href: '/git-backed-api-client' },
       { label: 'Download', href: '/download' },
       { label: 'Open the web app', href: 'https://studio.apicircle.dev', external: true },
       { label: 'VS Code extension', href: '/features/vscode' },

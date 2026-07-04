@@ -13,6 +13,7 @@ interface Entry {
 const entries: Entry[] = [
   { path: '/', changefreq: 'weekly', priority: '1.0' },
   { path: '/features/', changefreq: 'weekly', priority: '0.9' },
+  { path: '/git-backed-api-client/', changefreq: 'weekly', priority: '0.9' },
   { path: '/download/', changefreq: 'weekly', priority: '0.8' },
   { path: '/docs/', changefreq: 'monthly', priority: '0.7' },
   ...FEATURES.map((f) => ({

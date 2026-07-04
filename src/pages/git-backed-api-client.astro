@@ -1,0 +1,241 @@
+---
+/**
+ * Keyword landing page targeting "git-backed API client" (+ "multi-workspace
+ * API client" / "switch API workspace"). Product-neutral — no competitor
+ * framing. Reuses the site's sections, schema (BreadcrumbList + FAQPage), and
+ * CTA so it's fully optimized on creation. Facts must stay accurate; see SEO.md.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/Section.astro';
+import AppFrame from '../components/AppFrame.astro';
+import Screenshot from '../components/Screenshot.astro';
+import CodeBlock from '../components/CodeBlock.astro';
+import FAQ from '../components/FAQ.astro';
+import CTA from '../components/CTA.astro';
+import Icon from '../components/Icon.astro';
+import type { Faq } from '../data/faqs.ts';
+import { SITE } from '../data/site.ts';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Git-backed API client', url: '/git-backed-api-client' },
+];
+
+const keywords = [
+  'git-backed API client',
+  'git API client',
+  'version-controlled API collections',
+  'multi-workspace API client',
+  'switch API workspace',
+  'API client with Git',
+  'API workspace management',
+  'API Circle',
+].join(', ');
+
+// What "git-backed" means in practice.
+const gitPoints = [
+  {
+    icon: 'file-json',
+    title: 'Collections are plain JSON',
+    body: 'A workspace is a readable JSON document — requests, folders, environments, and mock definitions. No proprietary binary, no vendor database. You can open it, diff it, and back it up.',
+  },
+  {
+    icon: 'git-branch',
+    title: 'Branch, diff, and open PRs',
+    body: 'Push the synced document to your own GitHub repo on an auto-created working branch. Review API changes in a pull request — the same workflow as the code that calls the API.',
+  },
+  {
+    icon: 'git-merge',
+    title: 'Visual three-way merge',
+    body: 'When remote and local diverge, a conflict resolver shows the folder tree, environment priority, and release ledger side by side, so you keep exactly what you intend.',
+  },
+  {
+    icon: 'shield-check',
+    title: 'You own your data',
+    body: 'Your repo is the source of truth. Nothing is uploaded to a third-party server, there is no mandatory cloud account, and there is no lock-in — clone the repo and your workspace comes with it.',
+  },
+];
+
+// Multi-workspace: register many, switch by name.
+const workspacePoints = [
+  {
+    icon: 'boxes',
+    title: 'A registry of workspaces',
+    body: 'Register as many workspaces as you need — one per project, service, or client repo. Each is its own Git-backed folder, kept fully separate from the others.',
+  },
+  {
+    icon: 'zap',
+    title: 'Switch by name in a click',
+    body: 'Pick the active workspace from the desktop and web apps, or switch from the terminal with a single command. Your requests, environments, and mocks swap over instantly.',
+  },
+  {
+    icon: 'layers',
+    title: 'The same workspace, every surface',
+    body: 'Desktop, web, VS Code, the CLI, and the MCP server all address the same workspace format — by name against the local registry, or by a git-cloned directory path for CI.',
+  },
+];
+
+const switchSample = `# Register / clone a workspace repo, then switch to it by name
+npx @apicircle/cli workspaces use Payments
+
+# Run a collection against whichever workspace is active
+npx @apicircle/cli run "Smoke Tests" --reporter junit
+
+# Or target one explicitly — by name, or by a cloned path in CI
+npx @apicircle/cli run "Smoke Tests" --workspace-name Billing
+npx @apicircle/cli run "Smoke Tests" --workspace-path ./checkout-workspace`;
+
+const faqs: Faq[] = [
+  {
+    q: 'What is a Git-backed API client?',
+    a: 'A Git-backed API client stores your API collections as plain, human-readable files in a Git repository instead of a proprietary cloud database. That means you can branch, diff, review in pull requests, and merge your API requests, environments, and mocks exactly the way you version application code — with full history and no vendor lock-in.',
+  },
+  {
+    q: 'How does API Circle store my API collections in Git?',
+    a: 'In API Circle a workspace is plain JSON — the collection tree, environments, and mock definitions — that pushes to your own GitHub repository on an auto-created working branch. Per-device history and sessions stay local and never leave your machine. You push to save, open a pull request from inside the app, and resolve conflicts with a visual three-way merge.',
+  },
+  {
+    q: 'Can I manage multiple API workspaces and switch between them?',
+    a: 'Yes. API Circle keeps a registry of workspaces, so you can register one per project or repository and switch the active workspace with a click in the desktop and web apps, or with "apicircle workspaces use <name>" from the CLI. Every surface — desktop, web, VS Code, CLI, and the MCP server — can also address a workspace directly by name or by a git-cloned directory path.',
+  },
+  {
+    q: 'Do I need a cloud account to use a Git-backed workspace?',
+    a: 'No. API Circle needs no account and no cloud connection. Workspaces are stored locally and optionally sync to your own Git repository, so your repo is the source of truth. Request execution and mock servers run entirely on your machine.',
+  },
+  {
+    q: 'Can my whole team share a Git-backed API workspace?',
+    a: 'Yes. Because the workspace is a Git repo, teammates clone it, create branches, and merge changes like any other code. API collections get the same pull-request review workflow as the services they test, and you can publish fingerprinted releases that linked consumers pin to.',
+  },
+];
+---
+<BaseLayout
+  title="Git-Backed API Client"
+  description="A Git-backed API client: your collections are plain JSON in your own Git repo — branch, diff, review, and merge like code, with multiple workspaces you switch by name."
+  keywords={keywords}
+  breadcrumbs={breadcrumbs}
+  faqs={faqs}
+>
+  <article>
+    <!-- Hero -->
+    <section class="relative overflow-hidden border-b border-edge">
+      <div class="pointer-events-none absolute inset-0 -z-10">
+        <div class="absolute inset-0 bg-grid opacity-[0.12] mask-fade-b"></div>
+        <div class="absolute -top-40 right-0 h-96 w-96 rounded-full bg-brand/15 blur-[120px]"></div>
+      </div>
+      <div class="container-page py-14 sm:py-20">
+        <nav class="mb-6 flex items-center gap-2 text-sm text-fg-dim" aria-label="Breadcrumb">
+          <a href="/" class="hover:text-brand">Home</a>
+          <Icon name="chevron-down" size={14} class="-rotate-90" />
+          <span class="text-fg-muted">Git-backed API client</span>
+        </nav>
+
+        <div class="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+          <div>
+            <span class="eyebrow text-brand">
+              <Icon name="git-branch" size={14} />
+              Version control, natively
+            </span>
+            <h1 class="mt-4 text-balance text-4xl font-bold tracking-tight text-fg sm:text-5xl">
+              The Git-backed API client
+            </h1>
+            <p class="mt-5 text-pretty text-lg leading-relaxed text-fg-muted">
+              API Circle is a Git-backed API client: your collections, environments, and mocks are
+              plain JSON in your own Git repository. Branch, diff, review in pull requests, and merge
+              them like code — and keep as many workspaces as you like, switching between them by name.
+            </p>
+            <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+              <a href={SITE.appUrl} target="_blank" rel="noopener" class="btn-primary">
+                Open the web app
+                <Icon name="arrow-up-right" size={16} />
+              </a>
+              <a href="/features/git-workspaces" class="btn-secondary">How Git workspaces work</a>
+            </div>
+          </div>
+          <AppFrame label="Workspace · Git" class="animate-fade-up">
+            <Screenshot
+              name="git-workspace"
+              alt="API Circle Workspace panel showing the GitHub connection, working branch, and release history"
+              eager
+            />
+          </AppFrame>
+        </div>
+      </div>
+    </section>
+
+    <!-- What git-backed means -->
+    <Section
+      eyebrow="Your workspace is a Git repo"
+      eyebrowIcon="git-branch"
+      title="API collections you can git diff"
+      subtitle="Everything that defines an API workspace lives as plain JSON in a repository you control — so version control is not an export step, it is where your collections live."
+      align="left"
+    >
+      <div class="grid gap-5 md:grid-cols-2">
+        {
+          gitPoints.map((p) => (
+            <div class="card">
+              <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand/10 text-brand">
+                <Icon name={p.icon} size={20} />
+              </span>
+              <h3 class="mt-4 text-lg font-semibold text-fg">{p.title}</h3>
+              <p class="mt-2 text-[15px] leading-relaxed text-fg-muted">{p.body}</p>
+            </div>
+          ))
+        }
+      </div>
+    </Section>
+
+    <!-- Multi-workspace -->
+    <Section
+      class="!pt-0"
+      eyebrow="Many projects, one client"
+      eyebrowIcon="boxes"
+      title="Multiple workspaces, switch in a click"
+      subtitle="Every project can have its own Git-backed workspace. Register them once, then move between them by name — no re-importing, no re-authenticating, no separate app windows."
+      align="left"
+    >
+      <div class="grid gap-5 md:grid-cols-3">
+        {
+          workspacePoints.map((p) => (
+            <div class="card">
+              <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand/10 text-brand">
+                <Icon name={p.icon} size={20} />
+              </span>
+              <h3 class="mt-4 text-lg font-semibold text-fg">{p.title}</h3>
+              <p class="mt-2 text-[15px] leading-relaxed text-fg-muted">{p.body}</p>
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="mx-auto mt-10 max-w-3xl rounded-3xl border border-edge bg-panel/50 p-8 sm:p-10">
+        <h3 class="text-xl font-bold tracking-tight text-fg">Switch workspaces from anywhere</h3>
+        <p class="mt-3 text-[15px] leading-relaxed text-fg-muted">
+          Pick the active workspace in the app, or address one by name or path from the
+          <a href="/features/cli" class="text-brand hover:underline"> CLI</a> and CI. The same
+          workspace format backs every surface.
+        </p>
+        <div class="mt-6">
+          <CodeBlock code={switchSample} prompt lang="Switch & run workspaces" />
+        </div>
+      </div>
+    </Section>
+
+    <!-- FAQ -->
+    <Section
+      class="!pt-0"
+      eyebrow="FAQ"
+      eyebrowIcon="help-circle"
+      title="Git-backed API client — FAQ"
+      subtitle="What a Git-backed API client is, how API Circle stores collections in Git, and how to manage and switch multiple workspaces."
+      align="left"
+    >
+      <FAQ items={faqs} />
+    </Section>
+
+    <CTA
+      title="Put your API collections under version control"
+      subtitle="Open the web app and your first Git-backed workspace is created automatically — no account, no setup. Add more workspaces and switch between them any time."
+    />
+  </article>
+</BaseLayout>
