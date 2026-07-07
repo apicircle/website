@@ -53,7 +53,7 @@ const jsonLd = buildJsonLd({
 });
 ---
 <!doctype html>
-<html lang="en" class="dark">
+<html lang="en" class="dark" style="color-scheme: dark;">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -110,16 +110,21 @@ const jsonLd = buildJsonLd({
     <link rel="sitemap" href="/sitemap.xml" />
     <link rel="alternate" type="text/markdown" href="/llms.txt" title="llms.txt — overview for AI engines" />
 
-    <!-- No-flash theme boot: set the class before first paint. -->
+    <!-- No-flash theme boot: set the class + color-scheme before first paint. -->
     <script is:inline>
       (() => {
         try {
           const stored = localStorage.getItem('apicircle-site-theme');
           const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
           const dark = stored ? stored === 'dark' : prefersDark;
-          document.documentElement.classList.toggle('dark', dark);
+          const root = document.documentElement;
+          root.classList.toggle('dark', dark);
+          // Keep the browser canvas (the paint shown during cross-page
+          // navigation, before the external CSS loads) in sync with the theme,
+          // so leaving a dark page never flashes white.
+          root.style.colorScheme = dark ? 'dark' : 'light';
         } catch {
-          /* default class="dark" stays */
+          /* default class="dark" + color-scheme:dark stays */
         }
       })();
     </script>

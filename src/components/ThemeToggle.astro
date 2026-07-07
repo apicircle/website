@@ -17,7 +17,10 @@ import Icon from './Icon.astro';
     const btn = document.getElementById('theme-toggle');
     if (!btn) return;
     const apply = (theme) => {
-      document.documentElement.classList.toggle('dark', theme === 'dark');
+      const dark = theme === 'dark';
+      const root = document.documentElement;
+      root.classList.toggle('dark', dark);
+      root.style.colorScheme = dark ? 'dark' : 'light';
       try {
         localStorage.setItem('apicircle-site-theme', theme);
       } catch {}
@@ -32,7 +35,10 @@ import Icon from './Icon.astro';
       try {
         stored = localStorage.getItem('apicircle-site-theme');
       } catch {}
-      if (!stored) document.documentElement.classList.toggle('dark', e.matches);
+      if (!stored) {
+        document.documentElement.classList.toggle('dark', e.matches);
+        document.documentElement.style.colorScheme = e.matches ? 'dark' : 'light';
+      }
     });
   })();
 </script>
