@@ -7,6 +7,8 @@ export const SITE = {
   domain: 'apicircle.dev',
   url: 'https://apicircle.dev',
   appUrl: 'https://studio.apicircle.dev',
+  /** The Lens overlay app (Code graph / Review / Build + accounts) — the "Try Lens" CTA. */
+  lensUrl: 'https://lens.apicircle.dev',
   tagline: 'An API workspace you can `git diff` — and an AI can drive.',
   description:
     'API Circle is an open API client where your collections live in a Git repo and a built-in MCP server lets any AI client read, author, and run requests. Desktop, web, CLI, and VS Code — no cloud account, no lock-in.',

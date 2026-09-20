@@ -1,0 +1,117 @@
+---
+/**
+ * How to reach us, and who we are.
+ *
+ * Paddle's seller requirements ask for buyer support details (email AND phone) on
+ * the website; India's Consumer Protection (E-Commerce) Rules ask for the legal
+ * name, address, contact details and a Grievance Officer. All of it comes from
+ * `data/legal.ts`, the same source the Terms and Privacy Policy use, so the three
+ * can never disagree about who we are.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/Section.astro';
+import Icon from '../components/Icon.astro';
+import { LEGAL } from '../data/legal.ts';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Contact', url: '/contact' },
+];
+const draft = LEGAL.status === 'draft';
+const mail = (address: string) => `mailto:${address}`;
+---
+
+<BaseLayout
+  title="Contact"
+  description="How to reach API Circle: support, billing and refunds, security reports, and our Grievance Officer."
+  breadcrumbs={breadcrumbs}
+  noindex={draft}
+>
+  <Section
+    headingLevel="h1"
+    eyebrow="Contact"
+    eyebrowIcon="send"
+    title="How to reach us"
+    subtitle="Write to us about your account, a subscription, a refund or anything else. We reply to every message."
+  >
+    <div class="mx-auto grid max-w-4xl gap-5 md:grid-cols-2">
+      <div class="card">
+        <h2 class="flex items-center gap-2 text-lg font-semibold text-fg">
+          <Icon name="help-circle" size={18} class="text-brand" /> Support
+        </h2>
+        <p class="mt-3 text-sm leading-relaxed text-fg-muted">
+          Questions about the product, your account, a subscription or a refund.
+        </p>
+        <dl class="mt-4 space-y-2 text-sm">
+          <div class="flex gap-2"><dt class="w-20 shrink-0 text-fg-dim">Email</dt><dd><a class="text-brand hover:underline" href={mail(LEGAL.supportEmail)}>{LEGAL.supportEmail}</a></dd></div>
+          <div class="flex gap-2"><dt class="w-20 shrink-0 text-fg-dim">Phone</dt><dd class="text-fg">{LEGAL.supportPhone}</dd></div>
+        </dl>
+        <p class="mt-4 text-xs leading-relaxed text-fg-muted">
+          We acknowledge every message within 2 business days.
+        </p>
+      </div>
+
+      <div class="card">
+        <h2 class="flex items-center gap-2 text-lg font-semibold text-fg">
+          <Icon name="key" size={18} class="text-brand" /> Billing and refunds
+        </h2>
+        <p class="mt-3 text-sm leading-relaxed text-fg-muted">
+          Our reseller, Paddle.com, is the merchant of record for all our orders. Your receipts and invoices come from
+          Paddle, and you can manage your subscription or request a refund at
+          <a class="text-brand hover:underline" href="https://paddle.net" target="_blank" rel="noopener">paddle.net</a>
+          or from your <a class="text-brand hover:underline" href="https://account.apicircle.dev">account</a>. You can
+          also write to us and we will sort it out with Paddle.
+        </p>
+        <p class="mt-3 text-sm text-fg-muted">
+          See the <a class="text-brand hover:underline" href="/refunds">Refund Policy</a>.
+        </p>
+      </div>
+
+      <div class="card">
+        <h2 class="flex items-center gap-2 text-lg font-semibold text-fg">
+          <Icon name="shield" size={18} class="text-brand" /> Security
+        </h2>
+        <p class="mt-3 text-sm leading-relaxed text-fg-muted">
+          Found a vulnerability? Please report it privately, as described on our
+          <a class="text-brand hover:underline" href="/security">Security page</a>, rather than in a public issue.
+        </p>
+      </div>
+
+      <div class="card">
+        <h2 class="flex items-center gap-2 text-lg font-semibold text-fg">
+          <Icon name="lock" size={18} class="text-brand" /> Privacy
+        </h2>
+        <p class="mt-3 text-sm leading-relaxed text-fg-muted">
+          To access, correct, export or delete your personal data, use the Security section of your account or write
+          to us. See the <a class="text-brand hover:underline" href="/privacy">Privacy Policy</a>.
+        </p>
+      </div>
+    </div>
+
+    <div class="mx-auto mt-5 max-w-4xl card">
+      <h2 class="text-lg font-semibold text-fg">Who we are</h2>
+      <dl class="mt-4 grid gap-3 text-sm sm:grid-cols-2">
+        <div><dt class="text-fg-dim">Business</dt><dd class="mt-1 text-fg">{LEGAL.legalName}, trading as {LEGAL.tradingName}</dd></div>
+        <div><dt class="text-fg-dim">Address</dt><dd class="mt-1 text-fg">{LEGAL.address}</dd></div>
+        <div>
+          <dt class="text-fg-dim">Grievance Officer</dt>
+          <dd class="mt-1 text-fg">
+            {LEGAL.grievanceOfficerName},
+            <a class="text-brand hover:underline" href={mail(LEGAL.grievanceOfficerEmail)}>{LEGAL.grievanceOfficerEmail}</a>
+          </dd>
+        </div>
+        <div>
+          <dt class="text-fg-dim">Complaints</dt>
+          <dd class="mt-1 text-fg-muted">
+            Acknowledged within 48 hours with a reference number, and resolved within one month.
+          </dd>
+        </div>
+      </dl>
+    </div>
+
+    <p class="mt-8 text-center text-sm text-fg-muted">
+      Need invoicing, single sign-on or an offline licence for your organisation? Email
+      <a class="text-brand hover:underline" href={mail(LEGAL.supportEmail)}>{LEGAL.supportEmail}</a>.
+    </p>
+  </Section>
+</BaseLayout>

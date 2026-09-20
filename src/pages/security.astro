@@ -1,0 +1,125 @@
+---
+/**
+ * Security: how accounts and data are protected, and how to report a problem.
+ *
+ * The account app's footer has linked to this path since it launched, and it was
+ * a 404. Every control described here is one the service actually runs (see
+ * lens/docs/compliance/privacy-notice.md "Security"); do not add a claim that
+ * cannot be pointed at in code.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/Section.astro';
+import Icon from '../components/Icon.astro';
+import { LEGAL } from '../data/legal.ts';
+import { SITE } from '../data/site.ts';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Security', url: '/security' },
+];
+
+const controls = [
+  {
+    icon: 'monitor',
+    title: 'Your code stays on your machine',
+    body: 'API Circle Lens analyses repositories locally. Our servers never receive repository content, file paths or analysis results, so there is no copy of your code with us to protect or to lose.',
+  },
+  {
+    icon: 'lock',
+    title: 'Encrypted in transit and at rest where it matters',
+    body: 'Every connection uses TLS. Account email addresses and single sign-on client secrets are additionally encrypted field by field in our database.',
+  },
+  {
+    icon: 'key',
+    title: 'Secrets are hashed, not stored',
+    body: 'Command-line keys and session tokens are kept as one-way hashes wherever possible, and a new key is shown to you once. IP addresses in our logs are truncated to their network.',
+  },
+  {
+    icon: 'shield-check',
+    title: 'Strong sign-in',
+    body: 'Sign-in uses a link sent to your email or your organisation’s single sign-on, with optional two-step verification using an authenticator app. Billing and account changes ask you to sign in again if your last sign-in was not recent.',
+  },
+  {
+    icon: 'history',
+    title: 'Audited and rate-limited',
+    body: 'Sign-ins, sessions, device, seat, billing and administrative actions are recorded in an append-only audit log. Sign-in and licence endpoints are rate-limited, and browser sessions are protected against cross-site request forgery.',
+  },
+  {
+    icon: 'cloud',
+    title: 'Payments never touch us',
+    body: 'Card payments are taken by our reseller, Paddle.com, as merchant of record. We never receive or store your card number.',
+  },
+];
+---
+
+<BaseLayout
+  title="Security"
+  description="How API Circle protects your account and data, and how to report a security vulnerability responsibly."
+  breadcrumbs={breadcrumbs}
+>
+  <Section
+    headingLevel="h1"
+    eyebrow="Security"
+    eyebrowIcon="shield"
+    title="How we protect your account and data"
+    subtitle="The safest data is the data we never hold. Lens works on your code where it lives, and we keep only what an account, a licence and a subscription need."
+  >
+    <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+      {
+        controls.map((c) => (
+          <div class="card">
+            <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand/10 text-brand">
+              <Icon name={c.icon} size={20} />
+            </span>
+            <h2 class="mt-4 text-lg font-semibold text-fg">{c.title}</h2>
+            <p class="mt-2 text-sm leading-relaxed text-fg-muted">{c.body}</p>
+          </div>
+        ))
+      }
+    </div>
+    <p class="mt-8 text-center text-sm text-fg-muted">
+      Our services run on Cloudflare, and sign-in is provided by Google Firebase. The
+      <a class="text-brand hover:underline" href="/privacy">Privacy Policy</a> lists every provider that handles
+      personal data, and why.
+    </p>
+  </Section>
+
+  <Section eyebrow="Responsible disclosure" eyebrowIcon="help-circle" title="Reporting a vulnerability">
+    <div class="mx-auto max-w-3xl space-y-4 text-sm leading-relaxed text-fg-muted">
+      <p>
+        If you believe you have found a security vulnerability in API Circle, please report it to us privately at
+        <a class="text-brand hover:underline" href={`mailto:${LEGAL.supportEmail}?subject=Security%20report`}>
+          {LEGAL.supportEmail}
+        </a>
+        with "Security report" in the subject. Please include what you found, where, the steps to reproduce it, and
+        its likely impact.
+      </p>
+      <p>We will:</p>
+      <ul class="list-disc space-y-1 pl-5">
+        <li>acknowledge your report within 2 business days;</li>
+        <li>keep you informed as we investigate and fix it; and</li>
+        <li>credit you when we publish the fix, if you would like us to.</li>
+      </ul>
+      <p>We ask that you:</p>
+      <ul class="list-disc space-y-1 pl-5">
+        <li>give us a reasonable time to fix the issue before disclosing it publicly;</li>
+        <li>
+          access only the data you need to demonstrate the problem, and never other people's accounts or data;
+        </li>
+        <li>do not degrade the service for others, for example by load or denial-of-service testing; and</li>
+        <li>do not use social engineering or physical attacks.</li>
+      </ul>
+      <p>
+        We will not pursue or support legal action against anyone who reports a vulnerability in good faith and within
+        these guidelines.
+      </p>
+      <p>
+        The open-source API Circle Studio has its own
+        <a class="text-brand hover:underline" href={SITE.links.security} target="_blank" rel="noopener">
+          security policy
+        </a>
+        on GitHub.
+      </p>
+    </div>
+  </Section>
+</BaseLayout>

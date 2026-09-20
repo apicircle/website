@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { FEATURES } from '../data/features';
+import { LEGAL } from '../data/legal';
 import { SITE } from '../data/site';
 
 // Custom sitemap — matches GitHub Pages' directory output (trailing slashes)
@@ -14,6 +15,9 @@ const entries: Entry[] = [
   { path: '/', changefreq: 'weekly', priority: '1.0' },
   { path: '/features/', changefreq: 'weekly', priority: '0.9' },
   { path: '/git-backed-api-client/', changefreq: 'weekly', priority: '0.9' },
+  { path: '/lens/', changefreq: 'monthly', priority: '0.9' },
+  { path: '/pricing/', changefreq: 'monthly', priority: '0.8' },
+  { path: '/security/', changefreq: 'yearly', priority: '0.4' },
   { path: '/download/', changefreq: 'weekly', priority: '0.8' },
   { path: '/docs/', changefreq: 'monthly', priority: '0.7' },
   ...FEATURES.map((f) => ({
@@ -21,6 +25,12 @@ const entries: Entry[] = [
     changefreq: 'monthly',
     priority: '0.8',
   })),
+  // Listed once published. While they are drafts - and the contact page still
+  // shows placeholders - these carry `noindex`, and a sitemap entry would
+  // contradict it.
+  ...(LEGAL.status === 'published'
+    ? ['/terms/', '/privacy/', '/refunds/', '/contact/'].map((path) => ({ path, changefreq: 'yearly', priority: '0.3' }))
+    : []),
 ];
 
 export const GET: APIRoute = () => {

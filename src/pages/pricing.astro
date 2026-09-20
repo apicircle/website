@@ -1,0 +1,182 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/Section.astro';
+import Icon from '../components/Icon.astro';
+import { ANNUAL_DISCOUNT_PERCENT, PLANS, PRICE_CURRENCY_NOTE, TRIAL_DAYS } from '../data/pricing.ts';
+import { SITE } from '../data/site.ts';
+
+// Every plan fact on this page comes from src/data/pricing.ts, which is
+// GENERATED from the Lens entitlement catalog and checked against the gate
+// itself. Do not hand-write a price or a capability here: a page that promises
+// what the product denies is the exact failure this pipeline prevents.
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Pricing', url: '/pricing' },
+];
+
+const accountUrl = 'https://account.apicircle.dev';
+---
+
+<BaseLayout
+  title="Pricing"
+  description="API Circle pricing — the full API workspace is free, with no account. Paid plans add the Code graph, PR Review drift against your Spec, AI and MCP, and CLI automation for CI."
+  breadcrumbs={breadcrumbs}
+>
+  <Section
+    headingLevel="h1"
+    eyebrow="Pricing"
+    eyebrowIcon="tag"
+    title="Start free. Pay when you automate."
+    subtitle="The whole API workspace — editor, environments, mocks, plans, history — runs with no account at all. Paid plans add the map of your code, and the surfaces that drive it for you."
+  >
+    <!-- Billing period. Progressive enhancement: annual prices are rendered
+         server-side and revealed by the toggle, so the page is complete and
+         readable with JavaScript disabled. -->
+    <div class="mb-8 flex items-center justify-center gap-3" data-billing-toggle>
+      <span class="text-sm text-fg-muted" data-label="monthly">Monthly</span>
+      <button
+        type="button"
+        role="switch"
+        aria-checked="false"
+        aria-label="Bill annually"
+        class="relative h-6 w-11 rounded-full border border-border bg-surface transition"
+        data-toggle
+      >
+        <span class="absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-brand transition" data-knob></span>
+      </button>
+      <span class="text-sm text-fg-muted" data-label="annual">
+        Annual <span class="text-brand">save {ANNUAL_DISCOUNT_PERCENT}%</span>
+      </span>
+    </div>
+
+    <div class="grid gap-5 lg:grid-cols-4">
+      {
+        PLANS.map((plan) => (
+          <div class="card flex flex-col">
+            <h2 class="text-xl font-semibold text-fg">{plan.name}</h2>
+            <p class="mt-2 text-sm leading-relaxed text-fg-muted">{plan.blurb}</p>
+
+            <div class="mt-5">
+              {plan.monthly === null ? (
+                <p class="text-3xl font-semibold text-fg">Free</p>
+              ) : (
+                <>
+                  <p class="text-3xl font-semibold text-fg">
+                    <span data-price="monthly">{plan.monthly}</span>
+                    <span class="hidden" data-price="annual">{plan.annualMonthly}</span>
+                    <span class="text-base font-normal text-fg-muted">
+                      {plan.perSeat ? ' / seat / mo' : ' / mo'}
+                    </span>
+                  </p>
+                  <p class="mt-1 h-5 text-xs text-fg-muted">
+                    <span class="hidden" data-billed="annual">
+                      billed {plan.annualTotal}{plan.perSeat ? ' / seat' : ''} yearly
+                    </span>
+                  </p>
+                </>
+              )}
+            </div>
+
+            <p class="mt-4 text-sm font-medium text-fg">
+              {plan.workspaces} workspace{plan.workspaces === '1' ? '' : 's'}
+            </p>
+
+            <ul class="mt-4 flex-1 space-y-2 text-sm text-fg-muted">
+              {plan.capabilities.map((c) => (
+                <li class="flex gap-2">
+                  <span class="mt-0.5 shrink-0 text-brand"><Icon name="check" size={14} /></span>
+                  <span>{c}</span>
+                </li>
+              ))}
+            </ul>
+
+            <a
+              class={plan.monthly === null ? 'btn-secondary mt-6' : 'btn-primary mt-6'}
+              href={plan.monthly === null ? SITE.links.app : `${accountUrl}/?plan=${plan.id}`}
+              data-plan-link={plan.monthly === null ? undefined : plan.id}
+            >
+              {plan.monthly === null ? 'Open the app' : `Choose ${plan.name}`}
+            </a>
+          </div>
+        ))
+      }
+    </div>
+
+    <!-- What a buyer is charged, said beside what they read. Both facts come from
+         the generated catalogue: the account app quotes the same ones in the
+         renewal terms a purchaser agrees to before checkout. -->
+    <div class="mx-auto mt-8 max-w-3xl space-y-2 text-center text-sm text-fg-muted">
+      <p>
+        Every paid plan starts with a {TRIAL_DAYS}-day free trial. Subscriptions renew automatically until you
+        cancel, and you can cancel at any time from your account.
+      </p>
+      <p>{PRICE_CURRENCY_NOTE}</p>
+      <p>
+        See our <a class="text-brand hover:underline" href="/terms">Terms of Service</a> and
+        <a class="text-brand hover:underline" href="/refunds">Refund Policy</a>. Payments are processed by
+        Paddle.com, our reseller and merchant of record.
+      </p>
+    </div>
+
+    <p class="mt-8 text-center text-sm text-fg-muted">
+      Need invoicing, SSO or an air-gapped licence?
+      <a class="text-brand hover:underline" href={`mailto:${SITE.email}`}>Talk to us</a>.
+    </p>
+  </Section>
+
+  <Section
+    eyebrow="What you get"
+    eyebrowIcon="layers"
+    title="Free in the app. Paid when it runs itself."
+    subtitle="Everything in the API Circle interface is free and needs no account. What you pay for is the map of your codebase, and the surfaces that use it without you."
+  >
+    <div class="grid gap-5 md:grid-cols-3">
+      <div class="card">
+        <h3 class="text-lg font-semibold text-fg">Always free</h3>
+        <p class="mt-2 text-sm leading-relaxed text-fg-muted">
+          Requests, environments, history, local mock servers, execution plans, OpenAPI and
+          collection import, GitHub sign-in and Git-backed sync. One workspace, no card, no
+          sign-up.
+        </p>
+      </div>
+      <div class="card">
+        <h3 class="text-lg font-semibold text-fg">Understand your API</h3>
+        <p class="mt-2 text-sm leading-relaxed text-fg-muted">
+          From Basic: the Code graph ties every endpoint to the code that implements it, and
+          PR Review uses the Code graph and your Spec to show where a pull request drifts.
+        </p>
+      </div>
+      <div class="card">
+        <h3 class="text-lg font-semibold text-fg">Let it run itself</h3>
+        <p class="mt-2 text-sm leading-relaxed text-fg-muted">
+          Pro connects your AI tools over MCP. Team adds the CLI, so PR Review drift can fail a
+          build instead of reaching review.
+        </p>
+      </div>
+    </div>
+  </Section>
+</BaseLayout>
+
+<script>
+  // The toggle only swaps which pre-rendered price is visible. No prices are
+  // computed here - they come from the generated catalog.
+  const root = document.querySelector('[data-billing-toggle]');
+  const toggle = root?.querySelector('[data-toggle]');
+  toggle?.addEventListener('click', () => {
+    const annual = toggle.getAttribute('aria-checked') !== 'true';
+    toggle.setAttribute('aria-checked', String(annual));
+    toggle.querySelector('[data-knob]')?.classList.toggle('translate-x-5', annual);
+    document.querySelectorAll('[data-price="monthly"]').forEach((el) => el.classList.toggle('hidden', annual));
+    document.querySelectorAll('[data-price="annual"]').forEach((el) => el.classList.toggle('hidden', !annual));
+    document.querySelectorAll('[data-billed="annual"]').forEach((el) => el.classList.toggle('hidden', !annual));
+    // Carry the period to the account app, so "Choose Pro" after picking annual
+    // opens the annual confirmation rather than the monthly one.
+    document.querySelectorAll<HTMLAnchorElement>('a[data-plan-link]').forEach((a) => {
+      const url = new URL(a.href);
+      if (annual) url.searchParams.set('period', 'annual');
+      else url.searchParams.delete('period');
+      a.href = url.toString();
+    });
+  });
+</script>

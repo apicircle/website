@@ -16,8 +16,12 @@ export const FEATURE_NAV: NavItem[] = [
 
 export const PRIMARY_NAV: NavItem[] = [
   { label: 'Features', href: '/features' },
+  // The paid product, which the pricing page sells: it needs a page of its own.
+  { label: 'Lens', href: '/lens' },
+  { label: 'Pricing', href: '/pricing' },
   { label: 'Download', href: '/download' },
   { label: 'Docs', href: '/docs' },
+  { label: 'Sign in', href: 'https://account.apicircle.dev', external: true },
 ];
 
 export const FOOTER_NAV: { title: string; items: NavItem[] }[] = [
@@ -25,6 +29,8 @@ export const FOOTER_NAV: { title: string; items: NavItem[] }[] = [
     title: 'Product',
     items: [
       { label: 'Features', href: '/features' },
+      { label: 'API Circle Lens', href: '/lens' },
+      { label: 'Pricing', href: '/pricing' },
       { label: 'Git-backed API client', href: '/git-backed-api-client' },
       { label: 'Download', href: '/download' },
       { label: 'Open the web app', href: 'https://studio.apicircle.dev', external: true },
@@ -53,21 +59,19 @@ export const FOOTER_NAV: { title: string; items: NavItem[] }[] = [
     ],
   },
   {
+    // The three legal pages are here, in the site-wide footer, because Paddle's
+    // domain review requires Terms, Privacy and Refund policies to be reachable
+    // from the site's navigation - and because every buyer agrees to them.
     title: 'Company',
     items: [
+      { label: 'Terms of Service', href: '/terms' },
+      { label: 'Privacy Policy', href: '/privacy' },
+      { label: 'Refund Policy', href: '/refunds' },
+      { label: 'Contact', href: '/contact' },
+      { label: 'Security', href: '/security' },
       {
         label: 'License',
         href: 'https://github.com/apicircle/studio/blob/main/LICENSE',
-        external: true,
-      },
-      {
-        label: 'Privacy',
-        href: 'https://github.com/apicircle/studio/blob/main/PRIVACY.md',
-        external: true,
-      },
-      {
-        label: 'Security',
-        href: 'https://github.com/apicircle/studio/blob/main/SECURITY.md',
         external: true,
       },
       {

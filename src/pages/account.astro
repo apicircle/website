@@ -1,0 +1,31 @@
+---
+/**
+ * apicircle.dev/account → the account app.
+ *
+ * Published builds of the `apicircle-lens` CLI print "Manage your plan at
+ * https://apicircle.dev/account" when a feature needs a paid plan. That path was a
+ * 404. The account app lives on its own host, so this page forwards there - keeping
+ * any query (a `?plan=` hand-off, for instance) - and is never indexed itself.
+ */
+const target = 'https://account.apicircle.dev/';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <link rel="canonical" href={target} />
+    <meta http-equiv="refresh" content={`0; url=${target}`} />
+    <title>Your API Circle account</title>
+    <script is:inline define:vars={{ target }}>
+      window.location.replace(target + window.location.search);
+    </script>
+  </head>
+  <body>
+    <p>
+      Your account has moved to <a href={target}>account.apicircle.dev</a>.
+    </p>
+  </body>
+</html>
