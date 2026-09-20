@@ -13,7 +13,6 @@ This Privacy Policy explains how **{{LEGAL_NAME}}**, trading as {{TRADING_NAME}}
 - **We collect what an account, a licence and a subscription need:** your email address, your plan, your devices and keys, and security records.
 - **We never see your card.** Payments are handled by our reseller, Paddle, as merchant of record.
 - **We do not sell your personal data.** We do not use it for advertising, and we do not collect telemetry from the Lens apps.
-- **Our website uses Google Analytics** to understand how it is used. See section 12.
 - **You can see, correct, export and delete your data,** mostly from your own account. See section 11.
 
 ## 2. Who we are and how to reach us
@@ -23,7 +22,6 @@ The controller of your personal data (the "data fiduciary" under India's Digital
 **{{LEGAL_NAME}}**, {{ENTITY_DESCRIPTION}}, of {{ADDRESS}}.
 
 - **Email:** [{{SUPPORT_EMAIL}}](mailto:{{SUPPORT_EMAIL}})
-- **Telephone:** {{SUPPORT_PHONE}}
 - **Grievance Officer:** {{GRIEVANCE_OFFICER_NAME}}, [{{GRIEVANCE_OFFICER_EMAIL}}](mailto:{{GRIEVANCE_OFFICER_EMAIL}})
 - **EU representative (GDPR Art. 27):** {{EU_REPRESENTATIVE}}
 - **UK representative (UK GDPR Art. 27):** {{UK_REPRESENTATIVE}}
@@ -34,8 +32,7 @@ This policy covers:
 
 - our website, `apicircle.dev`;
 - your API Circle account and the account site, `account.apicircle.dev`;
-- our account and licensing service, `api.apicircle.dev`;
-- the Lens web application, `lens.apicircle.dev`; and
+- our account and licensing service, `api.apicircle.dev`; and
 - the account and licensing features of the API Circle Lens desktop app, the Visual Studio Code extension, the `apicircle-lens` command-line interface and the Lens MCP server.
 
 **It does not cover** the open-source API Circle Studio web app at `studio.apicircle.dev` or the open-source Studio packages. Those run entirely on your device and have their own [privacy policy](https://github.com/apicircle/studio/blob/main/PRIVACY.md).
@@ -55,7 +52,6 @@ We collect personal data from you when you create and use an account. We also re
 | **Teams and single sign-on** | Organisation membership and roles; the email addresses of people invited to a Team; your organisation's SSO settings (issuer, client ID, endpoints, encrypted client secret); verified domains | To run Team plans and single sign-on | Contract; legitimate interests of the organisation |
 | **Security records** | Sign-ins, session activity, and account, billing and administrative actions, each with your IP address truncated to its network (/24 for IPv4, /48 for IPv6) | To keep the service secure, investigate incidents and prevent fraud | Legitimate interests (security) |
 | **Support** | What you tell us when you email us | To answer you | Contract; legitimate interests |
-| **Website analytics** | Pages viewed, referring page, approximate location, device and browser type, and Google Analytics cookie identifiers | To understand how our website is used and improve it | Consent where required; otherwise legitimate interests |
 
 **India.** Under the Digital Personal Data Protection Act, 2023 we process your personal data:
 
@@ -109,7 +105,6 @@ We share personal data only as described here. **We do not sell personal data**,
 | Google (Firebase Authentication / Identity Platform) | Signs you in, sends sign-in emails, stores authenticator setup, connects Team single sign-on | Email address, sign-in method, verification and authenticator status, sign-in times |
 | Cloudflare | Hosts our services and database; protects them from attack | Account, subscription, licence and security data |
 | Resend | Sends some transactional emails, such as trial licences | Email address, email content |
-| Google (Analytics) | Website analytics | See section 12 |
 
 **Also:**
 
@@ -135,7 +130,6 @@ Where EU or UK law applies to a transfer, we rely on appropriate safeguards, suc
 | Security records | 400 days |
 | Device, seat and CLI key records | Until revoked, or until you delete your account |
 | Support emails | For as long as needed to deal with your request, then deleted |
-| Website analytics | {{ANALYTICS_RETENTION}}, the retention period set in Google Analytics |
 
 **Deleting your account does not cancel a paid subscription.** Please cancel your subscription first. Deleting your account also cannot reach data you control elsewhere: your repositories (including the `.apicircle` folder and its history), or anything you sent to an AI provider.
 
@@ -184,10 +178,9 @@ If you are not satisfied with our response, you may complain to the Data Protect
 
 **Our website (`apicircle.dev`)** uses:
 
-- **Google Analytics 4** cookies (`_ga` and `_ga_<ID>`, which last up to two years). They help us understand how visitors use the site.
 - Your browser's local storage, to remember your light or dark theme.
 
-Where the law requires your consent to analytics cookies, we ask for it first. You can also block or delete cookies in your browser settings.
+We use no advertising or analytics cookies on our website. You can block or delete cookies in your browser settings.
 
 **The account site** uses only what it needs to work:
 
@@ -211,6 +204,5 @@ If we make a material change, we will tell you by email or in your account befor
 ## 15. Contact us
 
 - **Email:** [{{SUPPORT_EMAIL}}](mailto:{{SUPPORT_EMAIL}})
-- **Telephone:** {{SUPPORT_PHONE}}
 - **Post:** {{LEGAL_NAME}}, {{ADDRESS}}
 - **Grievance Officer:** {{GRIEVANCE_OFFICER_NAME}}, [{{GRIEVANCE_OFFICER_EMAIL}}](mailto:{{GRIEVANCE_OFFICER_EMAIL}})

@@ -18,42 +18,38 @@
  */
 export const LEGAL = {
   /** 'draft' shows a "not yet in force" banner and keeps the pages out of search. */
-  status: 'draft' as 'draft' | 'published',
+  status: 'published' as 'draft' | 'published',
 
   /** Must equal TERMS_VERSION on the Lens Worker. The Refund Policy is part of the Terms and shares it. */
   termsVersion: '2026-09-19',
   /** Must equal PRIVACY_VERSION on the Lens Worker. */
   privacyVersion: '2026-09-19',
-  effectiveDate: '[Effective date: set on publication]',
+  effectiveDate: '27 September 2026',
 
   /** Who the customer contracts with. Paddle's domain review requires the legal name in the Terms. */
-  legalName: '[Full legal name of the business or of the sole proprietor]',
+  legalName: 'Deva Prakash',
   entityDescription:
-    '[a sole proprietorship registered in India / a private limited company incorporated in India with CIN ______]',
-  address: '[Registered business address, India]',
+    'a sole proprietorship registered in India',
+  address: 'No. 66/1, South Street, Vasanakuppam, Cuddalore, Tamil Nadu 607301, India',
   tradingName: 'API Circle',
 
   supportEmail: 'support@apicircle.dev',
-  /** Paddle's seller handbook asks for a support phone number on the website. */
-  supportPhone: '[Support telephone number, with country code]',
 
   /** Required for Indian consumers (Consumer Protection (E-Commerce) Rules 2020) and for grievances under the DPDP Act 2023. */
-  grievanceOfficerName: '[Name of the Grievance Officer]',
+  grievanceOfficerName: 'Deva Prakash',
   grievanceOfficerEmail: 'support@apicircle.dev',
 
   /** Governing law and courts for business customers. Consumers keep their local-law protections. */
   governingLaw: 'the laws of India',
-  courts: '[City], India',
+  courts: 'Cuddalore, Tamil Nadu, India',
 
   /** GDPR Art. 27 / UK GDPR Art. 27 representatives. Take advice on whether one is required; if not, say so. */
-  euRepresentative: '[Name and address of EU representative, or "Not appointed"]',
-  ukRepresentative: '[Name and address of UK representative, or "Not appointed"]',
+  euRepresentative: 'Not appointed',
+  ukRepresentative: 'Not appointed',
 
   /** Where the Firebase (Google Identity Platform) project stores data. Set when the project was created. */
-  firebaseLocation: '[Firebase project location, e.g. "the United States"]',
+  firebaseLocation: 'the United States',
 
-  /** Google Analytics retention setting (GA4 → Admin → Data retention). */
-  analyticsRetention: '[14 months]',
 } as const;
 
 /** Every `{{TOKEN}}` the legal Markdown may use, and what it becomes. */
@@ -63,7 +59,6 @@ export const LEGAL_TOKENS: Record<string, string> = {
   ADDRESS: LEGAL.address,
   TRADING_NAME: LEGAL.tradingName,
   SUPPORT_EMAIL: LEGAL.supportEmail,
-  SUPPORT_PHONE: LEGAL.supportPhone,
   GRIEVANCE_OFFICER_NAME: LEGAL.grievanceOfficerName,
   GRIEVANCE_OFFICER_EMAIL: LEGAL.grievanceOfficerEmail,
   GOVERNING_LAW: LEGAL.governingLaw,
@@ -71,7 +66,6 @@ export const LEGAL_TOKENS: Record<string, string> = {
   EU_REPRESENTATIVE: LEGAL.euRepresentative,
   UK_REPRESENTATIVE: LEGAL.ukRepresentative,
   FIREBASE_LOCATION: LEGAL.firebaseLocation,
-  ANALYTICS_RETENTION: LEGAL.analyticsRetention,
   TERMS_VERSION: LEGAL.termsVersion,
   PRIVACY_VERSION: LEGAL.privacyVersion,
   EFFECTIVE_DATE: LEGAL.effectiveDate,

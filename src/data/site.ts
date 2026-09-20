@@ -111,7 +111,7 @@ export const SITE = {
    * traffic never hits your stats. A GA4 Measurement ID is public (it ships in
    * the page HTML), so committing it is fine. See SEO.md → "Analytics".
    */
-  analytics: { googleAnalyticsId: 'G-WMTQXENJ8T' },
+  analytics: { googleAnalyticsId: '' },
 } as const;
 
 export type SiteConfig = typeof SITE;

@@ -286,5 +286,4 @@ We will acknowledge a complaint within 48 hours, give you a reference number for
 - **Operator:** {{LEGAL_NAME}}, trading as {{TRADING_NAME}}
 - **Address:** {{ADDRESS}}
 - **Email:** [{{SUPPORT_EMAIL}}](mailto:{{SUPPORT_EMAIL}})
-- **Telephone:** {{SUPPORT_PHONE}}
 - **Grievance Officer:** {{GRIEVANCE_OFFICER_NAME}}, [{{GRIEVANCE_OFFICER_EMAIL}}](mailto:{{GRIEVANCE_OFFICER_EMAIL}})

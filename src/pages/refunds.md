@@ -90,6 +90,5 @@ Where the law allows, we may refuse refund requests that show a pattern of misus
 ## 11. Contact and complaints
 
 - **Email:** [{{SUPPORT_EMAIL}}](mailto:{{SUPPORT_EMAIL}})
-- **Telephone:** {{SUPPORT_PHONE}}
 - **Address:** {{LEGAL_NAME}}, {{ADDRESS}}
 - **Grievance Officer:** {{GRIEVANCE_OFFICER_NAME}}, [{{GRIEVANCE_OFFICER_EMAIL}}](mailto:{{GRIEVANCE_OFFICER_EMAIL}}). We acknowledge complaints within 48 hours and aim to resolve them within one month.
