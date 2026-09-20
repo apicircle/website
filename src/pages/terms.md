@@ -27,7 +27,7 @@ This summary is for convenience. The full Terms below govern.
 
 **The Services.** These Terms apply to:
 
-- API Circle Lens, including the desktop application, the Visual Studio Code extension, the `apicircle-lens` command-line interface, the Lens MCP server and the Lens web application at `lens.apicircle.dev`;
+- API Circle Lens, including the desktop application, the Visual Studio Code extension, the `apicircle-lens` command-line interface and the Lens MCP server;
 - your API Circle account and the account site at `account.apicircle.dev`;
 - the API Circle licensing and account services at `api.apicircle.dev`;
 - any paid plan, feature or subscription we offer.
