@@ -12,6 +12,18 @@ interface Props {
   class?: string;
 }
 const { code, filename, lang = 'bash', prompt = false, class: className = '' } = Astro.props;
+
+/**
+ * Whether this line gets the shell prompt.
+ *
+ * Blank lines and comments are not commands, and stamping a prompt on them
+ * makes a sample look mispasted: you cannot run "# Switch the active
+ * workspace". Only lines you would actually type get the gutter.
+ */
+const isCommand = (line: string): boolean => {
+  const t = line.trim();
+  return prompt && t !== '' && !t.startsWith('#');
+};
 const lines = code.replace(/\n$/, '').split('\n');
 ---
 <div class:list={['group/code overflow-hidden rounded-xl border border-edge bg-[rgb(var(--panel))]', className]}>
@@ -31,7 +43,7 @@ const lines = code.replace(/\n$/, '').split('\n');
     </button>
   </div>
   <pre class="overflow-x-auto p-4 text-[13px] leading-relaxed"><code class="font-mono">{lines.map((line) => (
-    <span class="block">{prompt && <span class="select-none text-node-green">$ </span>}<span class="text-fg-muted">{line || ' '}</span></span>
+    <span class="block">{isCommand(line) && <span class="select-none text-node-green">$ </span>}<span class="text-fg-muted">{line || ' '}</span></span>
   ))}</code></pre>
 </div>
 

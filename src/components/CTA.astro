@@ -1,14 +1,43 @@
 ---
 import Icon from './Icon.astro';
 import { SITE } from '../data/site.ts';
+
+/** One button in the pair. `external` opens in a new tab and shows the arrow. */
+export interface CtaAction {
+  label: string;
+  href: string;
+  /** An Icon name. Omit for no icon; `external` supplies the arrow by itself. */
+  icon?: string;
+  external?: boolean;
+}
+
 interface Props {
   title?: string;
   subtitle?: string;
+  primary?: CtaAction;
+  secondary?: CtaAction | null;
 }
+
+/**
+ * The closing call to action, used on eight pages.
+ *
+ * The buttons were hard-coded, so every page — including the ones selling the
+ * paid product — ended on "Open the web app". A page about PR Review drift
+ * should be able to end on the thing it just described. The defaults are what
+ * those buttons already said, so a caller that passes nothing is unchanged;
+ * `secondary={null}` drops the second button entirely.
+ */
 const {
   title = 'Bring your APIs under version control',
   subtitle = 'Open the web app in your browser, or grab the desktop build. No account, no setup — your first workspace is created the moment you arrive.',
+  primary = { label: 'Open the web app', href: SITE.appUrl, external: true },
+  secondary = { label: 'Download for desktop', href: '/download', icon: 'download' },
 } = Astro.props;
+
+const actions: Array<{ action: CtaAction; kind: string }> = [
+  { action: primary, kind: 'btn-primary' },
+  ...(secondary ? [{ action: secondary, kind: 'btn-secondary' }] : []),
+];
 ---
 <section class="section">
   <div class="container-page">
@@ -23,14 +52,20 @@ const {
       </h2>
       <p class="mx-auto mt-4 max-w-xl text-pretty text-lg leading-relaxed text-fg-muted">{subtitle}</p>
       <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-        <a href={SITE.appUrl} target="_blank" rel="noopener" class="btn-primary w-full sm:w-auto">
-          Open the web app
-          <Icon name="arrow-up-right" size={16} />
-        </a>
-        <a href="/download" class="btn-secondary w-full sm:w-auto">
-          <Icon name="download" size={16} />
-          Download for desktop
-        </a>
+        {
+          actions.map(({ action, kind }) => (
+            <a
+              href={action.href}
+              target={action.external ? '_blank' : undefined}
+              rel={action.external ? 'noopener' : undefined}
+              class:list={[kind, 'w-full sm:w-auto']}
+            >
+              {action.icon && <Icon name={action.icon} size={16} />}
+              {action.label}
+              {action.external && <Icon name="arrow-up-right" size={16} />}
+            </a>
+          ))
+        }
       </div>
     </div>
   </div>

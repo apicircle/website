@@ -1,196 +1,262 @@
 ---
+/**
+ * The homepage.
+ *
+ * Its job: convince a developer this reads their actual code and will tell them
+ * when a pull request breaks their API, and let them start free today.
+ *
+ * It used to sell the free workspace exclusively — the words "Code graph", "PR
+ * Review" and "drift" appeared nowhere on it, while `/pricing` two clicks away
+ * charged for all three. It also gave away the MCP server and the CLI, which
+ * are Pro and Team.
+ *
+ * The shape is deliberate and documented in CLAUDE.md: the problem is one
+ * paragraph with no eyebrow and no grid, the drift section is the heaviest and
+ * carries a visual plus a table, and no three full Section blocks run
+ * consecutively. Cut on the way here: the MCP chip bar, the stat block, the
+ * six-card feature grid (that is `/features`' job), "Pick your surface", and
+ * "One engine behind every surface".
+ */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
 import Section from '../components/Section.astro';
 import Spotlight from '../components/Spotlight.astro';
-import FeatureCard from '../components/FeatureCard.astro';
-import Stat from '../components/Stat.astro';
+import DriftDiff from '../components/DriftDiff.astro';
+import HostMatrix from '../components/HostMatrix.astro';
+import PlanTable from '../components/PlanTable.astro';
 import CTA from '../components/CTA.astro';
 import Icon from '../components/Icon.astro';
 import FAQ from '../components/FAQ.astro';
-import { FEATURES } from '../data/features.ts';
 import { FAQS } from '../data/faqs.ts';
 import { SITE } from '../data/site.ts';
 
-const surfaces = [
-  { icon: 'monitor', title: 'Desktop app', body: 'Day-to-day development on Windows, macOS, and Linux — OS-keychain secrets and local mocks.' },
-  { icon: 'globe', title: 'Web app', body: 'Zero install. Open the browser, and your first workspace is created automatically.' },
-  { icon: 'code', title: 'VS Code extension', body: 'Edit the same workspace as YAML, right inside your editor — no webview, no separate sync.' },
-  { icon: 'terminal', title: 'CLI', body: 'Run collections, spin up mocks, and import specs in CI pipelines and headless agents.' },
-  { icon: 'package', title: 'npm packages', body: 'Embed the engine, mock server, and MCP host in your own tooling.' },
+/**
+ * Two illustrated findings.
+ *
+ * Both are things the product genuinely reports — they were taken from a review
+ * run against a repository with these exact two edits, and the wording is the
+ * Review panel's own. Illustrating a finding Lens cannot produce would be the
+ * worst kind of lie here, because it is the one a buyer checks first.
+ */
+const findings = [
+  {
+    endpoint: 'POST /api/v1/widgets',
+    severity: 'warning' as const,
+    tags: ['shared-impact', 'auth-changed'],
+    base: [
+      { text: "widgetsRouter.get('/', listWidgets);" },
+      { text: "widgetsRouter.post('/', requireBearer, createWidget);", changed: true },
+    ],
+    head: [
+      { text: "widgetsRouter.get('/', listWidgets);" },
+      { text: "widgetsRouter.post('/', createWidget);", changed: true },
+    ],
+    finding: 'Shared `requireBearer` removed, and it reaches 2 endpoints.',
+    source: 'src/middleware/auth.ts:8',
+  },
+  {
+    endpoint: 'DELETE /api/v1/widgets/:widgetId',
+    severity: 'warning' as const,
+    tags: ['new-side-effect', 'contract-drift'],
+    base: [
+      { text: "recordAudit('widget.deleted', widgetId);" },
+      { text: 'res.status(204).end();', changed: true },
+    ],
+    head: [
+      { text: "recordAudit('widget.deleted', widgetId);" },
+      { text: 'res.status(200).json({ deleted: true });', changed: true },
+    ],
+    finding:
+      'Spec documents response 204, not returned in code. Code returns response 200, not documented in the spec.',
+    source: 'src/handlers/widgets.ts:78',
+  },
+];
+
+/** What never leaves the machine, and the one thing that can. */
+const privacy = [
+  {
+    icon: 'monitor',
+    title: 'Indexing is local',
+    body: 'The Code graph is built where your code already is, by a parser running on your machine. Our servers receive no repository content, no file paths, and no analysis results.',
+  },
+  {
+    icon: 'key',
+    title: 'One exception, and it asks first',
+    body: '"Index with AI" sends the files it reads to the provider you chose, using your own API key. It asks per project and per provider, and what it produces is a suggestion you approve, never an authority.',
+  },
 ];
 ---
-<BaseLayout
-  description="Free, source-available API client for testing & mocking REST APIs. Git-backed collections and a built-in MCP server any AI can drive — a modern Postman & Insomnia alternative."
-  faqs={FAQS}
->
+<BaseLayout description={SITE.description} faqs={FAQS}>
   <Hero />
 
-  <!-- Works-with bar -->
-  <section class="border-y border-edge bg-panel/40 py-10">
+  <!-- 2. The problem. One paragraph. No eyebrow, no grid, no cards: the first
+       deliberate break from the formula, and where the voice earns the rest. -->
+  <section class="section border-y border-edge bg-panel/30">
     <div class="container-page">
-      <p class="text-center text-xs font-semibold uppercase tracking-[0.16em] text-fg-dim">
-        Drives any Model Context Protocol client
+      <p class="mx-auto max-w-3xl text-pretty text-lg leading-relaxed text-fg-muted">
+        Your spec was accurate the day someone wrote it. Since then the code moved. A guard came off
+        a write endpoint during a refactor that touched nine files; a <code class="rounded bg-surface px-1 text-[0.9em] text-node-green">204</code>
+        quietly became a <code class="rounded bg-surface px-1 text-[0.9em] text-node-blue">200</code> because a shared
+        helper started returning a body; a field was renamed in a type three hops from the handler
+        that serves it. None of it showed up in review. Nobody reviews a pull request against a
+        contract, because the contract is a different file in a different tab, and the diff is
+        right there.
       </p>
-      <div class="mt-6 flex flex-wrap items-center justify-center gap-x-3 gap-y-3">
-        {
-          SITE.mcpClients.map((c) => (
-            <span class="chip">
-              <Icon name="plug" size={13} class="text-brand" />
-              {c}
-            </span>
-          ))
-        }
-      </div>
     </div>
   </section>
 
-  <!-- Stats -->
-  <section class="section">
-    <div class="container-page">
-      <div class="grid grid-cols-2 gap-8 rounded-3xl border border-edge bg-panel p-10 shadow-card sm:grid-cols-4">
-        <Stat value={`${SITE.stats.mcpTools}`} label="MCP tools in the catalog" />
-        <Stat value={`${SITE.stats.authSchemes}`} label="Auth schemes, all functional" />
-        <Stat value={`${SITE.stats.surfaces}`} label="Surfaces, one engine" />
-        <Stat value={`${SITE.stats.themes}+`} label="Themes to make it yours" />
-      </div>
-    </div>
-  </section>
-
-  <!-- Feature pillars -->
-  <Section
-    eyebrow="Everything you expect — rebuilt around Git and AI"
-    eyebrowIcon="boxes"
-    title="One workspace, six superpowers"
-    subtitle="A full-featured API client in the spirit of Postman and Insomnia, with the two ideas the others miss baked into the core."
-  >
-    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-      {FEATURES.map((feature) => <FeatureCard feature={feature} />)}
-    </div>
-  </Section>
-
-  <!-- Spotlight: Git -->
-  <Section class="!pt-0">
+  <!-- 3. Code graph -->
+  <Section class="!pb-0">
     <Spotlight
-      eyebrow="Version control, natively"
-      eyebrowIcon="git-branch"
-      title="Your workspace is a Git repo"
-      body="Collections, environments, and mock definitions are plain JSON pushed to your own GitHub repo on a working branch. Teams collaborate the way they collaborate on code — branches, diffs, pull requests, review."
+      eyebrow="Code graph"
+      eyebrowIcon="workflow"
+      title="Every endpoint, mapped to the code behind it"
+      body="Lens reads your repository and follows each route to the handler that serves it, then into the functions that handler calls. It is built from the source, so it describes what your API does rather than what a document says it does."
       points={[
-        'Auto-create a working branch from <code class=\"rounded bg-surface px-1 text-[0.85em] text-brand\">main</code>, push to save, open a PR',
-        'A visual three-way merge resolves conflicts in the folder tree, environments, and release ledger',
-        'Publish fingerprinted releases that linked consumers pin to — private or a public marketplace',
+        'Route to handler to the functions it calls, including the ones that write to your database',
+        'Saved into your repository as a <code class=\"rounded bg-surface px-1 text-[0.85em] text-brand\">codegraph/</code> sidecar, so it is versioned and reviewed like any other file',
+        'Deep support for TypeScript, JavaScript, Python, Go, Java, C# and Rust',
+        'Where an operation cannot be read with confidence, it reports <code class=\"rounded bg-surface px-1 text-[0.85em] text-node-amber\">unknown</code> rather than guessing',
       ]}
-      screenshot="git-workspace"
-      screenshotAlt="The Workspace panel showing GitHub connection, working branch, and releases"
-      frameLabel="Workspace · Git"
+      screenshot="code-graph"
+      screenshotAlt="The Code graph panel with POST /api/v1/widgets expanded, showing its route, auth middleware, handler, and the database and audit functions it calls"
+      frameLabel="Code graph · widgets-api"
       accent="brand"
-      ctaHref="/features/git-workspaces"
-      ctaLabel="Explore Git workspaces"
+      ctaHref="/lens"
+      ctaLabel="How the Code graph works"
     />
   </Section>
 
-  <!-- Spotlight: MCP -->
+  <!-- 4. PR Review drift. The heaviest section on the page. -->
+  <Section
+    eyebrow="PR Review drift"
+    eyebrowIcon="git-merge"
+    title="Two comparisons, one verdict"
+    subtitle="Lens compares the head of a pull request against the base it came from, which shows what the change did. Then it compares the head against your spec, which shows whether the API still matches its contract."
+    align="left"
+  >
+    {/* Full width, one per row. Side by side these sat in ~180px columns and
+        clipped the line the visual exists to show -- `requireBearer` vanishing
+        off the right edge of a figure about `requireBearer` being removed. */}
+    <div class="grid gap-5">
+      {findings.map((f) => <DriftDiff {...f} />)}
+    </div>
+
+    <div class="mt-12 grid gap-10 lg:grid-cols-2 lg:gap-16">
+      <div>
+        <h3 class="text-xl font-bold tracking-tight text-fg">Findings name a file and a line</h3>
+        <p class="mt-3 text-[15px] leading-relaxed text-fg-muted">
+          An endpoint removed. An auth guard dropped. A response shape that changed, or a status
+          code the spec never documented. A new database write inside a helper that five endpoints
+          reach, where the diff shows one file and the consequence spans five. Each finding points
+          at the line that caused it.
+        </p>
+      </div>
+      <div>
+        <h3 class="flex items-center gap-2 text-xl font-bold tracking-tight text-fg">
+          <Icon name="lock" size={18} class="text-brand" />
+          Nothing is posted until you press Submit
+        </h3>
+        <p class="mt-3 text-[15px] leading-relaxed text-fg-muted">
+          Drafts stay on your machine. Before anything reaches your pull request you see exactly
+          what will appear on it, comment by comment. There is no automatic posting and no bot. On
+          a public repository, findings that map security weaknesses are held back unless you
+          opt in.
+        </p>
+      </div>
+    </div>
+
+    <div class="mt-14">
+      <h3 class="text-xl font-bold tracking-tight text-fg">Four hosts, and where they differ</h3>
+      <p class="mt-3 max-w-3xl text-[15px] leading-relaxed text-fg-muted">
+        Lens speaks GitHub, GitLab, Bitbucket Cloud and Azure DevOps through each host's own review
+        API, and posts comments pinned to the diff line on all four. <strong class="text-fg">GitHub
+        works on every plan, including the free one.</strong> The differences below are the hosts',
+        not ours.
+      </p>
+      <HostMatrix class="mt-6" />
+    </div>
+  </Section>
+
+  <!-- 5. Send to Studio Editor: where the paid analysis hands back to the free app. -->
   <Section class="!pt-0">
     <Spotlight
       reverse
-      eyebrow="AI-native, not AI-bolted-on"
-      eyebrowIcon="sparkles"
-      title="Let an AI client drive your workspace"
-      body="The bundled MCP server speaks the open Model Context Protocol over stdio. Claude, ChatGPT, Cursor, Copilot, and any other MCP client can scan a codebase, propose a collection, generate runnable code, or spin up a mock — all from the chat."
+      eyebrow="Send to Studio Editor"
+      eyebrowIcon="send"
+      title="Turn an endpoint into a request you can send"
+      body="The Code graph already knows an endpoint's parameters, headers and body. One control turns any of them into real requests in the free workspace, pre-filled from what the code actually accepts, with the spec as a fallback where the code is silent."
       points={[
-        '<strong class=\"text-fg\">94-tool catalog</strong> — request &amp; folder CRUD, environments, assertions, plans, history, mocks',
-        'A copy-paste config snippet for every supported AI client',
-        'Every AI write funnels through the same mutation API the UI uses — safe by construction',
+        'Pick one endpoint or all of them, into the collection root or a folder you create inline',
+        'Response assertions are seeded from the contract and on by default, so a request arrives already checking something',
       ]}
-      screenshot="mcp-connection"
-      screenshotAlt="The MCP panel showing the workspace mirror and an AI client config snippet"
-      frameLabel="MCP · Connect your AI client"
+      screenshot="send-to-editor"
+      screenshotAlt="The Send to Studio Editor dialog with six endpoints selected, a destination folder, and the pre-fill option enabled"
+      frameLabel="Code graph · Send to Studio Editor"
       accent="sky"
-      ctaHref="/features/mcp-ai"
-      ctaLabel="See the AI integration"
+      ctaHref="/lens"
+      ctaLabel="See the rest of Lens"
     />
   </Section>
 
-  <!-- Spotlight: Mock -->
-  <Section class="!pt-0">
-    <Spotlight
-      eyebrow="Local mock servers"
-      eyebrowIcon="server"
-      title="Mock any API in seconds"
-      body="Point API Circle at an OpenAPI, Swagger, Postman, or Insomnia file and get a running HTTP mock on localhost. The Hono-based engine handles $ref dereferencing, per-endpoint overrides, conditional rules, validation, and response multipliers."
-      points={[
-        'Flip a <code class=\"rounded bg-surface px-1 text-[0.85em] text-node-green\">200</code> to a <code class=\"rounded bg-surface px-1 text-[0.85em] text-node-red\">503</code> to exercise error paths',
-        'Mock definitions sync with the team; the runtime stays on your machine',
-        'The same engine runs in the app, the CLI, and via the MCP <code class=\"rounded bg-surface px-1 text-[0.85em] text-brand\">mock.start</code> tool',
-      ]}
-      screenshot="mock-server"
-      screenshotAlt="The Mocks panel showing a running mock server on localhost"
-      frameLabel="Mocks · localhost"
-      accent="green"
-      ctaHref="/features/mock-servers"
-      ctaLabel="Explore mock servers"
-    />
-  </Section>
-
-  <!-- Pick your surface -->
+  <!-- 6. What's free, what's paid. A table, straight from the catalogue. -->
   <Section
-    eyebrow="Runs everywhere you do"
-    eyebrowIcon="layers"
-    title="Pick your surface"
-    subtitle="One engine, one workspace format, one mutation API behind all of them. Switch surfaces without switching tools."
+    eyebrow="Plans"
+    eyebrowIcon="tag"
+    title="What's free, and what isn't"
+    subtitle="The workspace is free and needs no account. Paid plans add the code analysis: the Code graph, PR Review drift, and the headless surfaces that run them for you."
+    align="left"
   >
-    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
+    <PlanTable class="mt-4" />
+    <div class="mt-8">
+      <a href="/pricing" class="btn-secondary">
+        Compare plans in full
+        <Icon name="arrow-right" size={16} />
+      </a>
+    </div>
+  </Section>
+
+  <!-- 7. Privacy. Two cards, because there are two things to say. -->
+  <Section
+    eyebrow="Your code stays on your machine"
+    eyebrowIcon="shield-check"
+    title="We never receive your repository"
+  >
+    <div class="mx-auto grid max-w-4xl gap-5 md:grid-cols-2">
       {
-        surfaces.map((s) => (
-          <div class="card flex flex-col gap-3">
+        privacy.map((p) => (
+          <div class="card">
             <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand/10 text-brand">
-              <Icon name={s.icon} size={20} />
+              <Icon name={p.icon} size={20} />
             </span>
-            <h3 class="text-base font-semibold text-fg">{s.title}</h3>
-            <p class="text-sm leading-relaxed text-fg-muted">{s.body}</p>
+            <h3 class="mt-4 text-lg font-semibold text-fg">{p.title}</h3>
+            <p class="mt-2 text-[15px] leading-relaxed text-fg-muted">{p.body}</p>
           </div>
         ))
       }
     </div>
+    <p class="mx-auto mt-6 max-w-4xl text-sm leading-relaxed text-fg-dim">
+      The Lens apps collect no analytics and no telemetry. What an account and a licence need is
+      all our servers ever see — the <a class="text-brand hover:underline" href="/privacy">Privacy Policy</a> lists it.
+    </p>
   </Section>
 
-  <!-- How it works -->
-  <Section
-    eyebrow="How it works"
-    eyebrowIcon="workflow"
-    title="One engine behind every surface"
-    subtitle="Every write — from the UI, the CLI, or an AI tool call — funnels through a single mutation API in the core. An AI agent can never produce state the UI couldn't have produced, and vice versa."
-  >
-    <div class="grid gap-5 md:grid-cols-3">
-      {
-        [
-          { n: '01', icon: 'file-json', title: 'A workspace is JSON', body: 'Two documents — a synced collection tree and per-device runtime state. Readable, diffable, yours.' },
-          { n: '02', icon: 'git-merge', title: 'Git is the sync layer', body: 'Push the synced document to a repo on a working branch. Teammates pull, branch, and merge it like any file.' },
-          { n: '03', icon: 'sparkles', title: 'MCP is a first-class driver', body: 'The same parsers and mock engine back all surfaces, so an assistant drives exactly what you can.' },
-        ].map((step) => (
-          <div class="relative card">
-            <span class="text-xs font-bold tracking-widest text-fg-dim">{step.n}</span>
-            <span class="mt-4 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand/10 text-brand">
-              <Icon name={step.icon} size={20} />
-            </span>
-            <h3 class="mt-4 text-lg font-semibold text-fg">{step.title}</h3>
-            <p class="mt-2 text-sm leading-relaxed text-fg-muted">{step.body}</p>
-          </div>
-        ))
-      }
-    </div>
-  </Section>
+  <!-- 8. Start -->
+  <CTA
+    title="Read your API from its source"
+    subtitle="Install Lens and point it at a repository. The first Code graph takes seconds on a small service, and the workspace underneath it costs nothing."
+    primary={{ label: 'Download Lens', href: '/download', icon: 'download' }}
+    secondary={{ label: 'See plans and pricing', href: '/pricing' }}
+  />
 
-  <!-- FAQ -->
+  <!-- 9. FAQ -->
   <Section
+    class="!pt-0"
     eyebrow="FAQ"
     eyebrowIcon="help-circle"
-    title="Frequently asked questions"
-    subtitle="What API Circle is, how it compares to Postman and Insomnia, and how teams and AI agents use it."
+    title="Questions people ask first"
+    align="left"
   >
     <FAQ items={FAQS} />
   </Section>
-
-  <CTA />
 </BaseLayout>

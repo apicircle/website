@@ -2,8 +2,9 @@
 /**
  * How to reach us, and who we are.
  *
- * Paddle's seller requirements ask for buyer support details (email AND phone) on
- * the website; India's Consumer Protection (E-Commerce) Rules ask for the legal
+ * Paddle's seller requirements ask for buyer support details on the website, and
+ * prefer a telephone number as well as an email address. We publish email only;
+ * India's Consumer Protection (E-Commerce) Rules ask for the legal
  * name, address, contact details and a Grievance Officer. All of it comes from
  * `data/legal.ts`, the same source the Terms and Privacy Policy use, so the three
  * can never disagree about who we are.
@@ -44,7 +45,6 @@ const mail = (address: string) => `mailto:${address}`;
         </p>
         <dl class="mt-4 space-y-2 text-sm">
           <div class="flex gap-2"><dt class="w-20 shrink-0 text-fg-dim">Email</dt><dd><a class="text-brand hover:underline" href={mail(LEGAL.supportEmail)}>{LEGAL.supportEmail}</a></dd></div>
-          <div class="flex gap-2"><dt class="w-20 shrink-0 text-fg-dim">Phone</dt><dd class="text-fg">{LEGAL.supportPhone}</dd></div>
         </dl>
         <p class="mt-4 text-xs leading-relaxed text-fg-muted">
           We acknowledge every message within 2 business days.

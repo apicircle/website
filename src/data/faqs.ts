@@ -4,8 +4,13 @@
  *
  * Answers are written as self-contained, factual statements: that format wins
  * Google "People also ask" / featured snippets AND is what AI answer engines
- * (ChatGPT, Claude, Perplexity, Google AI Overviews) quote directly. Keep every
- * answer accurate — do not claim ratings, awards, or an OSI license we lack.
+ * (ChatGPT, Claude, Perplexity, Google AI Overviews) quote directly.
+ *
+ * Every answer must be checkable against the shipped product. Two rules learned
+ * the hard way: never describe a paid surface as free (the MCP server is Pro and
+ * the CLI is Team), and never quote a capability the gate denies. When in doubt,
+ * the source of truth is the plan catalogue in the lens repo, which the pricing
+ * page is generated from.
  */
 export interface Faq {
   q: string;
@@ -15,42 +20,62 @@ export interface Faq {
 export const FAQS: Faq[] = [
   {
     q: 'What is API Circle?',
-    a: 'API Circle is a free, source-available API client for testing, mocking, and automating REST APIs. Your collections live as plain JSON in your own Git repository, and a built-in MCP server lets any AI client — Claude, Cursor, GitHub Copilot, ChatGPT and others — read, author, and run requests. It runs as a desktop app, a zero-install web app, a CLI, and a VS Code extension.',
+    a: 'API Circle is one app with two halves. The API workspace is free and needs no account: write requests, manage environments, run collections, and start local mock servers, with your collections stored as plain JSON in your own Git repository. API Circle Lens is the paid half. It reads your repository, maps every API endpoint to the code that implements it, and tells you when a pull request moves your API away from its OpenAPI spec.',
   },
   {
-    q: 'Is API Circle free?',
-    a: 'Yes. API Circle is free across every surface — the web app, desktop app, CLI, and VS Code extension. There is no account to create and no cloud subscription; the web app creates your first workspace automatically in local storage.',
+    q: 'What is free?',
+    a: 'The whole API workspace, with no account at all: the request editor, environments, run history, local mock servers, execution plans, OpenAPI and collection import, and GitHub-backed sync. One workspace is included. Paid plans add the code analysis — the Code graph, PR Review drift, and the headless surfaces that run it for you.',
   },
   {
-    q: 'Is API Circle open source?',
-    a: 'API Circle is source-available and built in the open on GitHub. You can read the code, file issues, and self-host your workspaces, which are plain JSON stored in your own Git repository — so there is no vendor lock-in and nothing is uploaded to a third-party server.',
+    q: 'What is a Code graph?',
+    a: 'A Code graph is a map of your API built from your source code rather than from a spec. For each endpoint it records the route, the handler, the request and response shapes the code actually uses, and the functions the handler calls. It is saved into your repository as a small sidecar, so it is versioned and reviewable like any other file, and a teammate or a CI job can read it without re-analysing the repository.',
+  },
+  {
+    q: 'How does PR Review drift work?',
+    a: 'Lens makes two comparisons. It compares the Code graph of the branch against the Code graph of the base it came from, which shows what the pull request changed. Then it compares the branch against your OpenAPI spec, which shows whether the API still matches its contract. The findings are things like an endpoint removed, an auth guard dropped, a response shape changed, a new database write inside a shared helper, or an endpoint the spec never documented.',
+  },
+  {
+    q: 'Will it comment on my pull requests automatically?',
+    a: 'No. Nothing is sent to your Git host until you press Submit, and there is no automatic posting. Drafts stay on your machine, and before anything is posted you see exactly what will appear on the pull request. On a public repository, findings that map security weaknesses are held back unless you explicitly opt in.',
+  },
+  {
+    q: 'Which languages and frameworks can it read?',
+    a: 'TypeScript and JavaScript (Express, Hono, Fastify, Koa, NestJS, Ts.ED, Next.js), Python (FastAPI, Flask, Django with DRF, Django Ninja), Go (gin, chi, echo, fiber, gorilla/mux, net/http, Huma), Java (Spring MVC, Spring WebFlux, Micronaut, JAX-RS), C# (ASP.NET Core minimal APIs and MVC), and Rust (axum, actix-web, Rocket, Salvo, poem). PHP is recognised only at a basic level, and Ruby and Elixir are not supported yet. Where an endpoint cannot be read with confidence, Lens reports it as unknown rather than guessing.',
+  },
+  {
+    q: 'Do I need to be on GitHub?',
+    a: 'No. GitHub works on every plan, including free. GitLab, Bitbucket Cloud and Azure DevOps are included from Pro, and Lens posts positioned review comments on all four. Each host differs a little: GitLab has no request-changes verdict, so Lens leaves a comment instead and says so.',
+  },
+  {
+    q: 'What happens to my code?',
+    a: 'It stays on your machine. Analysis runs locally and sends nothing to us. The one exception is "Index with AI", an optional pass that sends the files it reads to the AI provider you chose, using your own API key — and it asks you first, per project and per provider. Our servers never receive repository contents, file paths or analysis results.',
+  },
+  {
+    q: 'Do I need an account?',
+    a: 'Not for the API workspace. It creates your first workspace on launch and never asks who you are. An account is needed only for a paid plan, which unlocks the Code graph, PR Review and the headless surfaces on the machines you activate.',
+  },
+  {
+    q: 'What is the difference between API Circle Studio and API Circle Lens?',
+    a: 'Studio is the free API workspace. Lens is the same app with four more panels: the Code graph, PR Review, the AI Assistant, and the MCP server setup. You do not install something different — you sign in, and the panels your plan includes appear.',
   },
   {
     q: 'How is API Circle different from Postman and Insomnia?',
-    a: 'API Circle is a full-featured API client in the spirit of Postman and Insomnia, with two ideas the others lack at the core. First, your workspace is a Git repo: branch, diff, review, and merge your collections like code, with no mandatory cloud account. Second, your workspace is an AI tool catalog: a built-in MCP server exposes 94 tools so any AI assistant can drive it. Collections are plain JSON you own, not data locked in a vendor cloud.',
-  },
-  {
-    q: 'Can AI assistants like Claude, Cursor, or ChatGPT use API Circle?',
-    a: 'Yes. API Circle ships a built-in MCP (Model Context Protocol) server with 94 tools. Any MCP-compatible AI client — including Claude Desktop, Claude Code, ChatGPT, GitHub Copilot, Cursor, Continue, Cline, Zed, and Windsurf — can scan a codebase, propose a collection, run requests, and spin up mock servers from chat. The app generates a copy-paste config for each client.',
+    a: 'Two differences. Your collections are plain JSON in your own Git repository, so you branch, diff and review them the way you review code, and there is no mandatory cloud account. And on a paid plan, API Circle reads the source code behind your API, which lets it tell you when a pull request changes the API in a way your spec does not describe. Neither Postman nor Insomnia reads your implementation.',
   },
   {
     q: 'How do I mock an API with API Circle?',
-    a: 'Point API Circle at an OpenAPI, Swagger, Postman, or Insomnia file and it starts a running HTTP mock on localhost in seconds. You can override individual responses, add conditional rules and request validation, and apply response multipliers. Mocks can be started from the app, from the CLI with "npx @apicircle/cli mock ./openapi.yaml", or from an AI client.',
-  },
-  {
-    q: 'Does API Circle work offline and without an account?',
-    a: 'Yes. API Circle needs no account and no cloud connection. Workspaces are stored locally and can optionally sync to your own Git repository. Mock servers and request execution run entirely on your machine.',
+    a: 'Point API Circle at an OpenAPI, Swagger, Postman or Insomnia file and it starts an HTTP mock on localhost in seconds. You can override individual responses, add conditional rules and request validation, and apply response multipliers to simulate load. Mock servers in the app are free. Mock definitions sync with the workspace so a teammate gets them; the running server stays on your machine.',
   },
   {
     q: 'What authentication schemes does API Circle support?',
-    a: 'All 17 schemes are end-to-end functional: Bearer, Basic, API key, custom header, the full OAuth2 grant set (with PKCE, device flow, and auto-refresh), AWS SigV4, Digest, NTLM, Hawk, and JWT. Signing primitives are verified against the relevant RFC and NIST reference vectors, and folder-level auth cascades to descendant requests.',
+    a: 'All 17 schemes are end-to-end functional: Bearer, Basic, API key, custom header, the full OAuth2 grant set (with PKCE, device flow and auto-refresh), AWS SigV4, Digest, NTLM, Hawk, and JWT. Signing primitives are verified against the relevant RFC and NIST reference vectors, and folder-level auth cascades to the requests beneath it.',
   },
   {
-    q: 'Can I run API Circle in CI or from the command line?',
-    a: 'Yes. The apicircle CLI runs collections, mock servers, and spec imports from any terminal — no UI required. It emits JUnit XML for CI pipelines and can address a workspace by name or by a git-cloned directory path, which makes it well suited to automated API testing.',
+    q: 'Can I run it in CI?',
+    a: 'Yes, on the Team plan. The command-line interface runs the same drift check against a cloned repository, posts the findings as a pull-request comment, and exits with a code you can fail the build on — including a stricter mode that fails whenever the API moves away from its spec at all. CI authenticates with a key from your account rather than consuming a device seat.',
   },
   {
-    q: 'What platforms and formats does API Circle support?',
-    a: 'API Circle runs on Windows, macOS, Linux, and the web, plus a CLI and a VS Code extension. It imports cURL, OpenAPI/Swagger, Postman, Insomnia, HAR, and .apicircle.json, and generates client code as cURL, fetch, Node (axios), Python (requests), Go, or Rust.',
+    q: 'Is API Circle open source?',
+    a: 'The API workspace is source-available and built in the open on GitHub. You can read the code, file issues, and keep your workspaces in your own repository, so nothing is locked in a vendor cloud. The Lens analysis panels are proprietary.',
   },
 ];

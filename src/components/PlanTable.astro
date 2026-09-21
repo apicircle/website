@@ -1,0 +1,109 @@
+---
+import Icon from './Icon.astro';
+import PlanBadge from './PlanBadge.astro';
+import { PLANS, PRICE_CURRENCY_NOTE, TRIAL_DAYS } from '../data/pricing.ts';
+
+interface Props {
+  /** Hide the currency note when the page already carries it (e.g. /pricing). */
+  currencyNote?: boolean;
+  class?: string;
+}
+const { currencyNote = true, class: className = '' } = Astro.props;
+
+/**
+ * What each plan costs and what it adds, as a real table.
+ *
+ * A plan per ROW, not per column. The generated `capabilities` lists are
+ * different lengths and chain ("Everything in Free"), so laying them out as
+ * four columns of equal height would align row 3 of Free against row 3 of Pro
+ * and invent a comparison the data does not make.
+ *
+ * NOTHING here is typed. Prices, plan names, workspace caps, capability labels
+ * and the trial length all come from `src/data/pricing.ts`, which is generated
+ * from the entitlement catalogue and checked against the gate itself. A
+ * hand-written "$18.99" in a comparison table is the most likely mistake on  (claims: history)
+ * this whole site, because a table feels like page content rather than data.
+ */
+
+/** Price for a plan, or the word for having nothing to charge. */
+const priceOf = (plan: (typeof PLANS)[number]): string =>
+  plan.monthly === null ? 'Free' : plan.monthly;
+
+/**
+ * What the plan adds, minus the workspace line.
+ *
+ * `capabilities` leads with the workspace count, which already has its own
+ * column. Matched on the VALUE rather than by dropping index 0, so a catalogue
+ * that reorders its list does not silently lose a real capability.
+ */
+const addsOf = (plan: (typeof PLANS)[number]): string[] =>
+  plan.capabilities.filter((c) => !c.toLowerCase().includes('workspace'));
+
+const cell = 'block px-0 py-1 sm:table-cell sm:px-4 sm:py-5 sm:align-top';
+---
+<div class:list={['w-full', className]}>
+  <table class="w-full border-collapse text-left">
+    <caption class="sr-only">
+      API Circle plans: price, workspace limit, and what each plan adds.
+    </caption>
+    <thead class="hidden sm:table-header-group">
+      <tr class="border-b border-edge">
+        <th scope="col" class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-fg-dim">Plan</th>
+        <th scope="col" class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-fg-dim">Price</th>
+        <th scope="col" class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-fg-dim">Workspaces</th>
+        <th scope="col" class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-fg-dim">What it adds</th>
+      </tr>
+    </thead>
+    <tbody class="block sm:table-row-group">
+      {
+        PLANS.map((plan) => (
+          <tr class="mb-4 block rounded-2xl border border-edge bg-panel p-5 last:mb-0 sm:mb-0 sm:table-row sm:rounded-none sm:border-0 sm:border-b sm:bg-transparent sm:p-0">
+            <th scope="row" class="block text-left sm:table-cell sm:px-4 sm:py-5 sm:align-top">
+              <span class="flex items-center gap-2">
+                <PlanBadge plan={plan.id} />
+              </span>
+              <span class="mt-2 block text-sm leading-relaxed text-fg-muted sm:max-w-[16rem]">
+                {plan.blurb}
+              </span>
+            </th>
+
+            <td class:list={[cell, 'mt-3 sm:mt-0']}>
+              <span class="text-xs font-semibold uppercase tracking-wider text-fg-dim sm:hidden">Price</span>
+              <span class="block text-lg font-semibold text-fg">{priceOf(plan)}</span>
+              {plan.monthly !== null && (
+                <span class="block text-xs text-fg-dim">
+                  per month{plan.perSeat ? ', per seat' : ''} · {TRIAL_DAYS}-day trial
+                </span>
+              )}
+            </td>
+
+            <td class:list={[cell, 'mt-3 sm:mt-0']}>
+              <span class="text-xs font-semibold uppercase tracking-wider text-fg-dim sm:hidden">Workspaces</span>
+              <span class="block text-fg">{plan.workspaces}</span>
+            </td>
+
+            <td class:list={[cell, 'mt-3 sm:mt-0']}>
+              <span class="mb-1 block text-xs font-semibold uppercase tracking-wider text-fg-dim sm:hidden">
+                What it adds
+              </span>
+              <ul class="space-y-1.5">
+                {addsOf(plan).map((capability) => (
+                  <li class="flex items-start gap-2 text-[15px] leading-relaxed text-fg-muted">
+                    <Icon name="check" size={16} class="mt-0.5 shrink-0 text-brand" />
+                    <span>{capability}</span>
+                  </li>
+                ))}
+              </ul>
+            </td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+
+  {
+    currencyNote && (
+      <p class="mt-6 text-sm leading-relaxed text-fg-dim">{PRICE_CURRENCY_NOTE}</p>
+    )
+  }
+</div>

@@ -25,15 +25,15 @@ const toolkit = [
 ---
 <BaseLayout
   title="Features"
-  description="Git-backed workspaces, an MCP server with 94 tools, local mock servers, 17 auth schemes, a CLI, and a VS Code extension — everything in API Circle."
+  description="Every API Circle capability and the plan it belongs to: Git-backed collections, local mock servers, 17 auth schemes, execution plans, the VS Code extension, the MCP server and the CLI."
   breadcrumbs={breadcrumbs}
 >
   <Section
     headingLevel="h1"
     eyebrow="Features"
     eyebrowIcon="boxes"
-    title="Everything in API Circle"
-    subtitle="A complete API client, rebuilt around two ideas the others miss: your workspace is a Git repo, and your workspace is an AI tool catalog."
+    title="Every capability, and the plan it belongs to"
+    subtitle="Most of this runs with no account and no subscription, and your collections stay in your own Git repository as JSON you can read. Two of the cards below are paid — the MCP server and the command-line interface — and each one says so."
   >
     <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
       {FEATURES.map((feature) => <FeatureCard feature={feature} />)}
@@ -42,10 +42,10 @@ const toolkit = [
 
   <Section
     class="!pt-0"
-    eyebrow="A complete request toolkit"
+    eyebrow="In the free workspace"
     eyebrowIcon="zap"
-    title="And all the essentials, done right"
-    subtitle="The day-to-day capabilities you expect from a serious API client — none of them an afterthought."
+    title="The day-to-day essentials"
+    subtitle="Eight more things the workspace does without an account: six import formats, six code-generation targets, JSON-path assertions, multi-step plans, and a vault that wraps its keys in the OS keychain on desktop."
   >
     <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
       {

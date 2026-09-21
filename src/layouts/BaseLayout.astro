@@ -25,6 +25,8 @@ interface Props {
   breadcrumbs?: Breadcrumb[];
   /** FAQ items → FAQPage structured data (must match visible copy). */
   faqs?: Faq[];
+  /** Emit the paid-product schema with its per-plan offers. `/pricing` and `/lens` only. */
+  lens?: boolean;
 }
 
 const {
@@ -37,6 +39,7 @@ const {
   noindex = false,
   breadcrumbs,
   faqs,
+  lens = false,
 } = Astro.props;
 
 const pageTitle = title ? `${title} · ${SITE.name}` : SITE.defaultTitle;
@@ -50,6 +53,7 @@ const jsonLd = buildJsonLd({
   image: ogImage,
   breadcrumbs,
   faqs,
+  lens,
 });
 ---
 <!doctype html>

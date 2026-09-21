@@ -1,5 +1,6 @@
 ---
 import Icon from './Icon.astro';
+import PlanBadge from './PlanBadge.astro';
 import type { Feature } from '../data/features.ts';
 
 interface Props {
@@ -25,8 +26,13 @@ const a = ACCENT[feature.accent] ?? ACCENT.brand;
     a.ring,
   ]}
 >
-  <div class:list={['mb-5 inline-flex h-11 w-11 items-center justify-center rounded-xl', a.bg, a.text]}>
-    <Icon name={feature.icon} size={22} />
+  <div class="mb-5 flex items-start justify-between gap-3">
+    <span class:list={['inline-flex h-11 w-11 items-center justify-center rounded-xl', a.bg, a.text]}>
+      <Icon name={feature.icon} size={22} />
+    </span>
+    {/* Which plan carries this. Two of these cards are Pro and Team, and without
+        the badge the grid read as one free feature set. */}
+    <PlanBadge plan={feature.plan} />
   </div>
   <h3 class="text-lg font-semibold text-fg">{feature.title}</h3>
   <p class="mt-2 text-sm leading-relaxed text-fg-muted">{feature.tagline}</p>

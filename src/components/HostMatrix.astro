@@ -1,0 +1,77 @@
+---
+import Icon from './Icon.astro';
+import PlanBadge from './PlanBadge.astro';
+import { HOSTS, HOST_CAPABILITIES } from '../data/hosts.ts';
+
+interface Props {
+  class?: string;
+}
+const { class: className = '' } = Astro.props;
+
+/**
+ * What Lens can do on each Git host.
+ *
+ * Text, not logos. Four brand marks in a row say "we integrate with these" and
+ * nothing else; the useful information is which of them can express a
+ * request-changes verdict, and that is a sentence, not an icon. Logos also
+ * carry trademark terms this site has no licence to imply.
+ *
+ * The caveats are cells, not footnotes. A reader who finds the GitLab
+ * limitation here trusts the other fifteen cells; one who finds it after
+ * installing does not.
+ */
+const cellBase = 'px-4 py-3 text-[15px] leading-relaxed align-top';
+---
+<div class:list={['w-full overflow-x-auto', className]}>
+  <table class="w-full min-w-[46rem] border-collapse text-left">
+    <caption class="sr-only">
+      Git host support: which plan includes each host, and what Lens can do on it.
+    </caption>
+    <thead>
+      <tr class="border-b border-edge">
+        <th scope="col" class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-fg-dim">
+          Capability
+        </th>
+        {
+          HOSTS.map((host) => (
+            <th scope="col" class="px-4 py-3 align-bottom">
+              <span class="block text-sm font-semibold text-fg">{host.name}</span>
+              <PlanBadge plan={host.plan} class="mt-1.5" />
+            </th>
+          ))
+        }
+      </tr>
+    </thead>
+    <tbody>
+      {
+        HOST_CAPABILITIES.map((row) => (
+          <tr class="border-b border-edge/60 last:border-0">
+            <th scope="row" class="px-4 py-3 text-left text-[15px] font-medium leading-relaxed text-fg">
+              {row.label}
+            </th>
+            {HOSTS.map((host) => {
+              const value = row.values[host.id];
+              return (
+                <td class:list={[cellBase, typeof value === 'string' ? 'text-fg-muted' : '']}>
+                  {value === true ? (
+                    <>
+                      <Icon name="check" size={18} class="text-brand" />
+                      <span class="sr-only">Yes</span>
+                    </>
+                  ) : value === false ? (
+                    <>
+                      <span aria-hidden="true" class="text-fg-dim">—</span>
+                      <span class="sr-only">No</span>
+                    </>
+                  ) : (
+                    value
+                  )}
+                </td>
+              );
+            })}
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>

@@ -4,6 +4,26 @@ import ThemeToggle from './ThemeToggle.astro';
 import Icon from './Icon.astro';
 import { PRIMARY_NAV, FEATURE_NAV } from '../data/nav.ts';
 import { SITE } from '../data/site.ts';
+
+/**
+ * The desktop nav is DRIVEN by `PRIMARY_NAV`, not hand-written.
+ *
+ * It used to hard-code Features / Download / Docs and read `PRIMARY_NAV` only
+ * in the mobile menu, so `/lens` and `/pricing` — the paid product and the page
+ * that sells it — had no desktop link at all. Anyone on a laptop could reach
+ * them only from a footer or an in-page link. Adding a row to `PRIMARY_NAV` now
+ * puts it in both menus, which is the point of having the list.
+ *
+ * External rows (Sign in) are pulled out and rendered beside the call to
+ * action, where people look for them, rather than sitting mid-sentence among
+ * the product pages.
+ */
+const navItems = PRIMARY_NAV.filter((item) => !item.external);
+const externalItems = PRIMARY_NAV.filter((item) => item.external);
+
+/** Current section, for the active state. `/features/cli` lights up Features. */
+const here = Astro.url.pathname.replace(/\/+$/, '') || '/';
+const isCurrent = (href: string): boolean => here === href || here.startsWith(`${href}/`);
 ---
 <header
   class="sticky top-0 z-50 border-b border-edge/70 bg-bg/80 backdrop-blur-xl supports-[backdrop-filter]:bg-bg/65"
@@ -12,45 +32,54 @@ import { SITE } from '../data/site.ts';
     <Logo />
 
     <nav class="hidden items-center gap-1 lg:flex" aria-label="Primary">
-      <!-- Features dropdown -->
-      <div class="group relative">
-        <button
-          type="button"
-          class="inline-flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium text-fg-muted transition-colors hover:text-fg"
-          aria-haspopup="true"
-        >
-          Features
-          <Icon name="chevron-down" size={15} class="transition-transform group-hover:rotate-180" />
-        </button>
-        <div
-          class="invisible absolute left-1/2 top-full w-[34rem] -translate-x-1/2 pt-3 opacity-0 transition-all duration-150 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100"
-        >
-          <div class="grid grid-cols-2 gap-1 rounded-2xl border border-edge bg-panel p-2 shadow-panel">
-            {
-              FEATURE_NAV.map((item) => (
-                <a
-                  href={item.href}
-                  class="flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium text-fg-muted transition-colors hover:bg-surface hover:text-brand"
-                >
-                  <span class="h-1.5 w-1.5 rounded-full bg-brand/70" />
-                  {item.label}
-                </a>
-              ))
-            }
-          </div>
-        </div>
-      </div>
-
-      <a
-        href="/download"
-        class="rounded-lg px-3 py-2 text-sm font-medium text-fg-muted transition-colors hover:text-fg"
-        >Download</a
-      >
-      <a
-        href="/docs"
-        class="rounded-lg px-3 py-2 text-sm font-medium text-fg-muted transition-colors hover:text-fg"
-        >Docs</a
-      >
+      {
+        navItems.map((item) =>
+          item.href === '/features' ? (
+            <div class="group relative">
+              {/* A link, not a button. As a button the dropdown listed the six
+                  feature pages but /features itself had no desktop link at all
+                  -- the same gap /lens and /pricing had. Hover and focus still
+                  open the panel; a click now goes to the index. */}
+              <a
+                href={item.href}
+                aria-haspopup="true"
+                aria-current={isCurrent(item.href) ? 'page' : undefined}
+                class:list={[
+                  'inline-flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:text-fg',
+                  isCurrent(item.href) ? 'text-fg' : 'text-fg-muted',
+                ]}
+              >
+                {item.label}
+                <Icon name="chevron-down" size={15} class="transition-transform group-hover:rotate-180" />
+              </a>
+              <div class="invisible absolute left-1/2 top-full w-[34rem] -translate-x-1/2 pt-3 opacity-0 transition-all duration-150 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+                <div class="grid grid-cols-2 gap-1 rounded-2xl border border-edge bg-panel p-2 shadow-panel">
+                  {FEATURE_NAV.map((feature) => (
+                    <a
+                      href={feature.href}
+                      class="flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium text-fg-muted transition-colors hover:bg-surface hover:text-brand"
+                    >
+                      <span class="h-1.5 w-1.5 rounded-full bg-brand/70" />
+                      {feature.label}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <a
+              href={item.href}
+              aria-current={isCurrent(item.href) ? 'page' : undefined}
+              class:list={[
+                'rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:text-fg',
+                isCurrent(item.href) ? 'text-fg' : 'text-fg-muted',
+              ]}
+            >
+              {item.label}
+            </a>
+          ),
+        )
+      }
     </nav>
 
     <div class="flex items-center gap-2">
@@ -64,9 +93,21 @@ import { SITE } from '../data/site.ts';
         <Icon name="github" size={18} />
       </a>
       <ThemeToggle />
-      <a href={SITE.appUrl} target="_blank" rel="noopener" class="btn-primary hidden sm:inline-flex">
-        Open the app
-        <Icon name="arrow-up-right" size={16} />
+      {
+        externalItems.map((item) => (
+          <a
+            href={item.href}
+            target="_blank"
+            rel="noopener"
+            class="hidden rounded-lg px-3 py-2 text-sm font-medium text-fg-muted transition-colors hover:text-fg lg:inline-flex"
+          >
+            {item.label}
+          </a>
+        ))
+      }
+      <a href="/download" class="btn-primary hidden sm:inline-flex">
+        <Icon name="download" size={16} />
+        Download Lens
       </a>
 
       <!-- Mobile menu button -->
@@ -90,7 +131,12 @@ import { SITE } from '../data/site.ts';
   <!-- Mobile menu -->
   <div id="mobile-menu" class="hidden border-t border-edge bg-panel lg:hidden">
     <nav class="container-page flex flex-col gap-1 py-4" aria-label="Mobile">
-      <p class="px-3 pb-1 pt-2 text-xs font-semibold uppercase tracking-wider text-fg-dim">Features</p>
+      <a
+        href="/features"
+        class="px-3 pb-1 pt-2 text-xs font-semibold uppercase tracking-wider text-fg-dim hover:text-fg"
+      >
+        Features
+      </a>
       {
         FEATURE_NAV.map((item) => (
           <a href={item.href} class="rounded-lg px-3 py-2 text-sm font-medium text-fg-muted hover:bg-surface hover:text-fg">
@@ -101,14 +147,20 @@ import { SITE } from '../data/site.ts';
       <div class="my-2 border-t border-edge"></div>
       {
         PRIMARY_NAV.filter((i) => i.href !== '/features').map((item) => (
-          <a href={item.href} class="rounded-lg px-3 py-2 text-sm font-medium text-fg-muted hover:bg-surface hover:text-fg">
+          <a
+            href={item.href}
+            target={item.external ? '_blank' : undefined}
+            rel={item.external ? 'noopener' : undefined}
+            aria-current={!item.external && isCurrent(item.href) ? 'page' : undefined}
+            class="rounded-lg px-3 py-2 text-sm font-medium text-fg-muted hover:bg-surface hover:text-fg"
+          >
             {item.label}
           </a>
         ))
       }
-      <a href={SITE.appUrl} target="_blank" rel="noopener" class="btn-primary mt-2 w-full">
-        Open the app
-        <Icon name="arrow-up-right" size={16} />
+      <a href="/download" class="btn-primary mt-2 w-full">
+        <Icon name="download" size={16} />
+        Download Lens
       </a>
     </nav>
   </div>

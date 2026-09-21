@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Section from '../components/Section.astro';
+import PlanTable from '../components/PlanTable.astro';
 import Icon from '../components/Icon.astro';
 import { ANNUAL_DISCOUNT_PERCENT, PLANS, PRICE_CURRENCY_NOTE, TRIAL_DAYS } from '../data/pricing.ts';
 import { SITE } from '../data/site.ts';
@@ -22,6 +23,7 @@ const accountUrl = 'https://account.apicircle.dev';
   title="Pricing"
   description="API Circle pricing — the full API workspace is free, with no account. Paid plans add the Code graph, PR Review drift against your Spec, AI and MCP, and CLI automation for CI."
   breadcrumbs={breadcrumbs}
+  lens
 >
   <Section
     headingLevel="h1"
@@ -126,36 +128,19 @@ const accountUrl = 'https://account.apicircle.dev';
   </Section>
 
   <Section
-    eyebrow="What you get"
+    eyebrow="Side by side"
     eyebrowIcon="layers"
-    title="Free in the app. Paid when it runs itself."
+    title="What each plan adds"
     subtitle="Everything in the API Circle interface is free and needs no account. What you pay for is the map of your codebase, and the surfaces that use it without you."
+    align="left"
   >
-    <div class="grid gap-5 md:grid-cols-3">
-      <div class="card">
-        <h3 class="text-lg font-semibold text-fg">Always free</h3>
-        <p class="mt-2 text-sm leading-relaxed text-fg-muted">
-          Requests, environments, history, local mock servers, execution plans, OpenAPI and
-          collection import, GitHub sign-in and Git-backed sync. One workspace, no card, no
-          sign-up.
-        </p>
-      </div>
-      <div class="card">
-        <h3 class="text-lg font-semibold text-fg">Understand your API</h3>
-        <p class="mt-2 text-sm leading-relaxed text-fg-muted">
-          From Basic: the Code graph ties every endpoint to the code that implements it, and
-          PR Review uses the Code graph and your Spec to show where a pull request drifts.
-        </p>
-      </div>
-      <div class="card">
-        <h3 class="text-lg font-semibold text-fg">Let it run itself</h3>
-        <p class="mt-2 text-sm leading-relaxed text-fg-muted">
-          Pro connects your AI tools over MCP. Team adds the CLI, so PR Review drift can fail a
-          build instead of reaching review.
-        </p>
-      </div>
-    </div>
+    {/* Generated from the same catalogue as the cards above. The three hand-written
+        summary cards that stood here typed their own plan names and tiers ("From
+        Basic:", "Team adds the CLI"), which is the one thing this page must never
+        do: the catalogue is checked against the gate, and prose is not. */}
+    <PlanTable currencyNote={false} class="mt-4" />
   </Section>
+
 </BaseLayout>
 
 <script>

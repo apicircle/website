@@ -39,29 +39,19 @@ const SAMPLES: Record<string, { intro: string; blocks: Sample[] }> = {
     intro: 'Clone a workspace repo and the directory is the workspace — drive it from the CLI or any AI client.',
     blocks: [
       {
-        code: `git clone https://github.com/you/your-workspace-repo\napicircle run "Smoke Tests" --workspace-path ./your-workspace-repo --reporter junit`,
+        code: `git clone https://github.com/you/your-workspace-repo`,
         prompt: true,
-        lang: 'Clone & run a collection',
+        lang: 'The cloned directory is the workspace',
       },
     ],
   },
   'mcp-ai': {
-    intro: 'Drop this into your AI client config, restart, and it can drive your workspace. Omit --workspace to boot in multi-workspace mode against the desktop registry.',
+    intro: 'Drop this into your AI client config and restart it. The server runs from the Lens CLI, and authenticates with a key from your account.',
     blocks: [
       {
         filename: 'claude_desktop_config.json',
         lang: 'json',
-        code: `{\n  "mcpServers": {\n    "apicircle": {\n      "command": "apicircle-mcp",\n      "args": []\n    }\n  }\n}`,
-      },
-    ],
-  },
-  'mock-servers': {
-    intro: 'Start a mock straight from a spec file — no workspace required.',
-    blocks: [
-      {
-        code: `npx @apicircle/cli mock ./openapi.yaml`,
-        prompt: true,
-        lang: 'Mock an OpenAPI spec',
+        code: `{\n  "mcpServers": {\n    "apicircle": {\n      "command": "apicircle-lens",\n      "args": ["mcp"]\n    }\n  }\n}`,
       },
     ],
   },
@@ -76,12 +66,12 @@ const SAMPLES: Record<string, { intro: string; blocks: Sample[] }> = {
     ],
   },
   cli: {
-    intro: 'Address a registered workspace by name, or point at a git-cloned directory for CI.',
+    intro: 'Clone the repository, review the branch against its base and its spec, and let the exit code decide whether the build continues.',
     blocks: [
       {
-        code: `npx @apicircle/cli workspaces use Petstore\nnpx @apicircle/cli import openapi ./openapi.yaml --workspace-name Petstore\nnpx @apicircle/cli run "Smoke Tests" --reporter junit`,
+        code: `npm install -g @apicircle-lens/cli\napicircle-lens review --pull-request 412 --spec ./openapi.yaml --comment --fail-on breaking`,
         prompt: true,
-        lang: 'Import & run in CI',
+        lang: 'Review a pull request in CI',
       },
     ],
   },

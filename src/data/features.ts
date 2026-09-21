@@ -12,6 +12,12 @@ export interface Feature {
   /** Icon name resolved by Icon.astro */
   icon: string;
   accent: AccentKey;
+  /**
+   * The lowest plan that includes this capability. Rendered by PlanBadge, which
+   * resolves the label from the generated PLANS, so the site cannot advertise a
+   * tier the gate disagrees with.
+   */
+  plan: 'free' | 'basic' | 'pro' | 'team';
   eyebrow: string;
   title: string;
   /** One-line hook used on cards. */
@@ -36,6 +42,7 @@ export const FEATURES: Feature[] = [
     slug: 'git-workspaces',
     icon: 'git-branch',
     accent: 'brand',
+    plan: 'free',
     eyebrow: 'Version control, natively',
     title: 'Git-backed workspaces',
     tagline: 'Your collections are plain JSON in your own repo — branch, diff, review, merge.',
@@ -61,10 +68,6 @@ export const FEATURES: Feature[] = [
         title: 'Visual three-way merge',
         body: 'When remote and local diverge, a conflict resolver shows the folder tree, environment priority, and release ledger side by side so you keep exactly what you intend.',
       },
-      {
-        title: 'Releases & a marketplace',
-        body: 'Publish fingerprinted versions of a workspace that linked consumers pin to, deprecate or withdraw them, and tag releases on GitHub — for private repos or a public marketplace.',
-      },
     ],
     cta: { label: 'Open the web app', href: SITE.appUrl },
     screenshot: 'git-workspace',
@@ -75,37 +78,39 @@ export const FEATURES: Feature[] = [
     slug: 'mcp-ai',
     icon: 'sparkles',
     accent: 'sky',
-    eyebrow: 'AI-native, not AI-bolted-on',
-    title: 'Drive your workspace with AI',
-    tagline: 'A built-in MCP server exposes 94 tools so any AI client can read, author, and run requests.',
+    plan: 'pro',
+    eyebrow: 'For AI clients',
+    title: 'Put your AI client on the same Code graph',
+    tagline: 'An MCP server that hands Claude, Cursor or Copilot the endpoints, requests and drift findings you already work from.',
     metaDescription:
-      'A built-in MCP server with 94 tools lets Claude, Cursor, Copilot, ChatGPT and other AI clients read, author, and run your API requests.',
+      'The Lens MCP server gives Claude, Cursor, Copilot and other MCP clients your API workspace and your Code graph, over stdio. Included with Pro.',
     summary:
-      'The bundled MCP server speaks the open Model Context Protocol over stdio, so Claude, ChatGPT, Cursor, Copilot, and any other MCP client can scan a codebase, propose a collection, generate runnable client code, or spin up a mock — all from the chat. Every AI write funnels through the same mutation API the UI uses.',
+      'Start it with apicircle-lens mcp. Any client that speaks the Model Context Protocol can then read the workspace over stdio — requests, environments, mock servers, execution plans — along with the endpoints the Code graph found in your repository. It can review a pull request from chat and report the drift it finds.',
     bullets: [
-      '94-tool catalog: requests, envs, mocks, plans, history',
-      'Works with 9+ AI clients out of the box',
-      'Copy-paste config snippet for every client',
+      'Your requests, environments, mocks and plans',
+      'The Code graph: every endpoint, and the code behind it',
+      'Review a pull request and report its drift, from chat',
+      'Config snippets for nine clients',
     ],
     highlights: [
       {
-        title: 'A first-class surface',
-        body: 'MCP is not a plugin. The server is one of five ways to drive a workspace, sharing the same engine, parsers, and mutation chokepoint as the desktop, web, CLI, and VS Code surfaces.',
+        title: 'It starts from the CLI',
+        body: 'The server ships inside @apicircle-lens/cli and runs as apicircle-lens mcp. It authenticates with a key from your account, and a Pro key starts the MCP server and nothing else.',
       },
       {
-        title: 'One snippet, any client',
-        body: 'The MCP panel generates a ready-to-paste config for Claude Desktop, Claude Code, Cursor, Copilot, ChatGPT, Continue, Cline, Zed, and Windsurf. Copy, drop it in, restart.',
+        title: 'One snippet per client',
+        body: 'The MCP panel writes a ready-to-paste configuration for Claude Desktop, Claude Code, Cursor, Copilot, ChatGPT, Continue, Cline, Zed and Windsurf.',
       },
       {
-        title: 'Reads external writes instantly',
-        body: 'The desktop app watches the workspace file, so anything the MCP server or CLI writes shows up in the editor automatically — no manual refresh.',
+        title: 'An agent cannot invent state',
+        body: 'Every write goes through the same path the interface uses, so an agent can only produce a workspace you could have produced by hand.',
       },
       {
-        title: 'Safe by construction',
-        body: 'An AI agent can never produce workspace state the UI could not have produced, because both go through the same applyMutation API in the core engine.',
+        title: 'It reads the map you already built',
+        body: 'The Code graph is committed to your repository, so the server reads it rather than deriving its own answer and disagreeing with the app.',
       },
     ],
-    cta: { label: 'Open the web app', href: SITE.appUrl },
+    cta: { label: 'See what Pro includes', href: '/pricing' },
     screenshot: 'mcp-connection',
     screenshotAlt:
       'API Circle MCP panel showing the workspace mirror and a copy-paste AI client config snippet',
@@ -114,6 +119,7 @@ export const FEATURES: Feature[] = [
     slug: 'mock-servers',
     icon: 'server',
     accent: 'green',
+    plan: 'free',
     eyebrow: 'Local mock servers',
     title: 'Mock any API in seconds',
     tagline: 'Point at an OpenAPI, Swagger, Postman, or Insomnia file and get a running mock on localhost.',
@@ -128,8 +134,8 @@ export const FEATURES: Feature[] = [
     ],
     highlights: [
       {
-        title: 'One engine, three runtimes',
-        body: 'The same factory powers the desktop mock manager, the apicircle CLI, and the MCP mock.start tool — start a mock from the app, your terminal, or an AI client.',
+        title: 'Start one from anywhere',
+        body: 'The same engine backs the mock manager in the app, the CLI and the MCP tool, so a mock behaves identically wherever you start it. In the app it is free.',
       },
       {
         title: 'Realistic behaviour',
@@ -148,6 +154,7 @@ export const FEATURES: Feature[] = [
     slug: 'authentication',
     icon: 'shield',
     accent: 'amber',
+    plan: 'free',
     eyebrow: 'A complete request toolkit',
     title: '17 auth schemes, all functional',
     tagline: 'Bearer to AWS SigV4 to the full OAuth2 grant set — verified against the relevant RFCs.',
@@ -186,33 +193,39 @@ export const FEATURES: Feature[] = [
     slug: 'cli',
     icon: 'terminal',
     accent: 'blue',
-    eyebrow: 'Headless & CI',
-    title: 'A CLI for pipelines and agents',
-    tagline: 'Run collections, spin up mocks, and import specs from any terminal — no UI required.',
+    plan: 'team',
+    eyebrow: 'For CI',
+    title: 'Fail the build when the API drifts',
+    tagline: 'apicircle-lens review runs the same drift check your pipeline can gate on.',
     metaDescription:
-      'Run collections, spin up mocks, and import specs from any terminal — with JUnit reporting for CI and workspaces addressable by name or path.',
+      'Run PR Review drift in CI with @apicircle-lens/cli: positioned comments on the lines that drifted, and an exit code you can fail the build on.',
     summary:
-      'The apicircle binary runs mocks, the MCP server, imports, exports, and full collection runs against the same workspace format as every other surface. Point it at a registered workspace by name, or at a git-cloned repo directory for CI.',
+      'A pipeline needs no desktop app and no seat. apicircle-lens review compares a branch against its base and against your OpenAPI spec, writes what it found as a pull-request comment, and picks an exit code you can gate on. It also runs collections, mocks and imports against the same workspace format every other surface uses.',
     bullets: [
-      'mock · mcp · import · export · run · workspaces',
-      'JUnit reporter for CI pipelines',
-      'Address workspaces by name or by path',
+      '--fail-on breaking, warning, info or diffracting',
+      'Positioned comments on the lines that drifted',
+      'codegraph index builds the map from a checkout',
+      'Authenticates with a key, not a device seat',
     ],
     highlights: [
       {
-        title: 'Mode B, headless',
-        body: 'Clone a workspace repo and the directory is the workspace. Pass it with --workspace-path for CI, or --workspace-name to resolve against the desktop registry.',
+        title: 'Choose what breaks the build',
+        body: '--fail-on breaking stops a merge that removes an endpoint or drops an auth guard. --fail-on diffracting is stricter: it fails whenever the surface moves away from the spec at all.',
       },
       {
-        title: 'Run suites in CI',
-        body: 'apicircle run "Smoke Tests" --reporter junit executes a collection and emits JUnit XML your pipeline can ingest — the same execution engine the app uses.',
+        title: 'Comments update instead of piling up',
+        body: 'The summary comment carries a hidden marker, so the next run edits the comment it wrote last time. A busy pull request does not collect twenty of them.',
       },
       {
-        title: 'Spin up a mock with no workspace',
-        body: 'npx @apicircle/cli mock ./openapi.yaml starts a mock server straight from a spec file — handy for local development and contract testing.',
+        title: 'Keys, not seats',
+        body: 'CI runners are ephemeral and would churn through a seat pool, so the CLI authenticates with a key issued from your account instead.',
+      },
+      {
+        title: 'It refuses to leak a public repo',
+        body: 'Findings like "auth removed" map the soft spots of a live API. On a public repository the CLI will not post them unless you pass --allow-public-security-findings.',
       },
     ],
-    cta: { label: 'Get the CLI on npm', href: SITE.links.npmCli },
+    cta: { label: 'See what Team includes', href: '/pricing' },
     screenshot: 'cli',
     screenshotAlt: 'The apicircle command-line interface running a collection',
   },
@@ -220,30 +233,31 @@ export const FEATURES: Feature[] = [
     slug: 'vscode',
     icon: 'code',
     accent: 'sky',
+    plan: 'free',
     eyebrow: 'In your editor',
     title: 'Edit the same workspace from VS Code',
-    tagline: 'Nine sidebar views and YAML request editing — no webview, no separate sync.',
+    tagline: 'Requests open as YAML documents you can edit, validate and send without leaving the editor.',
     metaDescription:
-      'Edit the same workspace as YAML inside VS Code — nine sidebar views, Send CodeLenses, schema validation, mock servers, and a secret vault.',
+      'Edit the same API workspace as YAML inside VS Code — seven sidebar views, Send CodeLenses, JSON-Schema validation, mock servers and a secret vault.',
     summary:
-      'The VS Code extension drives the very same workspace document as the desktop and web apps, byte-for-byte. Requests, environments, and plans are editable YAML under an apicircle: virtual file system, with Send CodeLenses, schema validation, mock servers, a secret vault, and one-click MCP install for Copilot Chat.',
+      'The extension drives the same workspace document as the desktop and web apps, byte for byte. Requests, environments and plans open as YAML under an apicircle: virtual file system, with Send CodeLenses, JSON-Schema validation, mock servers and a secret vault.',
     bullets: [
-      'Nine TreeViews + YAML editing with CodeLenses',
-      'Byte-identical commits with desktop & web',
-      'Mock servers, secret vault & MCP host built in',
+      'Seven sidebar views: Workspace, Editor, Environment, Execution, Mock, History, Snapshots',
+      'YAML editing, with a Send CodeLens on every request',
+      'Commits byte-for-byte identical to desktop and web',
     ],
     highlights: [
       {
-        title: 'Native, not a webview',
-        body: 'Requests open as .req.yaml documents with full editing, JSON-Schema validation, completion for all 17 auth types, and live pre-send diagnostics in the Problems panel.',
+        title: 'It opens real documents',
+        body: 'Requests are .req.yaml files. You get completion for all 17 auth types, JSON-Schema validation, and pre-send diagnostics in the Problems panel.',
       },
       {
-        title: 'Three-surface parity',
-        body: 'The same applyMutation chokepoint means edits from VS Code, desktop, and web produce byte-for-byte identical commits. One repo, three surfaces.',
+        title: 'One repository, three surfaces',
+        body: 'Edits from VS Code, the desktop app and the web app go through the same mutation path, so they produce identical commits. Nobody has to reconcile anything afterwards.',
       },
       {
-        title: 'Everything in the sidebar',
-        body: 'Workspace, Editor, Environment, Execution, Mock, History, Snapshots, MCP, and Link Workspaces — plus auto-refresh when MCP or the CLI writes the file.',
+        title: 'It notices outside writes',
+        body: 'The extension watches the workspace file, so a change made anywhere else appears without a refresh.',
       },
     ],
     cta: { label: 'Get the extension', href: SITE.links.vscode },

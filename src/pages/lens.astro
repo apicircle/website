@@ -15,6 +15,9 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Section from '../components/Section.astro';
 import Icon from '../components/Icon.astro';
+import AppFrame from '../components/AppFrame.astro';
+import Screenshot from '../components/Screenshot.astro';
+import HostMatrix from '../components/HostMatrix.astro';
 import { PLANS, TRIAL_DAYS } from '../data/pricing.ts';
 
 const breadcrumbs = [
@@ -34,6 +37,11 @@ const pillars = [
     icon: 'git-merge',
     title: 'PR Review drift',
     body: 'For each pull request, Lens compares the change against the Code graph and your OpenAPI Spec, and shows where the API moves away from its contract: bodies, parameters, headers, status codes and authentication. Post the findings as review comments on GitHub, GitLab, Bitbucket or Azure DevOps.',
+  },
+  {
+    icon: 'send',
+    title: 'Send to Studio Editor',
+    body: 'Turn any endpoint in the Code graph into a runnable request in the free workspace, pre-filled from what the code accepts and falling back to the Spec where the code is silent. Response assertions are seeded from the contract and on by default, so the request arrives already checking something.',
   },
   {
     icon: 'code',
@@ -74,6 +82,7 @@ const paid = PLANS.filter((p) => p.monthly !== null);
   title="API Circle Lens"
   description="API Circle Lens maps every endpoint in your codebase to the code that implements it, and checks each pull request against your OpenAPI Spec to catch API drift before it merges."
   breadcrumbs={breadcrumbs}
+  lens
 >
   <Section
     headingLevel="h1"
@@ -97,6 +106,22 @@ const paid = PLANS.filter((p) => p.monthly !== null);
     </p>
   </Section>
 
+  <Section class="!pt-0">
+    <div class="mx-auto max-w-5xl">
+      <AppFrame label="Code graph · widgets-api">
+        <Screenshot
+          name="code-graph"
+          alt="The Code graph panel with POST /api/v1/widgets expanded, showing the route, the requireBearer middleware, the createWidget handler, and the database and audit functions it calls"
+          eager
+        />
+      </AppFrame>
+      <p class="mt-4 text-center text-sm text-fg-dim">
+        One endpoint expanded: the route, the guard in front of it, the handler, and the functions
+        the handler calls.
+      </p>
+    </div>
+  </Section>
+
   <Section eyebrow="What you get" eyebrowIcon="boxes" title="One app, from the map of your code to the review">
     <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
       {
@@ -110,6 +135,27 @@ const paid = PLANS.filter((p) => p.monthly !== null);
           </div>
         ))
       }
+    </div>
+  </Section>
+
+  <Section eyebrow="Git hosts" eyebrowIcon="git-branch" title="Where Lens posts a review" align="left">
+    <p class="max-w-3xl text-[15px] leading-relaxed text-fg-muted">
+      Lens speaks GitHub, GitLab, Bitbucket Cloud and Azure DevOps through each host's own review
+      API, and pins comments to the diff line on all four. GitHub works on every plan, including
+      the free one. The rest of the table is where the hosts themselves differ.
+    </p>
+    <HostMatrix class="mt-6" />
+    <div class="mt-6 max-w-3xl">
+      <AppFrame label="Code graph · Send to Studio Editor">
+        <Screenshot
+          name="send-to-editor"
+          alt="The Send to Studio Editor dialog with six endpoints selected, a destination folder, and the pre-fill option enabled"
+        />
+      </AppFrame>
+      <p class="mt-4 text-sm text-fg-dim">
+        Send to Studio Editor: six endpoints on their way into the free workspace, pre-filled from
+        the code contract.
+      </p>
     </div>
   </Section>
 

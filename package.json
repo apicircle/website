@@ -3,13 +3,14 @@
   "version": "1.0.0",
   "type": "module",
   "private": true,
-  "description": "Marketing & docs website for API Circle Studio — apicircle.dev",
+  "description": "Marketing & docs website for API Circle Studio \u2014 apicircle.dev",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "check": "astro check"
+    "check": "node scripts/check-claims.mjs && astro check",
+    "check:claims": "node scripts/check-claims.mjs"
   },
   "dependencies": {
     "@astrojs/tailwind": "^5.1.5",

@@ -1,0 +1,41 @@
+---
+import { PLANS } from '../data/pricing.ts';
+
+interface Props {
+  /** A plan id from `PLANS` — 'free', 'basic', 'pro', 'team'. */
+  plan: string;
+  class?: string;
+}
+const { plan, class: className = '' } = Astro.props;
+
+/**
+ * The chip that says which plan carries a capability.
+ *
+ * Keyed on the plan ID and rendering the plan's own NAME, so the label can
+ * never drift from what checkout charges for. Typing "Pro" beside a feature is
+ * the single easiest way to promise something the gate denies, and a badge is
+ * exactly the kind of small text nobody re-reads.
+ *
+ * An unknown id throws rather than rendering an empty chip, for the same reason
+ * `Icon.astro` throws on an unknown glyph: Astro frontmatter runs at build, so
+ * a typo fails the build instead of shipping a blank.
+ */
+const found = PLANS.find((p) => p.id === plan);
+if (!found) {
+  throw new Error(
+    `<PlanBadge plan="${plan}"> is not a plan id. Known ids: ${PLANS.map((p) => p.id).join(', ')}`,
+  );
+}
+
+/** Free reads quiet, paid reads branded. Derived from the price, not a list of ids. */
+const isFree = found.monthly === null;
+---
+<span
+  class:list={[
+    'inline-flex items-center rounded-full border px-2 py-0.5 text-[0.6875rem] font-semibold uppercase tracking-wide',
+    isFree ? 'border-edge bg-surface text-fg-dim' : 'border-brand/40 bg-brand/10 text-brand',
+    className,
+  ]}
+>
+  {found.name}
+</span>

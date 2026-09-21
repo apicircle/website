@@ -63,9 +63,22 @@ const paths: Record<string, string> = {
     '<rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/>',
   'help-circle':
     '<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>',
+  tag:
+    '<path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/>',
 };
 
-const inner = paths[name] ?? '';
+// An unknown name used to resolve to '' and render an empty <svg>: correct
+// size, correct spacing, no glyph. Nothing failed, and /pricing shipped a blank
+// eyebrow for as long as nobody looked closely. Astro frontmatter runs at build
+// time, so throwing here turns a typo into a failed build instead of a hole in
+// the page.
+const inner = paths[name];
+if (inner === undefined) {
+  throw new Error(
+    `<Icon name="${name}"> is not in the set. Add the glyph to Icon.astro, or use one of: ` +
+      Object.keys(paths).sort().join(', '),
+  );
+}
 ---
 <svg
   xmlns="http://www.w3.org/2000/svg"
