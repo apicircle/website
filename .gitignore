@@ -25,3 +25,8 @@ Thumbs.db
 .vscode/*
 !.vscode/extensions.json
 .idea/
+
+# Raw screenshot captures from lens/regression/capture_marketing.py.
+# Intermediates only: `scripts/process-screenshots.mjs` turns them into the
+# webp under public/screenshots/{dark,light} that the site actually serves.
+.screenshots-raw/
