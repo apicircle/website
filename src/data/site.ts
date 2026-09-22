@@ -21,8 +21,17 @@ export const SITE = {
     github: 'https://github.com/apicircle/studio',
     issues: 'https://github.com/apicircle/studio/issues',
     releases: 'https://github.com/apicircle/studio/releases/latest',
-    /** Lens desktop installers. Published as releases on the public org repo. */
-    lensReleases: 'https://github.com/apicircle/.github/releases',
+    /**
+     * The current Lens desktop release, on the public org repo.
+     *
+     * `/releases/latest`, not the release list and not a direct `.exe` link. It
+     * follows each new published version without an edit here (drafts and
+     * pre-releases are skipped), and it lands on the release page, where the
+     * SmartScreen steps and the SHA-256 sit next to the installer — which
+     * matters while the installer is unsigned. It assumes this repo publishes
+     * only Lens desktop releases; if that changes, pin the tag instead.
+     */
+    lensReleases: 'https://github.com/apicircle/.github/releases/latest',
     vscode: 'https://marketplace.visualstudio.com/items?itemName=apicircle.apicircle-vscode',
     openVsx: 'https://open-vsx.org/extension/apicircle/apicircle-vscode',
     peerlist: 'https://peerlist.io/devaprakash0927/project/api-circle-studio',
