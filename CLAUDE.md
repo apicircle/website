@@ -60,8 +60,12 @@ this site, because a table feels like page content rather than data.
 - That the Code graph panel shows trace folders or marks database writes. The
   desktop shows a call tree, and neither appears in its UI.
 - SAML. The catalogue sells single sign-on over OIDC.
-- A macOS or Linux Lens build, a hosted Lens web app, or the VS Code Lens
-  extension. Lens desktop is Windows x64 only; the other two are not released.
+- A macOS or Linux Lens download, a Microsoft Store listing, a hosted Lens web
+  app, or the VS Code Lens extension. Lens desktop is Windows x64 only; the last
+  two are not released. macOS (Developer ID signing and notarization), Linux
+  (AppImage and .deb) and the Store listing are **in progress**, and may be
+  called exactly that: no date, and no link until a published release or a live
+  Store listing carries it. `/download` holds the list (`lensInProgress`).
 
 **GitHub works on every plan, including free.** Only the other three hosts are
 the paid `git-providers` capability. "GitHub is paid" would be badly wrong to

@@ -11,9 +11,11 @@ import { lensCtas, planName, type Feature } from './feature-types';
  * from `planName()`, never typed.
  *
  * What these pages must not say is in CLAUDE.md: nothing from the hidden Build
- * pillar (the scaffold command's new-project flag included), no Lens build for
- * macOS or Linux, no hosted Lens web app, no VS Code Lens extension, no tool
- * counts, and no single sign-on protocol beyond the catalogue's OIDC.
+ * pillar (the scaffold command's new-project flag included), no Lens download
+ * for macOS or Linux (both are in progress; /download and the /features table
+ * say so, and nothing else needs to), no
+ * hosted Lens web app, no VS Code Lens extension, no tool counts, and no single
+ * sign-on protocol beyond the catalogue's OIDC.
  */
 export const LENS_FEATURES: Feature[] = [
   {

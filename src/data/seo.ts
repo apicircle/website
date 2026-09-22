@@ -176,6 +176,8 @@ function lensNode() {
     name: SITE.lensName,
     applicationCategory: 'DeveloperApplication',
     applicationSubCategory: 'API Development',
+    // What a visitor can install today. macOS and Linux are in progress; add
+    // each one when a published release carries it, not before.
     operatingSystem: 'Windows',
     url: abs('/lens'),
     downloadUrl: abs('/download'),
