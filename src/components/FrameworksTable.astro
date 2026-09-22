@@ -1,0 +1,36 @@
+---
+import { DEEP_FRAMEWORKS, FALLBACK_LANGUAGES, UNSUPPORTED_LANGUAGES, listSentence } from '../data/frameworks.ts';
+
+interface Props {
+  class?: string;
+}
+const { class: className = '' } = Astro.props;
+
+/**
+ * The frameworks the Code graph reads, from `src/data/frameworks.ts`.
+ *
+ * The limits sit under the table in the same size and voice as the table
+ * itself. A reader on PHP finds out here, not after indexing a repository.
+ */
+---
+<div class:list={['mx-auto max-w-3xl', className]}>
+  <div class="overflow-hidden rounded-2xl border border-edge bg-panel">
+    <table class="w-full text-left text-sm">
+      <caption class="sr-only">Languages and frameworks the Code graph reads at full depth</caption>
+      <tbody>
+        {
+          DEEP_FRAMEWORKS.map((row) => (
+            <tr class="border-b border-edge last:border-0">
+              <th scope="row" class="w-1/3 px-5 py-3 align-top font-semibold text-fg">{row.language}</th>
+              <td class="px-5 py-3 text-fg-muted">{row.frameworks.join(', ')}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+  <p class="mt-4 text-sm leading-relaxed text-fg-dim">
+    {listSentence(FALLBACK_LANGUAGES)} gets only a regex pass that finds route lines and nothing behind them.
+    {listSentence(UNSUPPORTED_LANGUAGES)} aren't read yet.
+  </p>
+</div>

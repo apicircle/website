@@ -105,6 +105,16 @@
     border-radius: 4px;
   }
 
+  /* JetBrains Mono's ligatures drew `--repo` as "—repo" and `-<id>` as an
+     arrow, so a command sample showed flags nobody can type. Code is shown
+     exactly as it would be typed. */
+  code,
+  kbd,
+  pre,
+  samp {
+    font-variant-ligatures: none;
+  }
+
   /* Honour the no-JS / system fallback without layout shift */
   ::-webkit-scrollbar {
     width: 12px;

@@ -28,49 +28,8 @@ import CTA from '../components/CTA.astro';
 import Icon from '../components/Icon.astro';
 import FAQ from '../components/FAQ.astro';
 import { FAQS } from '../data/faqs.ts';
+import { FINDINGS as findings } from '../data/findings.ts';
 import { SITE } from '../data/site.ts';
-
-/**
- * Two illustrated findings.
- *
- * Both are things the product genuinely reports — they were taken from a review
- * run against a repository with these exact two edits, and the wording is the
- * Review panel's own. Illustrating a finding Lens cannot produce would be the
- * worst kind of lie here, because it is the one a buyer checks first.
- */
-const findings = [
-  {
-    endpoint: 'POST /api/v1/widgets',
-    severity: 'warning' as const,
-    tags: ['shared-impact', 'auth-changed'],
-    base: [
-      { text: "widgetsRouter.get('/', listWidgets);" },
-      { text: "widgetsRouter.post('/', requireBearer, createWidget);", changed: true },
-    ],
-    head: [
-      { text: "widgetsRouter.get('/', listWidgets);" },
-      { text: "widgetsRouter.post('/', createWidget);", changed: true },
-    ],
-    finding: 'Shared `requireBearer` removed, and it reaches 2 endpoints.',
-    source: 'src/middleware/auth.ts:8',
-  },
-  {
-    endpoint: 'DELETE /api/v1/widgets/:widgetId',
-    severity: 'warning' as const,
-    tags: ['new-side-effect', 'contract-drift'],
-    base: [
-      { text: "recordAudit('widget.deleted', widgetId);" },
-      { text: 'res.status(204).end();', changed: true },
-    ],
-    head: [
-      { text: "recordAudit('widget.deleted', widgetId);" },
-      { text: 'res.status(200).json({ deleted: true });', changed: true },
-    ],
-    finding:
-      'Spec documents response 204, not returned in code. Code returns response 200, not documented in the spec.',
-    source: 'src/handlers/widgets.ts:78',
-  },
-];
 
 /** What never leaves the machine, and the one thing that can. */
 const privacy = [
@@ -122,7 +81,7 @@ const privacy = [
       screenshotAlt="The Code graph panel with POST /api/v1/widgets expanded, showing its route, auth middleware, handler, and the database and audit functions it calls"
       frameLabel="Code graph · widgets-api"
       accent="brand"
-      ctaHref="/lens"
+      ctaHref="/features/code-graph"
       ctaLabel="How the Code graph works"
     />
   </Section>

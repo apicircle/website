@@ -8,14 +8,15 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Section from '../components/Section.astro';
 import AppFrame from '../components/AppFrame.astro';
-import Screenshot from '../components/Screenshot.astro';
 import CodeBlock from '../components/CodeBlock.astro';
 import FAQ from '../components/FAQ.astro';
 import CTA from '../components/CTA.astro';
 import Icon from '../components/Icon.astro';
+import Rich from '../components/Rich.astro';
 import type { Faq } from '../data/faqs.ts';
 import { SITE } from '../data/site.ts';
 import { PLANS } from '../data/pricing.ts';
+import { GIT_FLOW } from '../data/studio-ui.ts';
 
 // Plan facts are generated from the entitlement catalogue; never typed here.
 // This page used to promise "as many workspaces as you need" (claims: history),
@@ -50,12 +51,12 @@ const gitPoints = [
   {
     icon: 'git-branch',
     title: 'Branch, diff, and open PRs',
-    body: 'Push the synced document to your own GitHub repo on an auto-created working branch. Review API changes in a pull request — the same workflow as the code that calls the API.',
+    body: 'Push the synced document to a working branch in your own GitHub repo; Studio names the branch for you. Review API changes in a pull request, the same workflow as the code that calls the API.',
   },
   {
     icon: 'git-merge',
     title: 'Visual three-way merge',
-    body: 'When remote and local diverge, a conflict resolver shows the folder tree, environment priority, and release ledger side by side, so you keep exactly what you intend.',
+    body: 'When remote and local diverge, "Resolve conflicts" lists each difference with "Mine (local)" and "Theirs (remote)" side by side, and "Apply merge" keeps exactly what you chose.',
   },
   {
     icon: 'shield-check',
@@ -100,7 +101,7 @@ const faqs: Faq[] = [
   },
   {
     q: 'How does API Circle store my API collections in Git?',
-    a: 'In API Circle a workspace is plain JSON — the collection tree, environments, and mock definitions — that pushes to your own GitHub repository on an auto-created working branch. Per-device history and sessions stay local and never leave your machine. You push to save, open a pull request from inside the app, and resolve conflicts with a visual three-way merge.',
+    a: 'In API Circle a workspace is plain JSON — the collection tree, environments, and mock definitions — that pushes to a working branch, which Studio names for you, in your own GitHub repository. Per-device history and sessions stay local and never leave your machine. You push to save, open a pull request from inside the app, and resolve conflicts with a visual three-way merge.',
   },
   {
     q: 'Can I manage multiple API workspaces and switch between them?',
@@ -159,12 +160,25 @@ const faqs: Faq[] = [
               <a href="/features/git-workspaces" class="btn-secondary">How Git workspaces work</a>
             </div>
           </div>
+          {/* The four Workspace-panel steps, in the panel's own labels. This was a
+              screenshot, and it showed the Releases card that has since been
+              switched off; a list cannot go stale against a UI that moves. */}
           <AppFrame label="Workspace · Git" class="animate-fade-up">
-            <Screenshot
-              name="git-workspace"
-              alt="API Circle Workspace panel showing the GitHub connection, working branch, and release history"
-              eager
-            />
+            <ol class="divide-y divide-edge">
+              {
+                GIT_FLOW.map((step, i) => (
+                  <li class="flex items-start gap-4 px-6 py-5">
+                    <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand/10 text-sm font-bold text-brand">
+                      {i + 1}
+                    </span>
+                    <span>
+                      <span class="block font-semibold text-fg">{step.label}</span>
+                      <span class="mt-1 block text-sm leading-relaxed text-fg-muted"><Rich text={step.body} /></span>
+                    </span>
+                  </li>
+                ))
+              }
+            </ol>
           </AppFrame>
         </div>
       </div>

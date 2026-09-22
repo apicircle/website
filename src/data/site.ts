@@ -55,24 +55,45 @@ export const SITE = {
    * MCP server and the CLI became paid, so they are gone rather than corrected.
    */
   stats: {
-    authSchemes: 17,
+    /**
+     * The auth picker lists more entries than this, because two of them are
+     * "No Auth" and "Inherit (parent folder)", which are not schemes
+     * (studio `packages/ui-components/src/panels/editor/AuthEditor.tsx`).
+     */
+    authSchemes: 15,
     themes: 60,
+    fonts: 50,
     importFormats: 6,
   },
-  /** Clients the Lens MCP server has been driven from. MCP is a paid surface (Pro). */
-  mcpClients: [
-    'Claude Desktop',
-    'Claude Code',
-    'ChatGPT',
-    'GitHub Copilot',
-    'Cursor',
-    'Continue',
-    'Cline',
-    'Zed',
-    'Windsurf',
+  /**
+   * The MCP panel's client list (lens `packages-lens/ui-lens/src/mcp/service.ts`,
+   * `MCP_CLIENT_OPTIONS`). `installable` clients get their config written by the
+   * "Install" button; the others get a snippet to paste, as does a generic MCP
+   * client. MCP is a paid surface (Pro).
+   */
+  mcpClients: {
+    installable: ['Claude Desktop', 'Claude Code', 'Codex', 'Cursor', 'Continue', 'Zed', 'Windsurf'],
+    manual: ['Cline', 'GitHub Copilot', 'ChatGPT'],
+  },
+  /**
+   * What the free workspace imports: the Import dialog's formats, verbatim
+   * (studio `ImportModal.tsx`, `FORMAT_LABELS`, besides "Auto-detect").
+   */
+  importFormats: [
+    'OpenAPI / Swagger',
+    'Postman v2.1 collection',
+    'Postman environment',
+    'Insomnia v4 export',
+    'cURL command',
+    'API Circle exchange',
   ],
-  importFormats: ['cURL', 'OpenAPI / Swagger', 'Postman', 'Insomnia', 'HAR', '.apicircle.json'],
-  codegenTargets: ['cURL', 'fetch', 'Node (axios)', 'Python (requests)', 'Go', 'Rust'],
+  /**
+   * The MCP server's import and code-generation tools, which are Lens MCP tools
+   * (Pro) and not free-workspace features. The workspace itself has neither.
+   * Source: lens `packages-lens/mcp-core/src/tools/imports.ts` and `codegen.ts`.
+   */
+  mcpImportFormats: ['cURL', 'OpenAPI', 'Postman', 'Insomnia', 'HAR'],
+  mcpCodegenTargets: ['cURL', 'fetch', 'Node (axios)', 'Python (requests)', 'Go', 'Rust'],
 
   /* ---- SEO / GEO (search engine + AI engine) signals ---- */
 
@@ -109,7 +130,7 @@ export const SITE = {
   ],
   /** Default alt text for the social / OG card. */
   ogImageAlt:
-    'API Circle — every API endpoint mapped to the code behind it, with drift flagged in pull requests',
+    'API Circle: know when a pull request changes your API. Code graph, PR Review drift and a free API workspace.',
   /** Optional social handle (without the @). Leave '' to omit Twitter attribution. */
   social: { twitter: '' },
   /**

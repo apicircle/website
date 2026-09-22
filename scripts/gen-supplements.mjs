@@ -30,53 +30,84 @@ function row(segs, x, y, size, family) {
 }
 
 // ---------- CLI terminal ----------
+//
+// The text is REAL output, copied verbatim from `apicircle-lens review` run on
+// the regression fixture (lens `regression/fixtures/lens-fixture-api`) after the
+// two edits `capture_marketing.py` plants: `requireBearer` dropped from POST,
+// and a 204 turned into a 200. It exited 1, because `--fail-on warning` tripped.
+// Only the emoji variation selector after the warning sign is dropped, because
+// the SVG renderer draws it as a box.
 function terminal(c) {
   const W = 1440, H = 900;
-  const X = 56;
+  const X = 48;
   const dot = (cx, fill) => `<circle cx="${cx}" cy="28" r="7" fill="${fill}"/>`;
   const rows = [];
-  let y = 112;
-  const step = 40;
-  const push = (segs, gap = 1) => { rows.push(row(segs, X, y, 25, MONO)); y += step * gap; };
-  const pad = (s, n) => s.padEnd(n);
+  let y = 104;
+  const step = 34;
+  const push = (segs, gap = 1) => { rows.push(row(segs, X, y, 21, MONO)); y += step * gap; };
+  const warn = (endpoint, flags) =>
+    push([{ t: '⚠ [WARN] ', c: c.amber }, { t: endpoint, c: c.fg }, { t: ` — ${flags}`, c: c.dim }]);
+  const bullet = (text) => push([{ t: '    • ', c: c.dim }, { t: text, c: c.fg }]);
 
-  push([{ t: '$ ', c: c.green }, { t: 'apicircle run "Smoke Tests" --reporter junit', c: c.fg }], 1.4);
-  push([{ t: 'API Circle', c: c.dim }, { t: ' · plan ', c: c.dim }, { t: '"Smoke Tests"', c: c.fg }, { t: ' · env ', c: c.dim }, { t: 'Dev', c: c.purple }], 1.4);
-  push([{ t: '✓ ', c: c.green }, { t: pad('Get user', 16), c: c.fg }, { t: pad('GET', 6), c: c.green }, { t: pad('/users/42', 14), c: c.dim }, { t: pad('200', 5), c: c.green }, { t: pad('142ms', 9), c: c.dim }, { t: '3 assertions', c: c.dim }]);
-  push([{ t: '✓ ', c: c.green }, { t: pad('Create user', 16), c: c.fg }, { t: pad('POST', 6), c: c.blue }, { t: pad('/users', 14), c: c.dim }, { t: pad('201', 5), c: c.green }, { t: pad('88ms', 9), c: c.dim }, { t: '2 assertions', c: c.dim }], 1.5);
-  push([{ t: 'PASS', c: c.green }, { t: '  2 passed   0 failed   230 ms total', c: c.dim }]);
-  push([{ t: '✓ ', c: c.green }, { t: 'JUnit report → ./reports/junit.xml', c: c.dim }], 1.6);
-  push([{ t: '$ ', c: c.green }, { t: 'apicircle mock ./openapi.yaml', c: c.fg }]);
-  push([{ t: '› ', c: c.purple }, { t: 'Mock listening on ', c: c.dim }, { t: 'http://localhost:4500', c: c.blue }, { t: '  ·  12 routes', c: c.dim }], 1.5);
+  push([
+    { t: '$ ', c: c.green },
+    { t: 'apicircle-lens review --base ../base-endpoints.json --openapi openapi.json --spec-base-path /api/v1 --fail-on warning', c: c.fg },
+  ]);
+  push([{ t: 'PR Review', c: c.purple }]);
+  warn('DELETE /api/v1/widgets/:widgetId', 'new-side-effect, contract-drift');
+  bullet('Data-write `deleteWidget` changed in the handler');
+  bullet('Spec documents response 204, not returned in code.');
+  bullet('Code returns response 200, not documented in the spec.');
+  warn('PATCH /api/v1/widgets/:widgetId', 'shared-impact, auth-changed');
+  bullet('Shared `requireBearer` removed (reaches 2 endpoints)');
+  bullet('Auth/access-control `requireBearer` added in the pre-request chain');
+  warn('POST /api/v1/widgets', 'shared-impact, auth-changed');
+  bullet('Shared `requireBearer` removed (reaches 2 endpoints)');
+  bullet('Auth/access-control `POST /api/v1/widgets route` changed in the pre-request chain', 2);
+  push([{ t: '3 endpoint(s): 0 breaking, 0 added, 0 removed, 3 changed.', c: c.fg }], 2);
+  push([{ t: 'Focus shift', c: c.purple }]);
+  push([{ t: '  Verdict: ', c: c.dim }, { t: 'in-focus', c: c.green }]);
+  push([{ t: '$ ', c: c.green }, { t: 'echo $?', c: c.fg }]);
+  push([{ t: '1', c: c.amber }]);
   push([{ t: '$ ', c: c.green }, { t: '▋', c: c.fg }]);
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
     <rect width="${W}" height="${H}" fill="${c.bg}"/>
     <rect width="${W}" height="56" fill="${c.bar}"/>
     ${dot(36, '#ff5f57')}${dot(64, '#febc2e')}${dot(92, '#28c840')}
-    <text x="${W / 2}" y="35" text-anchor="middle" font-family="${MONO}" font-size="20" fill="${c.dim}">apicircle — terminal</text>
+    <text x="${W / 2}" y="35" text-anchor="middle" font-family="${MONO}" font-size="20" fill="${c.dim}">apicircle-lens — terminal</text>
     ${rows.join('\n')}
   </svg>`;
 }
 
 // ---------- VS Code ----------
+//
+// Drawn from the extension's own strings (studio `apps/vscode`): the seven
+// views in `package.json`, the CodeLens labels in `src/lang/requestCodeLens.ts`,
+// and a request as `apicircle-request.schema.json` requires it (`name`,
+// `method`, `url`; `key`/`value`/`enabled` on a header row). A request opens as
+// `requests/<folder>/<name>.yaml`, so "Get user" in Users is `Get-user.yaml`.
 function vscode(c) {
   const W = 1440, H = 900;
   const actW = 60;
   const sideW = 300;
   const edX = actW + sideW;
   const tree = [
-    { t: 'API CIRCLE STUDIO', c: c.dim, dx: 16, size: 16, y: 96 },
-    { t: 'EDITOR', c: c.dim, dx: 16, size: 15, y: 134 },
-    { t: '▾ Users', c: c.sideFg, dx: 22, size: 18, y: 168 },
-    { t: 'GET   Get user', c: c.sideFg, dx: 46, size: 18, y: 200 },
-    { t: 'POST  Create user', c: c.sideFg, dx: 46, size: 18, y: 232 },
-    { t: 'ENVIRONMENT', c: c.dim, dx: 16, size: 15, y: 278 },
-    { t: '● Dev   (active)', c: c.sideFg, dx: 22, size: 18, y: 310 },
-    { t: '  Prod', c: c.sideFg, dx: 22, size: 18, y: 342 },
-    { t: 'MOCK SERVERS', c: c.dim, dx: 16, size: 15, y: 388 },
-    { t: 'Users Mock', c: c.sideFg, dx: 22, size: 18, y: 420 },
-    { t: 'MCP · HISTORY · SNAPSHOTS', c: c.dim, dx: 16, size: 15, y: 466 },
+    { t: 'API CIRCLE', c: c.dim, dx: 16, size: 16, y: 96 },
+    { t: 'WORKSPACE', c: c.dim, dx: 16, size: 15, y: 134 },
+    { t: 'EDITOR', c: c.dim, dx: 16, size: 15, y: 172 },
+    { t: '▾ Users', c: c.sideFg, dx: 22, size: 18, y: 206 },
+    { t: 'GET   Get user', c: c.sideFg, dx: 46, size: 18, y: 238 },
+    { t: 'POST  Create user', c: c.sideFg, dx: 46, size: 18, y: 270 },
+    { t: 'ENVIRONMENT', c: c.dim, dx: 16, size: 15, y: 316 },
+    { t: '● Dev   (active)', c: c.sideFg, dx: 22, size: 18, y: 348 },
+    { t: '  Prod', c: c.sideFg, dx: 22, size: 18, y: 380 },
+    { t: 'EXECUTION', c: c.dim, dx: 16, size: 15, y: 426 },
+    { t: 'Smoke', c: c.sideFg, dx: 22, size: 18, y: 458 },
+    { t: 'MOCK', c: c.dim, dx: 16, size: 15, y: 504 },
+    { t: 'Users Mock', c: c.sideFg, dx: 22, size: 18, y: 536 },
+    { t: 'HISTORY', c: c.dim, dx: 16, size: 15, y: 582 },
+    { t: 'SNAPSHOTS', c: c.dim, dx: 16, size: 15, y: 620 },
   ];
   const treeSvg = tree
     .map((n) => `<text x="${actW + n.dx}" y="${n.y}" font-family="${SANS}" font-size="${n.size}" fill="${n.c}">${esc(n.t)}</text>`)
@@ -87,30 +118,32 @@ function vscode(c) {
   const lh = 38;
   const yamlRows = [];
   const yl = (segs) => { yamlRows.push(row(segs, ex, y, 21, MONO)); y += lh; };
-  yl([{ t: '# Get user', c: c.comment }]);
+  yl([{ t: 'name: ', c: c.key }, { t: 'Get user', c: c.str }]);
   yl([{ t: 'method: ', c: c.key }, { t: 'GET', c: c.str }]);
   yl([{ t: 'url: ', c: c.key }, { t: 'https://api.example.com/users/{{id}}', c: c.str }]);
   yl([{ t: 'headers:', c: c.key }]);
   yl([{ t: '  - key: ', c: c.key }, { t: 'Accept', c: c.str }]);
   yl([{ t: '    value: ', c: c.key }, { t: 'application/json', c: c.str }]);
-  const inheritLens = `<text x="${ex}" y="${y - 4}" font-family="${SANS}" font-size="15" fill="${c.lens}">◆ Inherits from Users (bearer)</text>`;
+  yl([{ t: '    enabled: ', c: c.key }, { t: 'true', c: c.str }]);
+  const inheritLens = `<text x="${ex}" y="${y - 4}" font-family="${SANS}" font-size="15" fill="${c.lens}">${esc('◆ Inherits from Users (bearer)')}</text>`;
   y += 26;
   yl([{ t: 'auth:', c: c.key }]);
   yl([{ t: '  type: ', c: c.key }, { t: 'inherit', c: c.str }]);
 
-  const lineNos = Array.from({ length: 9 }, (_, i) => `<text x="${edX + 44}" y="${154 + i * lh}" font-family="${MONO}" font-size="15" fill="${c.dim}" text-anchor="end">${i + 1}</text>`).join('\n');
+  // Nine YAML lines; the inherit CodeLens sits between line 7 and line 8.
+  const lineNos = Array.from({ length: 9 }, (_, i) => `<text x="${edX + 44}" y="${154 + i * lh + (i >= 7 ? 26 : 0)}" font-family="${MONO}" font-size="15" fill="${c.dim}" text-anchor="end">${i + 1}</text>`).join('\n');
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
     <rect width="${W}" height="${H}" fill="${c.bg}"/>
     <rect width="${W}" height="40" fill="${c.bar}"/>
-    <text x="${W / 2}" y="26" text-anchor="middle" font-family="${SANS}" font-size="16" fill="${c.dim}">Get user.req.yaml — API Circle Studio</text>
+    <text x="${W / 2}" y="26" text-anchor="middle" font-family="${SANS}" font-size="16" fill="${c.dim}">Get-user.yaml — API Circle Studio</text>
     <rect x="0" y="40" width="${actW}" height="${H - 40}" fill="${c.activity}"/>
     <circle cx="${actW / 2}" cy="82" r="13" fill="${c.accent}"/>
     <rect x="${actW}" y="40" width="${sideW}" height="${H - 40}" fill="${c.side}"/>
     ${treeSvg}
     <rect x="${edX}" y="40" width="${W - edX}" height="44" fill="${c.bar}" opacity="0.45"/>
-    <text x="${edX + 24}" y="68" font-family="${SANS}" font-size="16" fill="${c.fg}">Get user.req.yaml</text>
-    <text x="${ex}" y="120" font-family="${SANS}" font-size="16" fill="${c.lens}">▶ Send    ✚ Add section…    ⤵ New from template…</text>
+    <text x="${edX + 24}" y="68" font-family="${SANS}" font-size="16" fill="${c.fg}">Get-user.yaml</text>
+    <text x="${ex}" y="120" font-family="${SANS}" font-size="16" fill="${c.lens}" xml:space="preserve">${esc('▶▶ SEND REQUEST  (Ctrl/Cmd+Enter)     ✚ Add section…     ⤵ New from template…')}</text>
     ${lineNos}
     ${yamlRows.join('\n')}
     ${inheritLens}

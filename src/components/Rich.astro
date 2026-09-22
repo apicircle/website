@@ -1,0 +1,23 @@
+---
+/**
+ * Plain text with `code` spans, for feature copy written in data files.
+ *
+ * Flags, file names and CLI verbs read better in monospace, and the copy lives
+ * in `.ts` data, not markup. Splitting on backticks keeps it text: nothing here
+ * is parsed as HTML, so a data string cannot inject markup into the page.
+ */
+interface Props {
+  text: string;
+}
+const { text } = Astro.props;
+const parts = text.split('`');
+---
+{
+  parts.map((part, i) =>
+    i % 2 === 1 ? (
+      <code class="rounded bg-surface px-1 py-0.5 font-mono text-[0.88em] text-fg">{part}</code>
+    ) : (
+      part
+    ),
+  )
+}

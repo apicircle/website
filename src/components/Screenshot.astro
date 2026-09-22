@@ -1,11 +1,14 @@
 ---
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+
 /**
  * Theme-aware product screenshot. Renders both the light and dark capture and
  * shows the one matching the active site theme (the `dark` class on <html>).
  *
- * Images live in /public/screenshots/{light,dark}/<name>.webp. Captured fresh
- * from the running Studio app — light theme uses a light Studio theme, dark
- * uses One Dark Pro — so the product always matches the page around it.
+ * Images live in /public/screenshots/{light,dark}/<name>.webp, captured from
+ * the real app by `lens/regression/capture_marketing.py` — light uses GitHub
+ * Light, dark uses One Dark Pro — so the product matches the page around it.
  */
 interface Props {
   name: string;
@@ -25,6 +28,21 @@ const {
   eager = false,
   rounded = false,
 } = Astro.props;
+
+// A missing file used to ship as a broken <img> through a green build, and only
+// in the theme nobody was looking at: dark is the default, so a missing dark
+// capture is invisible to whoever added the light one. Frontmatter runs at
+// build time, so a name without BOTH captures fails the build instead, the way
+// Icon and PlanBadge fail on an unknown name.
+const missing = ['dark', 'light'].filter(
+  (theme) => !existsSync(join(process.cwd(), 'public', 'screenshots', theme, `${name}.webp`)),
+);
+if (missing.length > 0) {
+  throw new Error(
+    `<Screenshot name="${name}"> has no ${missing.join(' or ')} capture in public/screenshots/. ` +
+      'Capture both themes with lens/regression/capture_marketing.py, then run scripts/process-screenshots.mjs.',
+  );
+}
 
 const imgClass = [
   'block h-auto w-full',

@@ -49,9 +49,9 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" v
   <rect x="0" y="0" width="1200" height="6" fill="url(#accent)"/>
   ${logo}
   <text x="430" y="250" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="64" font-weight="800" fill="#edf4ff">API <tspan fill="#a78bfa">Circle</tspan></text>
-  <text x="432" y="320" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="31" font-weight="600" fill="#a5b6cf">An API workspace you can git diff —</text>
-  <text x="432" y="362" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="31" font-weight="600" fill="#a5b6cf">and an AI can drive.</text>
-  <text x="432" y="446" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="22" font-weight="500" fill="#7c88a1">Git-backed · MCP-native · Desktop · Web · CLI · VS Code</text>
+  <text x="432" y="320" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="31" font-weight="600" fill="#a5b6cf">Know when a pull request</text>
+  <text x="432" y="362" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="31" font-weight="600" fill="#a5b6cf">changes your API.</text>
+  <text x="432" y="446" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="22" font-weight="500" fill="#7c88a1">Code graph · PR Review drift · Free API workspace</text>
 </svg>`;
 
 await sharp(Buffer.from(svg)).png().toFile(join(root, 'public', 'og.png'));

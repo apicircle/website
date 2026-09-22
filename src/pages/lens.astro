@@ -18,6 +18,7 @@ import Icon from '../components/Icon.astro';
 import AppFrame from '../components/AppFrame.astro';
 import Screenshot from '../components/Screenshot.astro';
 import HostMatrix from '../components/HostMatrix.astro';
+import FrameworksTable from '../components/FrameworksTable.astro';
 import { PLANS, TRIAL_DAYS } from '../data/pricing.ts';
 
 const breadcrumbs = [
@@ -31,47 +32,45 @@ const pillars = [
   {
     icon: 'workflow',
     title: 'Code graph',
+    href: '/features/code-graph',
     body: 'Lens reads your repository and maps every API endpoint to the code that implements it: the route, the handler, the request and response it really uses, and the functions it calls. You can correct and extend the map, and it is saved in your repository so it is versioned with your code.',
   },
   {
     icon: 'git-merge',
     title: 'PR Review drift',
+    href: '/features/pr-review-drift',
     body: 'For each pull request, Lens compares the change against the Code graph and your OpenAPI Spec, and shows where the API moves away from its contract: bodies, parameters, headers, status codes and authentication. Post the findings as review comments on GitHub, GitLab, Bitbucket or Azure DevOps.',
   },
   {
     icon: 'send',
     title: 'Send to Studio Editor',
+    href: '/features/send-to-studio-editor',
     body: 'Turn any endpoint in the Code graph into a runnable request in the free workspace, pre-filled from what the code accepts and falling back to the Spec where the code is silent. Response assertions are seeded from the contract and on by default, so the request arrives already checking something.',
   },
   {
     icon: 'code',
     title: 'Drift-infill scaffolding',
+    href: '/features/scaffolding',
     body: 'When your Spec declares an endpoint the code does not implement yet, Lens generates framework-native code for it, into your repository, for you to review.',
   },
   {
     icon: 'sparkles',
     title: 'AI Assistant, with your own key',
+    href: '/features/assistant',
     body: 'Ask questions about your API and get answers grounded in the Code graph. The Assistant uses the AI provider you choose (Anthropic, OpenAI or Google Gemini) with your own API key, directly from your machine.',
   },
   {
     icon: 'plug',
     title: 'MCP server for your AI tools',
+    href: '/features/mcp-ai',
     body: 'Give Claude, Cursor, Copilot and other MCP clients the same Code graph you work from, through a server that runs locally.',
   },
   {
     icon: 'terminal',
     title: 'CLI for CI pipelines',
+    href: '/features/cli',
     body: 'Run PR Review in your pipeline and fail the build when a pull request drifts from the Spec, before it reaches review.',
   },
-];
-
-const frameworks = [
-  { language: 'TypeScript and JavaScript', list: 'Express, Fastify, NestJS, Hono, Koa, Ts.ED, Next.js' },
-  { language: 'Python', list: 'FastAPI, Flask, Django with DRF, Django Ninja' },
-  { language: 'Go', list: 'gin, chi, echo, fiber, gorilla/mux, net/http, Huma' },
-  { language: 'Java', list: 'Spring MVC, Spring WebFlux, Micronaut, JAX-RS / Jakarta' },
-  { language: 'C#', list: 'ASP.NET Core minimal APIs and MVC' },
-  { language: 'Rust', list: 'axum, actix-web, Rocket, Salvo, poem' },
 ];
 
 // Which plan first includes each paid capability, straight from the catalogue.
@@ -126,13 +125,17 @@ const paid = PLANS.filter((p) => p.monthly !== null);
     <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
       {
         pillars.map((p) => (
-          <div class="card">
+          <a href={p.href} class="group card card-hover flex flex-col">
             <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand/10 text-brand">
               <Icon name={p.icon} size={20} />
             </span>
-            <h3 class="mt-4 text-lg font-semibold text-fg">{p.title}</h3>
-            <p class="mt-2 text-sm leading-relaxed text-fg-muted">{p.body}</p>
-          </div>
+            <h3 class="mt-4 text-lg font-semibold text-fg group-hover:text-brand">{p.title}</h3>
+            <p class="mt-2 flex-1 text-sm leading-relaxed text-fg-muted">{p.body}</p>
+            <span class="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-brand">
+              How it works
+              <Icon name="arrow-right" size={15} class="transition-transform group-hover:translate-x-1" />
+            </span>
+          </a>
         ))
       }
     </div>
@@ -145,6 +148,10 @@ const paid = PLANS.filter((p) => p.monthly !== null);
       the free one. The rest of the table is where the hosts themselves differ.
     </p>
     <HostMatrix class="mt-6" />
+    <a href="/features/git-hosts" class="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-brand hover:underline">
+      How each host is set up
+      <Icon name="arrow-right" size={15} />
+    </a>
     <div class="mt-6 max-w-3xl">
       <AppFrame label="Code graph · Send to Studio Editor">
         <Screenshot
@@ -189,20 +196,7 @@ const paid = PLANS.filter((p) => p.monthly !== null);
   </Section>
 
   <Section eyebrow="Frameworks" eyebrowIcon="code" title="Built for the frameworks your APIs use">
-    <div class="mx-auto max-w-3xl overflow-hidden rounded-2xl border border-edge bg-panel">
-      <table class="w-full text-left text-sm">
-        <tbody>
-          {
-            frameworks.map((f) => (
-              <tr class="border-b border-edge last:border-0">
-                <th scope="row" class="w-1/3 px-5 py-3 align-top font-semibold text-fg">{f.language}</th>
-                <td class="px-5 py-3 text-fg-muted">{f.list}</td>
-              </tr>
-            ))
-          }
-        </tbody>
-      </table>
-    </div>
+    <FrameworksTable />
   </Section>
 
   <Section

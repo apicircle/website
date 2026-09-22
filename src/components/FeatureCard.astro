@@ -1,6 +1,7 @@
 ---
 import Icon from './Icon.astro';
 import PlanBadge from './PlanBadge.astro';
+import Rich from './Rich.astro';
 import type { Feature } from '../data/features.ts';
 
 interface Props {
@@ -30,8 +31,8 @@ const a = ACCENT[feature.accent] ?? ACCENT.brand;
     <span class:list={['inline-flex h-11 w-11 items-center justify-center rounded-xl', a.bg, a.text]}>
       <Icon name={feature.icon} size={22} />
     </span>
-    {/* Which plan carries this. Two of these cards are Pro and Team, and without
-        the badge the grid read as one free feature set. */}
+    {/* Which plan carries this. Without the badge the grid once read as one
+        free feature set, while /pricing charged for half of it. */}
     <PlanBadge plan={feature.plan} />
   </div>
   <h3 class="text-lg font-semibold text-fg">{feature.title}</h3>
@@ -41,7 +42,7 @@ const a = ACCENT[feature.accent] ?? ACCENT.brand;
       feature.bullets.map((b) => (
         <li class="flex items-start gap-2 text-sm text-fg-dim">
           <Icon name="check" size={15} class={`mt-0.5 shrink-0 ${a.text}`} />
-          <span>{b}</span>
+          <span><Rich text={b} /></span>
         </li>
       ))
     }

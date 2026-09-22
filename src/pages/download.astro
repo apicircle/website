@@ -51,6 +51,7 @@ const breadcrumbs = [
           The whole API workspace, plus the panels a paid plan unlocks: the Code graph, PR Review,
           the AI Assistant and MCP setup. Every plan starts with a {TRIAL_DAYS}-day free trial, so
           you can index a repository and review a pull request before you decide.
+          <a href="/features#lens" class="text-brand hover:underline">What each panel does →</a>
         </p>
         <div class="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
           <a href={SITE.links.lensReleases} target="_blank" rel="noopener" class="btn-primary">
@@ -76,8 +77,10 @@ const breadcrumbs = [
       repository as JSON you can read.
     </p>
 
+    {/* min-w-0: a grid item otherwise grows to its longest unbreakable line, and the
+        VS Code install command pushed all three cards past a phone screen. */}
     <div class="mt-5 grid gap-5 lg:grid-cols-3">
-      <div class="card flex flex-col">
+      <div class="card flex min-w-0 flex-col">
         <span class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-node-green/10 text-node-green">
           <Icon name="globe" size={22} />
         </span>
@@ -91,7 +94,7 @@ const breadcrumbs = [
         </a>
       </div>
 
-      <div class="card flex flex-col">
+      <div class="card flex min-w-0 flex-col">
         <span class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-node-blue/10 text-node-blue">
           <Icon name="monitor" size={22} />
         </span>
@@ -120,7 +123,7 @@ const breadcrumbs = [
         </p>
       </div>
 
-      <div class="card flex flex-col">
+      <div class="card flex min-w-0 flex-col">
         <span class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-node-sky/10 text-node-sky">
           <Icon name="code" size={22} />
         </span>

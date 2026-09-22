@@ -24,7 +24,8 @@ repo — from the entitlement catalogue, which is checked against the gate itsel
 Never hand-write a price, plan name, capability label, workspace cap, trial
 length or the currency note. Read them from `PLANS`, `TRIAL_DAYS` and
 `PRICE_CURRENCY_NOTE`, or render `<PlanBadge plan="pro" />`, which prints the
-plan's own name from its id.
+plan's own name from its id. In a data string, use `planName('pro')` from
+`src/data/feature-types.ts`: "See what Team includes" was typed by hand once.
 
 A hard-coded `$18.99` in a comparison table is the single most likely mistake on
 this site, because a table feels like page content rather than data.
@@ -48,6 +49,19 @@ this site, because a table feels like page content rather than data.
 - That GitLab, Bitbucket or Azure DevOps have been exercised against a live
   host. They are covered against an emulator. Safe phrasing: *"Lens speaks
   GitLab, Bitbucket Cloud and Azure DevOps through each host's own review API."*
+- HAR import or code generation as part of the free workspace. Both exist only
+  as Lens MCP tools (`import.har`, `generate.code`), which are Pro.
+- "17 auth schemes". The picker has 17 entries, but two are "No Auth" and
+  "Inherit (parent folder)". Use `SITE.stats.authSchemes`.
+- That the web app runs mock servers. A browser tab cannot listen on a port: it
+  edits definitions, and Studio desktop or VS Code runs them.
+- `.req.yaml` files, a "release ledger", "auto-created" working branches, or
+  cross-workspace environments. None of them is true of Studio 2.0.
+- That the Code graph panel shows trace folders or marks database writes. The
+  desktop shows a call tree, and neither appears in its UI.
+- SAML. The catalogue sells single sign-on over OIDC.
+- A macOS or Linux Lens build, a hosted Lens web app, or the VS Code Lens
+  extension. Lens desktop is Windows x64 only; the other two are not released.
 
 **GitHub works on every plan, including free.** Only the other three hosts are
 the paid `git-providers` capability. "GitHub is paid" would be badly wrong to
@@ -97,9 +111,11 @@ homepage moves toward their voice. They never move toward the homepage's.**
 
 `public/screenshots/{dark,light}/<name>.webp`, captured by
 `lens/regression/capture_marketing.py`, which drives the real app over CDP.
+Studio screens come from the same Lens desktop app in Studio mode.
 `<Screenshot>` renders **both** variants and CSS-toggles them, so a name missing
-from one theme breaks only in the other — and dark is the default, so a missing
-dark file is invisible to whoever added it.
+from one theme would break only in the other — and dark is the default, so a
+missing dark file is invisible to whoever added it. `Screenshot.astro` now
+**throws** at build time unless both files exist.
 
 Raw captures land in `.screenshots-raw/`, outside `public/`: Astro copies
 `public/` verbatim into `dist/`, so raws kept there were published alongside the
@@ -116,6 +132,26 @@ webp made from them.
   genuinely produces.
 - `CTA` takes `primary` / `secondary`. It renders on eight pages; a page about
   the paid product should not end by pitching the free one.
+- `FeatureExtras` renders a feature's `extras` (frameworks table, drift findings,
+  host matrix, account tabs …) from data modules that name their source.
+- `Rich` renders `` `code` `` spans inside data strings, as text: nothing in a
+  data string is parsed as HTML.
+
+## Feature pages
+
+One entry per page, in `src/data/features-lens.ts` (first) and
+`src/data/features-studio.ts`. `features.ts` assembles them and **throws** on a
+duplicate slug, a removed published route, a Lens entry after a Studio one, a
+Lens page on Free or a Studio page on a paid plan, and a meta description over
+160 characters or with a backtick or an em-dash in it.
+
+- `bullets` and `highlights` are typed as two or four, never three.
+- A highlight or sample that needs a different plan from its page carries
+  `plan`, which renders a badge.
+- Lens pages pass `lens` to `BaseLayout`, so their structured data is the paid
+  product's, and end on the Lens call to action.
+- Every UI label in quotes is verbatim from the product source. Check it there,
+  not in a doc: the docs had drifted in a dozen places.
 
 ## Don't delete routes
 
@@ -145,7 +181,9 @@ anywhere but the generated catalogue. Every rule names what to use instead.
 
 It is a grep, so it is blunt on purpose. A line that must quote a banned string
 as history — an explanatory comment about the mistake, usually — carries
-`claims: history` in a comment and is skipped. `src/data/pricing.ts` is exempt
+`claims: history` in a comment and is skipped. A rule's `unless` exempts a line
+that also names the true context: "HAR" and "code generation" are false for the
+free workspace and true on the line that says they are MCP tools. `src/data/pricing.ts` is exempt
 entirely: it is generated, it is the authority the rules defer to, and a marker
 added to it would be wiped by the next export.
 

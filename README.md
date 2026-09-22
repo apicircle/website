@@ -19,8 +19,10 @@ pnpm install
 pnpm dev        # → http://localhost:4321
 pnpm build      # static output to ./dist
 pnpm preview    # serve the production build locally
-pnpm check      # astro type-check
+pnpm check      # claims guard (scripts/check-claims.mjs), then astro check
 ```
+
+`pnpm build` does not type-check. Run `pnpm check` before you publish.
 
 ## Project structure
 
@@ -34,7 +36,7 @@ website/
 │   └── screenshots/{dark,light}/ # product screenshots, one set per theme
 ├── src/
 │   ├── components/               # Astro components (Header, Hero, Spotlight, …)
-│   ├── data/                     # site.ts · nav.ts · features.ts (content)
+│   ├── data/                     # site.ts · nav.ts · features*.ts · pricing.ts (generated) …
 │   ├── layouts/BaseLayout.astro  # <head>/SEO, theme boot script, header + footer
 │   ├── pages/                    # index, features/, download, docs, 404, sitemap.xml.ts
 │   └── styles/global.css         # theme tokens (:root = light, html.dark = dark)
@@ -43,8 +45,14 @@ website/
 └── .github/workflows/deploy.yml  # GitHub Pages deploy
 ```
 
-Content is data-driven: edit `src/data/features.ts` and the home page, the
-features index, and the six per-feature pages all update together.
+Features are data. `src/data/features-lens.ts` (the paid product, listed first)
+and `src/data/features-studio.ts` (the free workspace) hold one entry per
+feature page; `src/data/features.ts` assembles them and fails the build on a
+duplicate slug, a removed route, a Lens entry after a Studio one, a plan that
+does not match the product, or a meta description over 160 characters. The
+`/features` index, every `/features/<slug>` page, the header menu, the footer's
+Features column, the sitemap and `llms.txt` all read that one list. Plan names
+come from `planName()` and `PlanBadge`, never typed.
 
 ## Theming
 
@@ -57,25 +65,31 @@ toggle in `localStorage` (`apicircle-site-theme`). Tokens are RGB triplets in
 
 ## Screenshots
 
-Product screenshots are captured fresh from the running Studio web app in
-**both themes** — One Dark Pro for the dark site, GitHub Light for the light
-site — so the product always matches the page around it. They are served from
+Product screenshots are captured from the real Lens desktop app in **both
+themes** (One Dark Pro for the dark site, GitHub Light for the light site), so
+the product always matches the page around it. Studio screens are taken from
+the same app in Studio mode. They are served from
 `public/screenshots/{dark,light}/<key>.webp`; `Screenshot.astro` shows the
-variant matching the active theme.
+variant matching the active theme, and fails the build if either is missing.
 
-Regeneration scripts (each is standalone; run from this folder):
+To re-capture:
+
+1. In the Lens repo, rebuild the desktop app:
+   `pnpm --filter @apicircle-lens/lens-desktop build`.
+2. From `lens/regression`, run `python capture_marketing.py` (or
+   `--only <name>`). It stages a demo repository, drives the app over CDP and
+   writes PNGs to `.screenshots-raw/{dark,light}/` in this repo.
+3. Here, run `node scripts/process-screenshots.mjs` to turn them into webp.
+
+Other scripts (each is standalone; run from this folder):
 
 | Script | What it does |
 | --- | --- |
-| `node scripts/capture-screenshots.mjs` | Drives the **running** Studio dev server (`http://localhost:5174`) with Playwright, seeds a realistic workspace into IndexedDB, and captures each panel in both themes to `public/screenshots/_raw/`. Resolves Playwright from the studio `e2e/web` workspace — Studio itself is never modified. |
-| `node scripts/process-screenshots.mjs` | Crops/optimizes the raw PNGs to webp in `public/screenshots/{dark,light}/`. |
-| `node scripts/gen-supplements.mjs` | Generates the CLI-terminal and VS Code views (which don't exist in the web app) for both themes. |
+| `node scripts/process-screenshots.mjs` | Converts the raw PNGs to webp in `public/screenshots/{dark,light}/`. |
+| `node scripts/gen-supplements.mjs` | Draws the CLI-terminal and VS Code views for both themes. |
 | `node scripts/gen-og.mjs` | Regenerates `public/og.png` (the 1200×630 social card). |
-| `node scripts/gen-placeholders.mjs` | Wireframe placeholders for any missing screenshot slot. |
-
-To re-capture: start the Studio web app (`pnpm dev:web` in the studio repo →
-port 5174), then run `capture-screenshots.mjs` followed by
-`process-screenshots.mjs`.
+| `node scripts/capture-screenshots.mjs` | Legacy: the old Studio-web capture. It writes to `public/screenshots/_raw/`, which the processor never reads. |
+| `node scripts/gen-placeholders.mjs` | Do not run: it overwrites real screenshots with wireframes. |
 
 ## Deploy (GitHub Pages)
 

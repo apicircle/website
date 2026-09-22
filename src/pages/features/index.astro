@@ -1,10 +1,26 @@
 ---
+/**
+ * Every feature, Lens first.
+ *
+ * This page used to be six cards in one grid, Studio first, with the MCP server
+ * and the CLI standing in for the whole paid product; the Code graph and PR
+ * Review drift, which the homepage and /pricing sell, had no page at all. The
+ * feature list is now data (`src/data/features-lens.ts`, `features-studio.ts`),
+ * and this page, the header menu, the sitemap and llms.txt all read it.
+ *
+ * Shape, per CLAUDE.md: the paid product gets full cards, the free workspace a
+ * lighter list of rows, then a table and a definition list. No three full
+ * `<Section eyebrow title subtitle>` blocks in a row.
+ */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Section from '../../components/Section.astro';
 import FeatureCard from '../../components/FeatureCard.astro';
+import PlanBadge from '../../components/PlanBadge.astro';
 import CTA from '../../components/CTA.astro';
 import Icon from '../../components/Icon.astro';
 import { FEATURES } from '../../data/features.ts';
+import { SURFACES } from '../../data/surfaces.ts';
+import { TRIAL_DAYS } from '../../data/pricing.ts';
 import { SITE } from '../../data/site.ts';
 
 const breadcrumbs = [
@@ -12,55 +28,168 @@ const breadcrumbs = [
   { name: 'Features', url: '/features' },
 ];
 
-const toolkit = [
-  { icon: 'file-json', title: 'Imports', body: `cURL, OpenAPI/Swagger, Postman, Insomnia, HAR, and portable .apicircle.json — ${SITE.stats.importFormats} formats.` },
-  { icon: 'code', title: 'Code generation', body: 'Turn any saved request into cURL, fetch, Node (axios), Python, Go, or Rust.' },
-  { icon: 'layers', title: 'Environments', body: 'Priority ordering and cross-workspace variable sources, with encrypted secret rows.' },
-  { icon: 'shield-check', title: 'Assertions', body: 'Status, header, body, JSON-path, and duration checks on every response.' },
-  { icon: 'workflow', title: 'Execution plans', body: 'Chain requests into multi-step plans, run them with assertions, and replay from history.' },
-  { icon: 'boxes', title: 'Global assets', body: 'Reusable JSON Schemas, GraphQL definitions, and file assets tracked alongside the repo.' },
-  { icon: 'history', title: 'Request history', body: 'Full headers, body previews, and assertion results for every run — per device.' },
-  { icon: 'key', title: 'Secret vault', body: 'AES-GCM encryption, OS-keychain wrapping on desktop, passphrase model on web.' },
+const lens = FEATURES.filter((f) => f.product === 'lens');
+const studio = FEATURES.filter((f) => f.product === 'studio');
+
+/** Four things the workspace does that don't need a page of their own. */
+const extras = [
+  {
+    term: `${SITE.stats.themes} themes and ${SITE.stats.fonts} fonts`,
+    body: 'Each theme recolours the code editor as well as the app. Text size runs from 80% to 150%.',
+  },
+  {
+    term: 'Keyboard shortcuts',
+    body: 'Ctrl/Cmd+Enter sends. Ctrl/Cmd+N starts a request in the editor, Ctrl/Cmd+1 to 7 switch panels, and Ctrl/Cmd+K opens the Secret Vault.',
+  },
+  {
+    term: 'A Help Center that searches',
+    body: 'Twenty-three articles ship inside the app, searchable, beside an 18-step tour you can take again from the Help Center.',
+  },
+  {
+    term: 'Responses sized for an AI',
+    body: 'A JSON response previews as TOON, YAML or CSV, with how much smaller each one is than minified JSON. Paste the short one into a prompt.',
+  },
 ];
 ---
 <BaseLayout
   title="Features"
-  description="Every API Circle capability and the plan it belongs to: Git-backed collections, local mock servers, 17 auth schemes, execution plans, the VS Code extension, the MCP server and the CLI."
+  description="Every API Circle feature and the plan it needs: the Code graph, PR Review drift and the rest of Lens, then the free Studio workspace, mocks and VS Code."
   breadcrumbs={breadcrumbs}
 >
   <Section
     headingLevel="h1"
     eyebrow="Features"
     eyebrowIcon="boxes"
-    title="Every capability, and the plan it belongs to"
-    subtitle="Most of this runs with no account and no subscription, and your collections stay in your own Git repository as JSON you can read. Two of the cards below are paid — the MCP server and the command-line interface — and each one says so."
+    title="Everything API Circle does"
+    subtitle="Lens reads your repository and checks each pull request against your Spec. It's the paid half, so it comes first below, with the plan on every card. Studio is the API workspace underneath it: free, and no account."
   >
-    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-      {FEATURES.map((feature) => <FeatureCard feature={feature} />)}
+    <div class="flex flex-wrap justify-center gap-3">
+      <a href="#lens" class="chip hover:border-brand hover:text-brand">
+        Lens · from <PlanBadge plan="basic" />
+      </a>
+      <a href="#studio" class="chip hover:border-brand hover:text-brand">
+        Studio · <PlanBadge plan="free" />
+      </a>
     </div>
   </Section>
 
-  <Section
-    class="!pt-0"
-    eyebrow="In the free workspace"
-    eyebrowIcon="zap"
-    title="The day-to-day essentials"
-    subtitle="Eight more things the workspace does without an account: six import formats, six code-generation targets, JSON-path assertions, multi-step plans, and a vault that wraps its keys in the OS keychain on desktop."
-  >
-    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-      {
-        toolkit.map((t) => (
-          <div class="card flex flex-col gap-3">
-            <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand/10 text-brand">
-              <Icon name={t.icon} size={20} />
-            </span>
-            <h3 class="text-base font-semibold text-fg">{t.title}</h3>
-            <p class="text-sm leading-relaxed text-fg-muted">{t.body}</p>
-          </div>
-        ))
-      }
+  <!-- Lens: full cards. The product the pricing page charges for. -->
+  <section id="lens" class="section !pt-0">
+    <div class="container-page">
+      <h2 class="flex flex-wrap items-center gap-3 text-3xl font-bold tracking-tight text-fg">
+        Lens
+        <span class="inline-flex items-center gap-2 text-sm font-medium text-fg-dim">from <PlanBadge plan="basic" /></span>
+      </h2>
+      <p class="mt-4 max-w-3xl text-pretty text-lg leading-relaxed text-fg-muted">
+        Lens builds a Code graph of your API from its source, with every endpoint mapped to the
+        code that implements it. Using the Code graph and your OpenAPI Spec, it shows where a pull
+        request moves the API away from its contract. Every plan starts with a {TRIAL_DAYS}-day
+        trial.
+      </p>
+      <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {lens.map((feature) => <FeatureCard feature={feature} />)}
+      </div>
     </div>
-  </Section>
+  </section>
 
-  <CTA />
+  <!-- Studio: a lighter unit, rows rather than cards. -->
+  <section id="studio" class="section border-y border-edge bg-panel/30">
+    <div class="container-page">
+      <h2 class="flex flex-wrap items-center gap-3 text-3xl font-bold tracking-tight text-fg">
+        Studio
+        <PlanBadge plan="free" />
+      </h2>
+      <p class="mt-4 max-w-3xl text-pretty text-lg leading-relaxed text-fg-muted">
+        The API workspace. You write and send requests, chain them into plans and serve mocks,
+        and your collections stay in your own Git repository as JSON you can read. It runs in a
+        browser, on the desktop and in VS Code.
+      </p>
+      <ul class="mt-10 grid gap-3 md:grid-cols-2">
+        {
+          studio.map((feature) => (
+            <li>
+              <a
+                href={`/features/${feature.slug}`}
+                class="group flex h-full items-start gap-4 rounded-2xl border border-edge bg-panel p-5 transition-colors hover:border-brand/60"
+              >
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand">
+                  <Icon name={feature.icon} size={20} />
+                </span>
+                <span class="min-w-0 flex-1">
+                  <span class="block font-semibold text-fg group-hover:text-brand">{feature.title}</span>
+                  <span class="mt-1 block text-sm leading-relaxed text-fg-muted">{feature.tagline}</span>
+                </span>
+                <Icon name="arrow-right" size={18} class="mt-1 shrink-0 text-fg-dim transition-transform group-hover:translate-x-1 group-hover:text-brand" />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- A table: where each part runs, and on which plan. -->
+  <section class="section">
+    <div class="container-page">
+      <h2 class="text-3xl font-bold tracking-tight text-fg">Where each one runs</h2>
+      <p class="mt-4 max-w-3xl text-[15px] leading-relaxed text-fg-muted">
+        Lens is one Windows app plus two headless surfaces. Studio runs in three places.
+      </p>
+      <table class="mt-8 w-full border-collapse text-left">
+        <caption class="sr-only">Where each API Circle surface runs, and the plan it needs</caption>
+        <thead class="hidden sm:table-header-group">
+          <tr class="border-b border-edge">
+            <th scope="col" class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-fg-dim">Surface</th>
+            <th scope="col" class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-fg-dim">Runs on</th>
+            <th scope="col" class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-fg-dim">Plan</th>
+            <th scope="col" class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-fg-dim">Worth knowing</th>
+          </tr>
+        </thead>
+        <tbody class="block sm:table-row-group">
+          {
+            SURFACES.map((s) => (
+              <tr class="mb-4 block rounded-2xl border border-edge bg-panel p-5 last:mb-0 sm:mb-0 sm:table-row sm:rounded-none sm:border-0 sm:border-b sm:bg-transparent sm:p-0">
+                <th scope="row" class="block text-left sm:table-cell sm:px-4 sm:py-4 sm:align-top">
+                  <a href={s.href} class="font-semibold text-fg hover:text-brand">{s.name}</a>
+                </th>
+                <td class="mt-1 block text-sm text-fg-muted sm:mt-0 sm:table-cell sm:px-4 sm:py-4 sm:align-top">
+                  {s.where}
+                </td>
+                <td class="mt-2 block sm:mt-0 sm:table-cell sm:px-4 sm:py-4 sm:align-top">
+                  <PlanBadge plan={s.plan} />
+                </td>
+                <td class="mt-2 block text-sm leading-relaxed text-fg-muted sm:mt-0 sm:table-cell sm:px-4 sm:py-4 sm:align-top">
+                  {s.note}
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- A definition list: small things with no page of their own. -->
+  <section class="section !pt-0">
+    <div class="container-page">
+      <h2 class="text-2xl font-bold tracking-tight text-fg">Also in the workspace</h2>
+      <dl class="mt-8 grid gap-x-10 gap-y-6 md:grid-cols-2">
+        {
+          extras.map((e) => (
+            <div class="border-l-2 border-brand/40 pl-5">
+              <dt class="font-semibold text-fg">{e.term}</dt>
+              <dd class="mt-1 text-[15px] leading-relaxed text-fg-muted">{e.body}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </section>
+
+  <CTA
+    title="Two ways in"
+    subtitle={`Download Lens for Windows and point it at a repository, or open the free workspace in a browser with nothing to install. Every paid plan starts with a ${TRIAL_DAYS}-day trial.`}
+    primary={{ label: 'Download Lens', href: '/download', icon: 'download' }}
+    secondary={{ label: 'Open the web app', href: SITE.appUrl, external: true }}
+  />
 </BaseLayout>

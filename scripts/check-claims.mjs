@@ -40,6 +40,11 @@ export const HISTORY_MARKER = 'claims: history';
  *
  * `where` narrows a rule to paths it applies to, so a rule that is wrong in
  * prose but right in generated data does not have to be weakened for everyone.
+ *
+ * `unless` exempts a LINE that also matches it. Some words are false in one
+ * context and true in another: HAR import and code generation do not exist in
+ * the free workspace, but both are real MCP tools in Lens. A line that names
+ * the MCP context is describing the true one.
  */
 export const RULES = [
   // ---- Retired terminology (mirrors the product repo's guard) -------------
@@ -103,6 +108,75 @@ export const RULES = [
     where: (p) => p !== join('src', 'data', 'site.ts'),
     use: 'nothing — the Lens web app is not launched, and only `SITE.lensUrl` may name it',
   },
+
+  // ---- Commands that do not run as printed --------------------------------
+  // The /features/cli sample shipped `review --spec`, a flag `review` does not
+  // have, and `--pull-request` without the `--repo` it refuses to run without.
+  {
+    pattern: /\bapicircle-lens review\b.*\s--spec(?![\w-])/,
+    use: '`--openapi <file>` — `review` has no `--spec` flag (apps/cli/src/review/command.ts)',
+  },
+  {
+    pattern: /--pull-request[ =]+\d+(?!.*--repo\b)/,
+    use: 'add `--repo <owner/name>` — `review --pull-request` exits without it',
+  },
+  {
+    pattern: /\bscaffold\b.*\s--new\b/,
+    use: 'nothing — `scaffold --new` starts a new project, which is the hidden Build pillar',
+  },
+  {
+    pattern: /\bapicircle (?:run|mock|mocks|import|export|workspaces|folder)\b/,
+    use: 'the `apicircle-lens` binary from @apicircle-lens/cli — no `apicircle` binary is published',
+  },
+  {
+    pattern: /\.req\.yaml\b/,
+    use: '`apicircle://<workspace>/requests/<folder>/<name>.yaml` — VS Code names a request by its folder, not a suffix',
+  },
+
+  // ---- Studio facts the old copy got wrong --------------------------------
+  // Each of these shipped. The free workspace has no HAR import and no code
+  // generation on any surface: both exist only as Lens MCP tools. The auth
+  // picker's 17 entries include "No Auth" and "Inherit (parent folder)".
+  {
+    pattern: /\b17\b(?=.{0,30}\b(?:auth|schemes?)\b)/i,
+    use: '`SITE.stats.authSchemes` (15) — the picker\'s other two entries are "No Auth" and "Inherit"',
+  },
+  {
+    pattern: /\bHAR\b/,
+    unless: /\bmcp|import\.har/i,
+    use: 'nothing, or say it is the Lens MCP tool `import.har` — the free workspace cannot import HAR',
+  },
+  {
+    pattern: /\bcode[- ]generation\b|\bgenerate (?:client )?code\b|\bcodegen\b/i,
+    unless: /\bmcp|generate\.code/i,
+    use: 'nothing, or say it is the Lens MCP tool `generate.code` — the free workspace has no code generation',
+  },
+  {
+    pattern: /\bauto-?create(?:d|s)? (?:a )?working branch/i,
+    use: '"Create working branch" — Studio names the branch for you; you create it',
+  },
+  {
+    pattern: /\brelease (?:ledger|history)\b/i,
+    use: 'nothing. Releases are hard-disabled',
+  },
+  {
+    pattern: /\bcross-workspace\b|\bLink Workspaces?\b|\blinked workspaces?\b/i,
+    use: 'nothing. Workspace sharing and linked sources are hard-disabled',
+  },
+  {
+    pattern: /\b(?:nine|9) (?:AI |MCP )?clients\b/i,
+    use: '`SITE.mcpClients` — the MCP panel installs into seven clients and gives four more by hand',
+  },
+  {
+    pattern: /\bSAML\b/,
+    use: 'nothing. The catalogue sells single sign-on over OIDC',
+  },
+  {
+    // The old footer, og.png and the web manifest all said the free workspace
+    // was something "an AI can drive". The MCP server that does that is Pro.
+    pattern: /\b(?:an|any) AI can drive\b/i,
+    use: 'nothing — the MCP server is a paid (Pro) surface',
+  },
 ];
 
 const SKIP_DIRS = new Set(['node_modules', 'dist', '.astro', '.git', '.screenshots-raw']);
@@ -116,7 +190,10 @@ const SKIP_DIRS = new Set(['node_modules', 'dist', '.astro', '.git', '.screensho
  * added to it anyway, because the next export would wipe it.
  */
 const SKIP_FILES = new Set([join('src', 'data', 'pricing.ts')]);
-const EXTENSIONS = /\.(astro|ts|tsx|js|mjs|md|txt|json)$/;
+// `webmanifest` because `public/site.webmanifest` described the product as
+// something "any AI can drive" long after the MCP server became paid, and
+// nothing read it.
+const EXTENSIONS = /\.(astro|ts|tsx|js|mjs|md|txt|json|webmanifest)$/;
 
 /** Every file this guard reads, relative to the repo root. */
 export function filesToScan(root = ROOT) {
@@ -156,6 +233,7 @@ export function violationsIn(relPath, text) {
     if (line.includes(HISTORY_MARKER)) continue;
     for (const rule of RULES) {
       if (rule.where && !rule.where(relPath)) continue;
+      if (rule.unless && rule.unless.test(line)) continue;
       const match = rule.pattern.exec(line);
       if (match) found.push({ file: relPath, line: i + 1, text: match[0], use: rule.use });
     }

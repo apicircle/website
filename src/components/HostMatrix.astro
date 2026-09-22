@@ -22,7 +22,10 @@ const { class: className = '' } = Astro.props;
  */
 const cellBase = 'px-4 py-3 text-[15px] leading-relaxed align-top';
 ---
-<div class:list={['w-full overflow-x-auto', className]}>
+{/* `relative` keeps the cells' absolutely positioned sr-only labels inside
+    this scroll box; without it they escaped it and widened the whole page on
+    a phone, past the table's own horizontal scroll. */}
+<div class:list={['relative w-full overflow-x-auto', className]}>
   <table class="w-full min-w-[46rem] border-collapse text-left">
     <caption class="sr-only">
       Git host support: which plan includes each host, and what Lens can do on it.

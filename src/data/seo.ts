@@ -69,14 +69,15 @@ function softwareNode() {
     description: SITE.description,
     // The FREE workspace only. The Code graph, the MCP server and the CLI are
     // paid, and listing them under an `offers.price` of 0 would advertise a
-    // price the gate refuses to honour.
+    // price the gate refuses to honour. It once listed code generation, an MCP
+    // tool that ships with Lens (Pro); the free workspace has none.
     featureList: [
-      'Git-backed API collections — branch, diff, pull request, and merge',
+      'Git-backed API collections on GitHub: branch, diff, pull request, and merge',
       'Local mock servers from OpenAPI, Swagger, Postman, or Insomnia specs',
-      '17 authentication schemes including OAuth2, AWS SigV4, Digest, NTLM, and JWT',
-      'Execution plans, run history and environment management',
+      `${SITE.stats.authSchemes} authentication schemes including OAuth 2.0, AWS Signature v4, Digest, NTLM, Hawk and JWT`,
+      'Execution plans with assertions, run history and snapshots',
+      'Layered environments and an encrypted Secret Vault',
       'VS Code extension with YAML request editing',
-      'Code generation to cURL, fetch, Node, Python, Go, and Rust',
     ],
     screenshot: abs('/og.png'),
     image: abs('/og.png'),
@@ -128,8 +129,9 @@ function priceValue(monthly: string | null): string {
  * `offers.price: 0`. Folding the two together would advertise a price of zero
  * against capabilities the gate charges for.
  *
- * Emitted only on `/pricing` and `/lens` — the two pages that actually sell it.
- * Every number here is read from the generated catalogue; none is written down.
+ * Emitted on `/pricing`, `/lens` and the Lens feature pages — the pages that
+ * actually sell it. Every number here is read from the generated catalogue;
+ * none is written down.
  */
 function lensNode() {
   const currency = priceCurrency();
@@ -245,7 +247,7 @@ function faqNode(faqs: FaqItem[]) {
 export interface JsonLdOptions extends PageOpts {
   breadcrumbs?: Breadcrumb[];
   faqs?: FaqItem[];
-  /** Emit the paid-product node with its per-plan offers. `/pricing` and `/lens`. */
+  /** Emit the paid-product node with its per-plan offers: `/pricing`, `/lens`, Lens feature pages. */
   lens?: boolean;
 }
 

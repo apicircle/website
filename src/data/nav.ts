@@ -1,17 +1,46 @@
+import { FEATURES } from './features';
+import type { PlanId, Product } from './feature-types';
+
 export interface NavItem {
   label: string;
   href: string;
   external?: boolean;
 }
 
-/** Feature pages surfaced in the "Features" dropdown / mega-menu. */
-export const FEATURE_NAV: NavItem[] = [
-  { label: 'Git-backed workspaces', href: '/features/git-workspaces' },
-  { label: 'AI integration (MCP)', href: '/features/mcp-ai' },
-  { label: 'Local mock servers', href: '/features/mock-servers' },
-  { label: 'Authentication', href: '/features/authentication' },
-  { label: 'CLI', href: '/features/cli' },
-  { label: 'VS Code extension', href: '/features/vscode' },
+export interface FeatureNavItem extends NavItem {
+  plan: PlanId;
+}
+
+export interface FeatureGroup {
+  product: Product;
+  title: string;
+  /** Where the group heading goes: its section on /features. */
+  href: string;
+  items: FeatureNavItem[];
+}
+
+/**
+ * The Features menu, DERIVED from `FEATURES`.
+ *
+ * It used to be a hand-kept list of six rows, which meant a new feature page
+ * existed on /features and nowhere in the header until someone remembered this
+ * file. Two groups now, in the order the site sells them: Lens, then Studio.
+ */
+export const FEATURE_GROUPS: FeatureGroup[] = (['lens', 'studio'] as const).map((product) => ({
+  product,
+  title: product === 'lens' ? 'Lens' : 'Studio',
+  href: `/features#${product}`,
+  items: FEATURES.filter((f) => f.product === product).map((f) => ({
+    label: f.navLabel,
+    href: `/features/${f.slug}`,
+    plan: f.plan,
+  })),
+}));
+
+/** A short list for the footer: the features marked `featured`, then the index. */
+export const FEATURED_NAV: NavItem[] = [
+  ...FEATURES.filter((f) => f.featured).map((f) => ({ label: f.navLabel, href: `/features/${f.slug}` })),
+  { label: 'All features', href: '/features' },
 ];
 
 export const PRIMARY_NAV: NavItem[] = [
@@ -34,25 +63,27 @@ export const FOOTER_NAV: { title: string; items: NavItem[] }[] = [
       { label: 'Git-backed API client', href: '/git-backed-api-client' },
       { label: 'Download', href: '/download' },
       { label: 'Open the web app', href: 'https://studio.apicircle.dev', external: true },
-      { label: 'VS Code extension', href: '/features/vscode' },
     ],
   },
   {
     title: 'Features',
-    items: FEATURE_NAV,
+    items: FEATURED_NAV,
   },
   {
     title: 'Resources',
     items: [
       { label: 'Documentation', href: '/docs' },
+      // This column used to link the studio repo's MCP docs, which now only
+      // point at Lens: the MCP server moved there and became part of Pro. The
+      // Features column already links the MCP page, so these are guides instead.
       {
-        label: 'Connect your AI client',
-        href: 'https://github.com/apicircle/studio/blob/main/docs/connect-your-ai-client.md',
+        label: 'Installing the desktop app',
+        href: 'https://github.com/apicircle/studio/blob/main/docs/installing.md',
         external: true,
       },
       {
-        label: 'MCP tool catalog',
-        href: 'https://github.com/apicircle/studio/blob/main/docs/mcp-tools-reference.md',
+        label: 'Mock server guide',
+        href: 'https://github.com/apicircle/studio/blob/main/docs/mock-server.md',
         external: true,
       },
       { label: 'GitHub', href: 'https://github.com/apicircle/studio', external: true },

@@ -1,0 +1,229 @@
+---
+/**
+ * The sections a feature page adds beyond its highlights, keyed by name in the
+ * feature's `extras` list.
+ *
+ * Every fact here comes from a data module that says where it was transcribed
+ * from — `frameworks.ts`, `findings.ts`, `lens-ui.ts`, `studio-ui.ts`, `hosts.ts`
+ * or the generated `pricing.ts` — so a page cannot state a number its source
+ * file does not.
+ */
+import DriftDiff from './DriftDiff.astro';
+import FrameworksTable from './FrameworksTable.astro';
+import HostMatrix from './HostMatrix.astro';
+import Icon from './Icon.astro';
+import PlanBadge from './PlanBadge.astro';
+import Rich from './Rich.astro';
+import { FINDINGS } from '../data/findings.ts';
+import { ACCOUNT_TABS, CONTEXT_GRAPH, PROMPT_LIBRARY, SCAFFOLD_DB_ADAPTERS, SCAFFOLD_EMITTERS } from '../data/lens-ui.ts';
+import { GIT_FLOW } from '../data/studio-ui.ts';
+import { PLANS } from '../data/pricing.ts';
+import { SITE } from '../data/site.ts';
+import { planName, type Feature } from '../data/feature-types.ts';
+
+interface Props {
+  feature: Feature;
+}
+const { feature } = Astro.props;
+const extras = feature.extras ?? [];
+
+/** What the page's own plan adds, straight from the catalogue. */
+const planAdds = (PLANS.find((p) => p.id === feature.plan)?.capabilities ?? []).filter(
+  (c) => !c.startsWith('Everything in') && !c.toLowerCase().includes('workspace'),
+);
+const promptCount = PROMPT_LIBRARY.reduce((n, c) => n + c.prompts.length, 0);
+const heading = 'text-2xl font-bold tracking-tight text-fg';
+const lead = 'mt-3 max-w-3xl text-[15px] leading-relaxed text-fg-muted';
+---
+{
+  extras.map((extra) => (
+    <section id={extra === 'endpoint-context-graph' ? 'endpoint-context-graph' : undefined} class="section !pt-0">
+      <div class="container-page">
+        {extra === 'frameworks' && (
+          <>
+            <h2 class={heading}>Frameworks it reads</h2>
+            <p class={lead}>
+              Each of these is read at full depth: routes, the call graph behind them, and the request
+              and response types.
+            </p>
+            <FrameworksTable class="!mx-0 mt-8" />
+          </>
+        )}
+
+        {extra === 'drift-findings' && (
+          <>
+            <h2 class={heading}>Two findings from one review</h2>
+            <p class={lead}>
+              Both come from a review of a repository with exactly these two edits in it. The wording is
+              the Review panel's own.
+            </p>
+            <div class="mt-8 grid gap-5">
+              {FINDINGS.map((f) => (
+                <DriftDiff {...f} />
+              ))}
+            </div>
+          </>
+        )}
+
+        {extra === 'scaffold-targets' && (
+          <>
+            <h2 class={heading}>What it can write</h2>
+            <p class={lead}>
+              {SCAFFOLD_EMITTERS.length} frameworks and {SCAFFOLD_DB_ADAPTERS.length} database libraries. Lens
+              picks the ones your repository already uses.
+            </p>
+            <div class="mt-8 grid gap-5 md:grid-cols-2">
+              <div class="card">
+                <h3 class="text-base font-semibold text-fg">Frameworks</h3>
+                <p class="mt-3 text-sm leading-relaxed text-fg-muted">{SCAFFOLD_EMITTERS.join(', ')}</p>
+              </div>
+              <div class="card">
+                <h3 class="text-base font-semibold text-fg">Database libraries</h3>
+                <p class="mt-3 text-sm leading-relaxed text-fg-muted">{SCAFFOLD_DB_ADAPTERS.join(', ')}</p>
+              </div>
+            </div>
+          </>
+        )}
+
+        {extra === 'prompt-library' && (
+          <>
+            <h2 class={heading}>{promptCount} prompts to start from</h2>
+            <p class={lead}>
+              The prompt library groups them by what you are trying to do. Each one asks about the Code
+              graph you have open.
+            </p>
+            <div class="mt-8 grid gap-5 sm:grid-cols-2">
+              {PROMPT_LIBRARY.map((category) => (
+                <div class="card">
+                  <h3 class="text-base font-semibold text-fg">{category.name}</h3>
+                  <ul class="mt-3 space-y-1.5">
+                    {category.prompts.map((p) => (
+                      <li class="flex items-start gap-2 text-sm leading-relaxed text-fg-muted">
+                        <Icon name="sparkles" size={14} class="mt-1 shrink-0 text-brand" />
+                        <span><Rich text={p} /></span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+
+        {extra === 'mcp-clients' && (
+          <>
+            <h2 class={heading}>Clients it sets up</h2>
+            <p class={lead}>
+              The MCP panel writes the configuration into {SITE.mcpClients.installable.length} clients for you,
+              and shows the snippet to paste for the rest.
+            </p>
+            <div class="mt-8 grid gap-5 md:grid-cols-2">
+              <div class="card">
+                <h3 class="text-base font-semibold text-fg">Installed with one click</h3>
+                <p class="mt-3 text-sm leading-relaxed text-fg-muted">{SITE.mcpClients.installable.join(', ')}</p>
+              </div>
+              <div class="card">
+                <h3 class="text-base font-semibold text-fg">Set up by hand</h3>
+                <p class="mt-3 text-sm leading-relaxed text-fg-muted">
+                  {SITE.mcpClients.manual.join(', ')}, and a generic snippet for any other MCP client
+                </p>
+              </div>
+            </div>
+          </>
+        )}
+
+        {extra === 'endpoint-context-graph' && (
+          <div class="rounded-3xl border border-edge bg-panel/50 p-6 sm:p-10">
+            <h2 class:list={[heading, 'flex flex-wrap items-center gap-3']}>
+              Endpoint context graph
+              <PlanBadge plan="pro" />
+            </h2>
+            <p class={lead}><Rich text={CONTEXT_GRAPH.summary} /></p>
+            <ul class="mt-6 grid gap-3 sm:grid-cols-2">
+              {CONTEXT_GRAPH.links.map((l) => (
+                <li class="flex items-start gap-2 text-[15px] leading-relaxed text-fg-muted">
+                  <Icon name="check" size={16} class="mt-1 shrink-0 text-brand" />
+                  <span>{l}</span>
+                </li>
+              ))}
+            </ul>
+            <p class="mt-6 text-sm leading-relaxed text-fg-dim">{CONTEXT_GRAPH.limits}</p>
+          </div>
+        )}
+
+        {extra === 'host-matrix' && (
+          <>
+            <h2 class={heading}>Where the hosts differ</h2>
+            <p class={lead}>
+              The differences are the hosts' own. Every cell is copied from the capability record each
+              integration declares.
+            </p>
+            <HostMatrix class="mt-8" />
+          </>
+        )}
+
+        {extra === 'account-surfaces' && (
+          <>
+            <h2 class={heading}>Your account, tab by tab</h2>
+            <p class={lead}>Everything below lives at account.apicircle.dev. Owners and administrators see the last four tabs.</p>
+            <div class="mt-8 overflow-hidden rounded-2xl border border-edge bg-panel">
+              <table class="w-full text-left text-sm">
+                <caption class="sr-only">Account tabs, what each one does, and the plan that shows it</caption>
+                <tbody>
+                  {ACCOUNT_TABS.map((tab) => (
+                    <tr class="border-b border-edge last:border-0">
+                      <th scope="row" class="w-1/4 px-5 py-3 align-top font-semibold text-fg">{tab.name}</th>
+                      <td class="px-5 py-3 text-fg-muted">{tab.does}</td>
+                      <td class="w-24 px-5 py-3 align-top">
+                        <PlanBadge plan={tab.plan} />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
+        )}
+
+        {extra === 'plan-capabilities' && (
+          <>
+            <h2 class:list={[heading, 'flex flex-wrap items-center gap-3']}>
+              What {planName(feature.plan)} adds
+              <PlanBadge plan={feature.plan} />
+            </h2>
+            <ul class="mt-6 space-y-2">
+              {planAdds.map((c) => (
+                <li class="flex items-start gap-2 text-[15px] leading-relaxed text-fg-muted">
+                  <Icon name="check" size={16} class="mt-1 shrink-0 text-brand" />
+                  <span>{c}</span>
+                </li>
+              ))}
+            </ul>
+            <a href="/pricing" class="btn-secondary mt-6">
+              Compare every plan
+              <Icon name="arrow-right" size={16} />
+            </a>
+          </>
+        )}
+
+        {extra === 'git-flow' && (
+          <>
+            <h2 class={heading}>From a local workspace to a pull request</h2>
+            <p class={lead}>Four steps, each one a button with this label in the Workspace panel.</p>
+            <ol class="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+              {GIT_FLOW.map((step, i) => (
+                <li class="card">
+                  <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-surface text-sm font-bold text-brand">
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <h3 class="mt-4 text-base font-semibold text-fg">{step.label}</h3>
+                  <p class="mt-2 text-sm leading-relaxed text-fg-muted"><Rich text={step.body} /></p>
+                </li>
+              ))}
+            </ol>
+          </>
+        )}
+      </div>
+    </section>
+  ))
+}

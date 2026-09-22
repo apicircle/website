@@ -2,7 +2,8 @@
 import Logo from './Logo.astro';
 import ThemeToggle from './ThemeToggle.astro';
 import Icon from './Icon.astro';
-import { PRIMARY_NAV, FEATURE_NAV } from '../data/nav.ts';
+import PlanBadge from './PlanBadge.astro';
+import { PRIMARY_NAV, FEATURE_GROUPS } from '../data/nav.ts';
 import { SITE } from '../data/site.ts';
 
 /**
@@ -36,7 +37,7 @@ const isCurrent = (href: string): boolean => here === href || here.startsWith(`$
         navItems.map((item) =>
           item.href === '/features' ? (
             <div class="group relative">
-              {/* A link, not a button. As a button the dropdown listed the six
+              {/* A link, not a button. As a button the dropdown listed the
                   feature pages but /features itself had no desktop link at all
                   -- the same gap /lens and /pricing had. Hover and focus still
                   open the panel; a click now goes to the index. */}
@@ -52,16 +53,35 @@ const isCurrent = (href: string): boolean => here === href || here.startsWith(`$
                 {item.label}
                 <Icon name="chevron-down" size={15} class="transition-transform group-hover:rotate-180" />
               </a>
-              <div class="invisible absolute left-1/2 top-full w-[34rem] -translate-x-1/2 pt-3 opacity-0 transition-all duration-150 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
-                <div class="grid grid-cols-2 gap-1 rounded-2xl border border-edge bg-panel p-2 shadow-panel">
-                  {FEATURE_NAV.map((feature) => (
-                    <a
-                      href={feature.href}
-                      class="flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium text-fg-muted transition-colors hover:bg-surface hover:text-brand"
-                    >
-                      <span class="h-1.5 w-1.5 rounded-full bg-brand/70" />
-                      {feature.label}
-                    </a>
+              {/* Anchored to the link's left edge, not centred on it: centred, a
+                  panel this wide ran off the left of a 1024px window. One column
+                  per product, Lens first, each row carrying its plan so the menu
+                  never reads as one free feature set. */}
+              <div class="invisible absolute left-0 top-full w-[44rem] max-w-[calc(100vw-2rem)] pt-3 opacity-0 transition-all duration-150 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+                <div class="grid grid-cols-2 gap-2 rounded-2xl border border-edge bg-panel p-3 shadow-panel">
+                  {FEATURE_GROUPS.map((group) => (
+                    <div>
+                      <a
+                        href={group.href}
+                        class="flex h-8 items-center justify-between rounded-lg px-3 text-xs font-semibold uppercase tracking-wider text-fg-dim transition-colors hover:text-brand"
+                      >
+                        {group.title}
+                        {group.product === 'studio' && <PlanBadge plan="free" />}
+                      </a>
+                      <ul>
+                        {group.items.map((item) => (
+                          <li>
+                            <a
+                              href={item.href}
+                              class="flex items-center justify-between gap-3 rounded-lg px-3 py-1.5 text-sm font-medium text-fg-muted transition-colors hover:bg-surface hover:text-brand"
+                            >
+                              <span class="truncate">{item.label}</span>
+                              {group.product === 'lens' && <PlanBadge plan={item.plan} class="shrink-0" />}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -137,10 +157,16 @@ const isCurrent = (href: string): boolean => here === href || here.startsWith(`$
       >
         Features
       </a>
+      {/* Two jump links, not every feature: twenty rows would push the rest of
+          the menu off a phone screen. */}
       {
-        FEATURE_NAV.map((item) => (
-          <a href={item.href} class="rounded-lg px-3 py-2 text-sm font-medium text-fg-muted hover:bg-surface hover:text-fg">
-            {item.label}
+        FEATURE_GROUPS.map((group) => (
+          <a
+            href={group.href}
+            class="flex items-center justify-between rounded-lg px-3 py-2 text-sm font-medium text-fg-muted hover:bg-surface hover:text-fg"
+          >
+            {group.title} features
+            {group.product === 'studio' && <PlanBadge plan="free" />}
           </a>
         ))
       }
@@ -174,6 +200,14 @@ const isCurrent = (href: string): boolean => here === href || here.startsWith(`$
     btn.addEventListener('click', () => {
       const open = menu.classList.toggle('hidden');
       btn.setAttribute('aria-expanded', String(!open));
+    });
+    // A same-page anchor (/features#lens while on /features) does not reload,
+    // so the menu would stay open over the section it just scrolled to.
+    menu.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => {
+        menu.classList.add('hidden');
+        btn.setAttribute('aria-expanded', 'false');
+      });
     });
   })();
 </script>

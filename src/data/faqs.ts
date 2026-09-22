@@ -12,6 +12,9 @@
  * the source of truth is the plan catalogue in the lens repo, which the pricing
  * page is generated from.
  */
+import { frameworksSentence } from './frameworks';
+import { SITE } from './site';
+
 export interface Faq {
   q: string;
   a: string;
@@ -40,7 +43,7 @@ export const FAQS: Faq[] = [
   },
   {
     q: 'Which languages and frameworks can it read?',
-    a: 'TypeScript and JavaScript (Express, Hono, Fastify, Koa, NestJS, Ts.ED, Next.js), Python (FastAPI, Flask, Django with DRF, Django Ninja), Go (gin, chi, echo, fiber, gorilla/mux, net/http, Huma), Java (Spring MVC, Spring WebFlux, Micronaut, JAX-RS), C# (ASP.NET Core minimal APIs and MVC), and Rust (axum, actix-web, Rocket, Salvo, poem). PHP is recognised only at a basic level, and Ruby and Elixir are not supported yet. Where an endpoint cannot be read with confidence, Lens reports it as unknown rather than guessing.',
+    a: `${frameworksSentence()}. PHP is recognised only at a basic level, and Ruby, Elixir and Kotlin are not supported yet. Where an endpoint cannot be read with confidence, Lens reports it as unknown rather than guessing.`,
   },
   {
     q: 'Do I need to be on GitHub?',
@@ -64,15 +67,15 @@ export const FAQS: Faq[] = [
   },
   {
     q: 'How do I mock an API with API Circle?',
-    a: 'Point API Circle at an OpenAPI, Swagger, Postman or Insomnia file and it starts an HTTP mock on localhost in seconds. You can override individual responses, add conditional rules and request validation, and apply response multipliers to simulate load. Mock servers in the app are free. Mock definitions sync with the workspace so a teammate gets them; the running server stays on your machine.',
+    a: 'Point API Circle at an OpenAPI, Swagger, Postman or Insomnia file and it builds an HTTP mock you start on localhost. You can add conditional response rules, request validation, delays and response multipliers. The desktop app and the VS Code extension run mock servers for free; the web app can create and edit mock definitions, but a browser tab cannot run a server. Mock definitions sync with the workspace so a teammate gets them; the running server stays on your machine.',
   },
   {
     q: 'What authentication schemes does API Circle support?',
-    a: 'All 17 schemes are end-to-end functional: Bearer, Basic, API key, custom header, the full OAuth2 grant set (with PKCE, device flow and auto-refresh), AWS SigV4, Digest, NTLM, Hawk, and JWT. Signing primitives are verified against the relevant RFC and NIST reference vectors, and folder-level auth cascades to the requests beneath it.',
+    a: `${SITE.stats.authSchemes} schemes: Bearer, Basic, API key, custom header, six OAuth 2.0 grants (client credentials, authorization code, authorization code with PKCE, password, implicit and device code, with token refresh), AWS Signature v4, Digest, NTLM, Hawk, and JWT Bearer. Signing primitives are verified against the relevant RFC and NIST reference vectors. A folder can carry auth that every request set to "Inherit (parent folder)" picks up.`,
   },
   {
     q: 'Can I run it in CI?',
-    a: 'Yes, on the Team plan. The command-line interface runs the same drift check against a cloned repository, posts the findings as a pull-request comment, and exits with a code you can fail the build on — including a stricter mode that fails whenever the API moves away from its spec at all. CI authenticates with a key from your account rather than consuming a device seat.',
+    a: 'Yes, on the Team plan. The command-line interface runs the same drift check against a cloned repository, posts the findings as a pull-request comment, and exits with a code you can fail the build on. You choose the threshold: breaking changes only, any warning, or a pull request that adds a route the spec does not document or removes one it does. CI authenticates with a key from your account rather than consuming a device seat.',
   },
   {
     q: 'Is API Circle open source?',
