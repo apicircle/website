@@ -21,9 +21,9 @@ export const LEGAL = {
   status: 'published' as 'draft' | 'published',
 
   /** Must equal TERMS_VERSION on the Lens Worker. The Refund Policy is part of the Terms and shares it. */
-  termsVersion: '2026-09-19',
+  termsVersion: '2026-09-22',
   /** Must equal PRIVACY_VERSION on the Lens Worker. */
-  privacyVersion: '2026-09-19',
+  privacyVersion: '2026-09-22',
   effectiveDate: '27 September 2026',
 
   /** Who the customer contracts with. Paddle's domain review requires the legal name in the Terms. */

@@ -131,7 +131,7 @@ Where EU or UK law applies to a transfer, we rely on appropriate safeguards, suc
 | Device, seat and CLI key records | Until revoked, or until you delete your account |
 | Support emails | For as long as needed to deal with your request, then deleted |
 
-**Deleting your account does not cancel a paid subscription.** Please cancel your subscription first. Deleting your account also cannot reach data you control elsewhere: your repositories (including the `.apicircle` folder and its history), or anything you sent to an AI provider.
+**Deleting your account also cancels a paid subscription**, with immediate effect — see section 6 of the [Terms](/terms). It does not reach the records Paddle keeps as merchant of record (your invoices and payment record), which tax and accounting law requires it to keep, nor data you control elsewhere: your repositories (including the `.apicircle` folder and its history), or anything you sent to an AI provider.
 
 ## 10. How we protect personal data
 

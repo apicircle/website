@@ -109,7 +109,7 @@ for your own internal business or personal purposes, within the limits of your p
 - If you cancel **after a payment**, your subscription stays active until the end of the billing period you have paid for and then ends. You will not be charged again.
 - Cancelling does not by itself entitle you to a refund for the current period, except as set out in our [Refund Policy](/refunds) or where the law requires one.
 
-**Deleting your account is not cancelling your subscription.** Your subscription is held with Paddle. Please cancel it before deleting your API Circle account, or it will continue to renew.
+**Deleting your account cancels your subscription.** When you delete your API Circle account, we cancel any subscription you hold with immediate effect, so it does not renew and you are not charged again. Cancelling this way ends your subscription straight away rather than at the end of the period you have paid for, and the remainder of that period is not refunded except as set out in our [Refund Policy](/refunds) or where the law requires it. If you would rather keep your subscription running until the end of the period you have paid for, cancel it yourself first and delete your account afterwards. If we cannot cancel your subscription at the time of your request, we will not delete your account, and we will tell you so.
 
 **Reminders and confirmations.** We or Paddle will confirm your subscription, its renewal terms and how to cancel by email after you subscribe. Where the law of your country requires it, we or Paddle will also remind you before a free trial converts or before an annual subscription renews.
 
@@ -234,7 +234,7 @@ This section does not apply to consumers.
 
 ## 18. Suspension and termination
 
-**By you.** You may stop using the Services at any time. To end a paid subscription, cancel it as described in section 6. You may delete your account from the **Security** section of your account; please cancel any subscription first.
+**By you.** You may stop using the Services at any time. To end a paid subscription, cancel it as described in section 6. You may delete your account from the **Security** section of your account; doing so also cancels any subscription you hold, as described in section 6.
 
 **By us.** We may suspend or end your access to the Services, or any part of them, if:
 
