@@ -119,7 +119,7 @@ export const LENS_FEATURES: Feature[] = [
     ...lensCtas('basic'),
     screenshot: 'pr-review-drift',
     screenshotAlt:
-      'The Review panel after a working-tree review of widgets-api: three endpoints with warnings, including a 204 the spec documents that the code no longer returns, each pointing at a file and line',
+      'The Review panel after a working-tree review of widgets-api: a breaking change on POST /api/v1/widgets, which lost its requireBearer guard, and a warning on DELETE /api/v1/widgets/:widgetId, whose spec documents a 204 the code no longer returns, each finding pointing at a file and line',
     frameLabel: 'Review · widgets-api',
     extras: ['drift-findings'],
   },
@@ -341,7 +341,7 @@ export const LENS_FEATURES: Feature[] = [
     ...lensCtas('basic'),
     screenshot: 'scaffold',
     screenshotAlt:
-      'The Scaffold dialog for the spec-only archive endpoint, previewing a new Express handler, src/handlers/archive.ts, above the Apply to project button',
+      'Scaffold open in the Code editor for the spec-only archive endpoint, on the branch demo-changes: a new Express handler, src/handlers/archive.ts, and the two lines that wire it into src/routes/widgets.ts',
     frameLabel: 'Code editor · Scaffold',
     sample: {
       title: 'The same thing from the command line',
