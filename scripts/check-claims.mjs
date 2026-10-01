@@ -91,6 +91,18 @@ export const RULES = [
     pattern: /\b(?:project generation|serverless migration|greenfield)\b/i,
     use: 'nothing. The Build pillar is hidden in the initial release',
   },
+  {
+    // The Code graph's tagline said it followed each route "database writes included".
+    // The engine tags a `dbOp` on each block, but no Lens surface reads it.
+    pattern: /\bdatabase writes included\b|\b(?:marks|flags|badges) (?:each |every )?database writes?\b/i,
+    use: 'nothing. The Code graph shows a call tree and never marks database writes',
+  },
+  {
+    // Send to Studio Editor's "Contract test" was described as taking its JSON Schema from
+    // the code, with the Spec as the fallback. deriveContractAssertions reads the Spec first.
+    pattern: /\bJSON Schema\b[^.]*\btaken from (?:the|your) code\b|"Contract test"[^.]*\bthe code returns\b/i,
+    use: 'the Spec first: "from your Spec, or from the code where the Spec declares no body" (lens packages-lens/ui-lens/src/codegraph/assertions.ts)',
+  },
 
   // ---- Things that must not be typed by hand -----------------------------
   {
@@ -123,6 +135,12 @@ export const RULES = [
   {
     pattern: /\bscaffold\b.*\s--new\b/,
     use: 'nothing — `scaffold --new` starts a new project, which is the hidden Build pillar',
+  },
+  // Scaffold moved from the Code graph to the Code editor, and the Code graph lost its
+  // Scaffold action, its "Scaffold all" and the dialog. The feature page kept pointing there.
+  {
+    pattern: /Code graph · Scaffold|Scaffold (?:action|dialog|button) (?:in|on) the Code graph/,
+    use: 'the Code editor — Scaffold lives there now, behind the Code changes setting (lens docs/planning/code-editor-and-code-changes.md)',
   },
   {
     pattern: /\bapicircle (?:run|mock|mocks|import|export|workspaces|folder)\b/,

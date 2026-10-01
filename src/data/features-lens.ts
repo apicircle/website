@@ -28,7 +28,7 @@ export const LENS_FEATURES: Feature[] = [
     featured: true,
     eyebrow: 'Code graph',
     title: 'Map every endpoint to the code that serves it',
-    tagline: 'Lens follows each route to its handler and into the functions it calls, database writes included.',
+    tagline: 'Lens follows each route to its handler and into the functions it calls.',
     summary:
       'Point Lens at a repository and it reads the source. Every endpoint it finds is traced from the route, through the middleware in front of it, into the handler and every function that handler calls, and the map is saved into the repository beside your code. Indexing runs on this machine and sends nothing.',
     metaDescription: `Lens maps each API endpoint in your repository to its handler and the functions it calls, locally, and commits the map beside your code. From the ${planName('basic')} plan.`,
@@ -243,11 +243,11 @@ export const LENS_FEATURES: Feature[] = [
     navLabel: 'Send to Studio Editor',
     eyebrow: 'Send to Studio Editor',
     title: 'Turn a Code graph endpoint into a runnable request',
-    tagline: 'One endpoint or all of them, pre-filled from what the code accepts, with checks already on.',
+    tagline: 'Pre-filled from what the code accepts, and checked against a JSON Schema of what it returns.',
     summary:
-      'The Code graph already knows what each endpoint accepts. Send one to the Studio editor and it arrives as a request you can run, with its parameters, headers and body filled in from the code, and your Spec filling the gaps wherever the code is silent about a field.',
-    metaDescription: `Turn any endpoint in the Code graph into a Studio request pre-filled from the code's contract, with response assertions switched on. From the ${planName('basic')} plan.`,
-    bullets: ['Pre-filled from the code, with the Spec as fallback', 'Response assertions on by default'],
+      'The Code graph already knows what each endpoint accepts, and what it returns. Send one to the Studio editor and it arrives as a request you can run, with its parameters, headers and body filled in from the code, and your Spec filling the gaps wherever the code is silent about a field. Pick "Contract test" and the request checks every response against a JSON Schema, from your Spec where it declares the response body and from the code where it doesn’t.',
+    metaDescription: `Turn a Code graph endpoint into a Studio request pre-filled from the code, with a JSON Schema assertion taken from what it returns. From the ${planName('basic')} plan.`,
+    bullets: ['Pre-filled from the code, with the Spec as fallback', 'One JSON Schema assertion for the response body'],
     highlights: [
       {
         title: 'One row, or the whole list',
@@ -258,8 +258,8 @@ export const LENS_FEATURES: Feature[] = [
         body: 'Parameters, headers and the body come from the code contract, and the Spec fills what the code does not say. The base URL is the Spec’s server when that is absolute; otherwise the request uses `{{baseUrl}}`, so an environment decides.',
       },
       {
-        title: 'It checks something on the first send',
-        body: 'Response assertions are seeded from the contract and switched on, at the depth you pick: "Smoke test" or "Contract test". The first run of the request already tests the endpoint.',
+        title: 'The response shape as one JSON Schema',
+        body: 'Response assertions are on by default. "Contract test" turns the response into one JSON Schema assertion: nested objects, array items, types, formats and required fields, with `additionalProperties: false` so an extra field fails too. The shape comes from your Spec, unless the Spec declares no body or you corrected the code’s version in "Verify schema"; then it comes from the code, where a type the parser couldn’t read becomes `{}` and accepts anything. "Smoke test" checks only the status, the content type and the top-level required fields.',
       },
       {
         title: 'Sending twice merges',
@@ -271,6 +271,37 @@ export const LENS_FEATURES: Feature[] = [
     screenshotAlt:
       'The Send to Studio Editor dialog with all six endpoints selected, the collection root as destination, and the option to pre-fill each request from the contract checked',
     frameLabel: 'Code graph · Send to Studio Editor',
+    sample: {
+      title: 'Check every endpoint from the command line',
+      plan: 'team',
+      intro:
+        'The schema is saved in the request, and sending the endpoint again with "Merge into it" leaves it alone, so it holds still while the code moves. Put the requests in an execution plan and `apicircle-lens run` grades every assertion. If a change makes an endpoint return a different shape, that step fails and the command exits 1. With neither `--bail` nor the plan’s "Stop on assertion failure", every step runs, so one run names each endpoint that stopped matching. This schema came from the code with no Spec selected, which is why three fields the parser couldn’t type are `{}`.',
+      blocks: [
+        {
+          filename: 'POST /api/v1/widgets · JSON schema · matches schema',
+          lang: 'json',
+          code: [
+            '{',
+            '  "type": "object",',
+            '  "properties": {',
+            '    "id": { "type": "string" },',
+            '    "name": {},',
+            '    "quantity": {},',
+            '    "tags": {},',
+            '    "session": { "type": "string" }',
+            '  },',
+            '  "required": ["id", "name", "quantity", "tags", "session"],',
+            '  "additionalProperties": false',
+            '}',
+          ].join('\n'),
+        },
+        {
+          prompt: true,
+          lang: 'In your pipeline',
+          code: 'apicircle-lens run "Contract" --workspace-path .apicircle/workspace-<id> --reporter junit > contract.xml',
+        },
+      ],
+    },
   },
   {
     slug: 'scaffolding',
@@ -283,7 +314,7 @@ export const LENS_FEATURES: Feature[] = [
     title: 'Write the endpoints your Spec declares',
     tagline: 'For each endpoint marked not implemented, Lens drafts code in your framework and your repository’s conventions.',
     summary:
-      'Sometimes the Spec is ahead of the code. The Code graph marks each endpoint the Spec declares and no code serves as `not implemented`, and Scaffold drafts its handler in your framework, wired the way your repository already wires things, then shows you the result before a single file is written.',
+      'Sometimes the Spec is ahead of the code. The Code graph marks each endpoint the Spec declares and no code serves as `not implemented`. In the Code editor, Scaffold drafts its handler in your framework, wired the way your repository already wires things, then shows you the result before a single file is written.',
     metaDescription: `When your OpenAPI Spec declares an endpoint the code lacks, Lens drafts a framework-native handler and a test stub for you to review. From the ${planName('basic')} plan.`,
     bullets: [
       'Framework-native handlers for spec-only endpoints',
@@ -300,7 +331,7 @@ export const LENS_FEATURES: Feature[] = [
       },
       {
         title: 'One endpoint, or all of them',
-        body: 'Each not-implemented row has a Scaffold action, and "Scaffold all (N)" drafts every one. With a GitHub repository connected, it works on your working branch.',
+        body: 'In the Code editor, each not-implemented row has a Scaffold action, and "Scaffold all (N)" drafts every one, for an account with Code changes turned on (Security → Code changes; it starts off, and on a Team your owner or an administrator decides). It never writes to your default branch. With a repository connected it writes to your working branch; without one it writes to the branch you have checked out, and if that’s the default branch it asks you to create or switch to a branch of your own first.',
       },
       {
         title: 'Stubs stay marked',
@@ -311,7 +342,7 @@ export const LENS_FEATURES: Feature[] = [
     screenshot: 'scaffold',
     screenshotAlt:
       'The Scaffold dialog for the spec-only archive endpoint, previewing a new Express handler, src/handlers/archive.ts, above the Apply to project button',
-    frameLabel: 'Code graph · Scaffold',
+    frameLabel: 'Code editor · Scaffold',
     sample: {
       title: 'The same thing from the command line',
       plan: 'team',
@@ -486,7 +517,7 @@ export const LENS_FEATURES: Feature[] = [
     title: 'Fail the build when the API drifts',
     tagline: 'apicircle-lens review runs the same drift check in CI, with an exit code your pipeline can gate on.',
     summary:
-      'A pipeline needs no desktop app and no seat. `apicircle-lens review` compares a pull request with its base and with your OpenAPI Spec, keeps one comment on the pull request up to date, and exits with a code you can fail the build on. The same binary indexes, scaffolds and runs execution plans.',
+      'A pipeline needs no desktop app and no seat. `apicircle-lens review` compares a pull request with its base and with your OpenAPI Spec, keeps one comment on the pull request up to date, and exits with a code you can fail the build on. The same binary indexes and scaffolds, and `apicircle-lens run` grades every assertion in an execution plan, including the JSON Schema checks Send to Studio Editor writes.',
     metaDescription: `apicircle-lens review runs PR Review drift in CI, keeps one pull-request comment current, and fails the build on the drift you choose. From the ${planName('team')} plan.`,
     bullets: [
       '`--fail-on` breaking, warning, info or diffracting',
