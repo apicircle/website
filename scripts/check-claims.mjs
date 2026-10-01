@@ -195,6 +195,14 @@ export const RULES = [
     pattern: /\b(?:an|any) AI can drive\b/i,
     use: 'nothing — the MCP server is a paid (Pro) surface',
   },
+  {
+    // The footer's copyright line said "© API Circle · Source-available" and
+    // /docs said "API Circle is source-available". API Circle includes Lens,
+    // which is proprietary. Only Studio, the free workspace, publishes its source.
+    pattern: /\bsource[- ]available\b/i,
+    unless: /\b(?:Studio|workspace|repository)\b/i,
+    use: 'say which half: "Studio is source-available" — Lens is proprietary',
+  },
 ];
 
 const SKIP_DIRS = new Set(['node_modules', 'dist', '.astro', '.git', '.screenshots-raw']);
