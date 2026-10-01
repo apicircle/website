@@ -5,15 +5,16 @@
  * Two products, in the order someone needs them: Lens, which is what a paid plan
  * gives you, and the free workspace, which needs no account at all.
  *
- * Be careful with platforms here. The Lens desktop build is Windows x64 only
- * (electron-builder.yml defines no mac or linux target, and CI packages
- * `--win nsis --x64`), while Studio desktop ships for all three. Offering a
- * download that does not exist is worse than saying it is not ready.
+ * Be careful with platforms here. Lens desktop 2.1.0 is published for Windows
+ * (x64), macOS (a dmg each for Apple silicon and Intel) and Linux (x64 AppImage
+ * and .deb), and NONE of them is code-signed: the page says so, and says how to
+ * get past each system's warning. Offering a download that does not exist is
+ * worse than saying it is not ready.
  *
- * macOS, Linux and a Microsoft Store listing are in progress, and
- * `lensInProgress` says so. Each entry leaves that list, and becomes a link,
- * only once a PUBLISHED release (or a live Store listing) carries it: a draft
- * release is invisible to visitors. Never print a date.
+ * Signed builds and a Microsoft Store listing are in progress, and
+ * `lensInProgress` says so. Each entry leaves that list only once a PUBLISHED
+ * release (or a live Store listing) carries it: a draft release is invisible to
+ * visitors. Never print a date.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Section from '../components/Section.astro';
@@ -30,8 +31,8 @@ const studioDesktop = [
 
 /** Lens installs that are being worked on. Nothing here is downloadable yet. */
 const lensInProgress = [
-  { name: 'macOS', note: 'Apple Silicon and Intel. Signed with a Developer ID and notarized by Apple.' },
-  { name: 'Linux', note: 'AppImage and .deb, for x64.' },
+  { name: 'Signed for macOS', note: 'Signed with a Developer ID and notarized by Apple, so it opens like any other app.' },
+  { name: 'Signed for Windows', note: 'A code-signed installer, without the SmartScreen warning.' },
   { name: 'Microsoft Store', note: 'A Store listing, alongside this direct download.' },
 ];
 
@@ -42,7 +43,7 @@ const breadcrumbs = [
 ---
 <BaseLayout
   title="Download"
-  description="Get API Circle Lens for Windows, or the free API workspace — in the browser, on the desktop for Windows, macOS and Linux, or inside VS Code."
+  description="Get API Circle Lens for Windows, macOS and Linux, or the free API workspace — in the browser, on the desktop for Windows, macOS and Linux, or inside VS Code."
   breadcrumbs={breadcrumbs}
 >
   <Section
@@ -68,24 +69,40 @@ const breadcrumbs = [
         <div class="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
           <a href={SITE.links.lensReleases} target="_blank" rel="noopener" class="btn-primary">
             <Icon name="download" size={16} />
-            Download for Windows
+            Download Lens
           </a>
           <span class="text-xs leading-relaxed text-fg-dim">
-            Windows 10 or later, x64.
+            Windows 10 or later (x64), macOS (Apple silicon and Intel), Linux (x64).
           </span>
         </div>
         <p class="mt-3 text-xs leading-relaxed text-fg-dim">
-          The installer is unsigned until a code-signing certificate is in place, so Windows
-          SmartScreen shows a warning on first run. Choose <strong class="text-fg-muted">More info →
-          Run anyway</strong>.
+          These installers aren&rsquo;t code-signed yet. We&rsquo;re working on signed versions and
+          will release them soon. Until then your system asks before the first run:
         </p>
+        <ul class="mt-2 space-y-1.5 text-xs leading-relaxed text-fg-dim">
+          <li>
+            <strong class="text-fg-muted">Windows:</strong> SmartScreen warns. Choose
+            <strong class="text-fg-muted">More info → Run anyway</strong>.
+          </li>
+          <li>
+            <strong class="text-fg-muted">macOS:</strong> open <strong class="text-fg-muted">System
+            Settings → Privacy &amp; Security</strong> and choose <strong class="text-fg-muted">Open
+            Anyway</strong>. If macOS says the app is damaged, run this in Terminal:
+            {/* One line that scrolls on a phone: broken mid-word, it reads as two commands. */}
+            <code class="mt-1 block overflow-x-auto whitespace-nowrap rounded bg-surface px-2 py-1 text-[11px] text-fg-muted">xattr -dr com.apple.quarantine "/Applications/API Circle Lens.app"</code>
+          </li>
+          <li>
+            <strong class="text-fg-muted">Linux:</strong> install the .deb on Debian or Ubuntu, or make the
+            AppImage executable and run it.
+          </li>
+        </ul>
 
         <div class="mt-5 rounded-xl border border-dashed border-edge p-4">
           <p class="flex flex-wrap items-center gap-2 text-xs text-fg-dim">
             <span class="inline-flex items-center rounded-full border border-node-amber/40 bg-node-amber/10 px-2 py-0.5 text-[0.6875rem] font-semibold uppercase tracking-wide text-node-amber">
               In progress
             </span>
-            Not ready to download yet.
+            Signed builds aren&rsquo;t ready to download yet.
           </p>
           <dl class="mt-3 grid gap-x-4 gap-y-2 sm:grid-cols-[9rem_1fr]">
             {

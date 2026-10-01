@@ -3,13 +3,12 @@ import type { PlanId, Product } from './feature-types';
 /**
  * Where each part of API Circle runs, for the table on `/features`.
  *
- * Platforms are the easiest thing on this site to overstate. The Lens desktop
- * build is Windows x64 only (lens `apps/lens-desktop/electron-builder.yml`
- * defines no mac or linux target) and does not update itself; Studio desktop
+ * Platforms are the easiest thing on this site to overstate. Lens desktop is
+ * published for Windows (x64), macOS (Apple silicon and Intel) and Linux (x64),
+ * none of them code-signed yet, and it does not update itself; Studio desktop
  * ships for all three and does (studio `apps/desktop/src/main/autoUpdater.ts`).
- * macOS and Linux Lens builds are in progress. `where` may say exactly that,
- * but must not name either as a place Lens runs until a published release
- * carries it.
+ * Signed Lens builds are in progress. `where` may say exactly that, and must
+ * not call a build signed until a published release carries one.
  * The web app cannot run a mock server, because a browser tab cannot listen on
  * a port (studio `helpContent.ts`, "Mock runtime").
  */
@@ -29,7 +28,7 @@ export const SURFACES: Surface[] = [
     name: 'Lens desktop',
     product: 'lens',
     plan: 'basic',
-    where: 'Windows 10 or later, x64. macOS and Linux are in progress',
+    where: 'Windows 10 or later (x64), macOS (Apple silicon and Intel), Linux (x64). Not code-signed yet',
     note: 'The whole workspace plus the Code graph, Review, Assistant and MCP panels. It does not update itself yet.',
     href: '/download',
   },

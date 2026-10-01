@@ -152,7 +152,7 @@ export function lensCtas(plan: Exclude<PlanId, 'free'>): Pick<Feature, 'cta' | '
 /** How every Lens feature page ends: on the paid product, not the free one. */
 export const LENS_CLOSING_CTA: ClosingCta = {
   title: 'Point Lens at a repository',
-  subtitle: `Install it on Windows, index a repository and review a pull request. Every paid plan starts with a ${TRIAL_DAYS}-day trial.`,
+  subtitle: `Install it on Windows, macOS or Linux, index a repository and review a pull request. Every paid plan starts with a ${TRIAL_DAYS}-day trial.`,
   primary: { label: 'Download Lens', href: '/download', icon: 'download' },
   secondary: { label: 'See plans and pricing', href: '/pricing' },
 };
