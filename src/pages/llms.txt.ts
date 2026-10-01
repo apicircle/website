@@ -92,7 +92,7 @@ export const GET: APIRoute = () => {
     '',
     `API Circle is one app with two halves: a free API workspace for writing, running and mocking requests, and ${SITE.lensName} — the paid half, which reads the code behind your API.`,
     '',
-    `Official site: ${SITE.url}. The free workspace in a browser: ${SITE.appUrl}. ${SITE.origin}`,
+    `Official site: ${SITE.url}. The free workspace in a browser: ${SITE.appUrl}.`,
     '',
     '## Key facts',
     '',

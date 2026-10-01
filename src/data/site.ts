@@ -14,7 +14,6 @@ export const SITE = {
   tagline: 'Know when a pull request changes your API.',
   description:
     'Lens reads your repository and maps every endpoint to the code behind it, then shows what a pull request changes against your OpenAPI spec. The API workspace is free.',
-  origin: 'Built in India. Open to the world.',
   email: 'apicircle365@gmail.com',
   links: {
     app: 'https://studio.apicircle.dev',
