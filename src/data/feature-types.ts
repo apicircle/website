@@ -76,7 +76,8 @@ export type FeatureExtra =
   | 'host-matrix'
   | 'account-surfaces'
   | 'plan-capabilities'
-  | 'git-flow';
+  | 'git-flow'
+  | 'cli-pipeline';
 
 export interface Feature {
   slug: string;

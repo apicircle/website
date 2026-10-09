@@ -46,6 +46,8 @@ export const SITE = {
   },
   /** Documentation source-of-truth lives in the studio repo's docs/ folder. */
   docsBase: 'https://github.com/apicircle/studio/blob/main/docs',
+  /** The Lens CLI's documentation, in the public org repository beside the Lens releases. */
+  cliDocsBase: 'https://github.com/apicircle/.github/blob/main/docs/lens-cli',
   /**
    * Countable facts about the free workspace, used as proof points.
    *

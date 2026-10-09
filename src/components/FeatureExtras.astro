@@ -4,9 +4,9 @@
  * feature's `extras` list.
  *
  * Every fact here comes from a data module that says where it was transcribed
- * from — `frameworks.ts`, `findings.ts`, `lens-ui.ts`, `studio-ui.ts`, `hosts.ts`
- * or the generated `pricing.ts` — so a page cannot state a number its source
- * file does not.
+ * from — `frameworks.ts`, `findings.ts`, `lens-ui.ts`, `studio-ui.ts`, `hosts.ts`,
+ * `cli-docs.ts` or the generated `pricing.ts` — so a page cannot state a number
+ * its source file does not.
  */
 import DriftDiff from './DriftDiff.astro';
 import FrameworksTable from './FrameworksTable.astro';
@@ -14,6 +14,7 @@ import HostMatrix from './HostMatrix.astro';
 import Icon from './Icon.astro';
 import PlanBadge from './PlanBadge.astro';
 import Rich from './Rich.astro';
+import { CLI_DOCS, CLI_PIPELINE } from '../data/cli-docs.ts';
 import { FINDINGS } from '../data/findings.ts';
 import { ACCOUNT_TABS, CONTEXT_GRAPH, PROMPT_LIBRARY, SCAFFOLD_DB_ADAPTERS, SCAFFOLD_EMITTERS } from '../data/lens-ui.ts';
 import { GIT_FLOW } from '../data/studio-ui.ts';
@@ -221,6 +222,39 @@ const lead = 'mt-3 max-w-3xl text-[15px] leading-relaxed text-fg-muted';
                 </li>
               ))}
             </ol>
+          </>
+        )}
+
+        {extra === 'cli-pipeline' && (
+          <>
+            <h2 class={heading}>How it runs in a pipeline</h2>
+            <p class={lead}>
+              Four steps, whichever CI service runs them. Your source is analysed on the runner and is never
+              sent to API Circle.
+            </p>
+            <ol class="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+              {CLI_PIPELINE.map((step, i) => (
+                <li class="card">
+                  <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-surface text-sm font-bold text-brand">
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <h3 class="mt-4 text-base font-semibold text-fg">{step.label}</h3>
+                  <p class="mt-2 text-sm leading-relaxed text-fg-muted"><Rich text={step.body} /></p>
+                </li>
+              ))}
+            </ol>
+            <h3 class="mt-12 text-lg font-semibold text-fg">The documentation, on GitHub</h3>
+            <div class="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+              {CLI_DOCS.map((doc) => (
+                <a href={doc.href} target="_blank" rel="noopener" class="group card-hover card flex flex-col">
+                  <div class="flex items-start justify-between gap-2">
+                    <span class="text-base font-semibold text-fg group-hover:text-brand">{doc.label}</span>
+                    <Icon name="arrow-up-right" size={16} class="shrink-0 text-fg-dim transition-colors group-hover:text-brand" />
+                  </div>
+                  <p class="mt-2 text-sm leading-relaxed text-fg-muted">{doc.body}</p>
+                </a>
+              ))}
+            </div>
           </>
         )}
       </div>
