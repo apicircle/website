@@ -203,6 +203,13 @@ export const RULES = [
     unless: /\b(?:Studio|workspace|repository)\b/i,
     use: 'say which half: "Studio is source-available" — Lens is proprietary',
   },
+  {
+    // /download told Mac users to choose Open Anyway and to clear the app's
+    // quarantine flag in Terminal. Since Lens 2.1.8 the macOS app is signed with
+    // a Developer ID and notarized by Apple, and opens without either step.
+    pattern: /\bOpen Anyway\b|\bcom\.apple\.quarantine\b|\bxattr -d/i,
+    use: 'nothing. The Lens macOS app is signed and notarized, so it needs no first-run steps',
+  },
 ];
 
 const SKIP_DIRS = new Set(['node_modules', 'dist', '.astro', '.git', '.screenshots-raw']);

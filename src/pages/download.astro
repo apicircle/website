@@ -5,16 +5,19 @@
  * Two products, in the order someone needs them: Lens, which is what a paid plan
  * gives you, and the free workspace, which needs no account at all.
  *
- * Be careful with platforms here. Lens desktop 2.1.0 is published for Windows
- * (x64), macOS (a dmg each for Apple silicon and Intel) and Linux (x64 AppImage
- * and .deb), and NONE of them is code-signed: the page says so, and says how to
- * get past each system's warning. Offering a download that does not exist is
- * worse than saying it is not ready.
+ * Be careful with platforms here. Lens desktop is published for Windows (x64),
+ * macOS (a dmg each for Apple silicon and Intel) and Linux (x64 AppImage and
+ * .deb). Since 2.1.8 the macOS app is signed with a Developer ID and notarized
+ * by Apple, so it needs no first-run steps; the Windows installer is still NOT
+ * code-signed, and the page says how to get past SmartScreen. Offering a
+ * download that does not exist is worse than saying it is not ready.
  *
- * Signed builds and a Microsoft Store listing are in progress, and
- * `lensInProgress` says so. Each entry leaves that list only once a PUBLISHED
- * release (or a live Store listing) carries it: a draft release is invisible to
- * visitors. Never print a date.
+ * Lens for Windows has been submitted to the Microsoft Store, and a signed
+ * Windows installer is in progress: `lensInProgress` says so. Each entry
+ * leaves that list only once a PUBLISHED release (or a live Store listing)
+ * carries it: a draft release, or a submission still in certification, is
+ * invisible to visitors. Never print a date, and no Store link until the
+ * listing is live.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Section from '../components/Section.astro';
@@ -31,9 +34,8 @@ const studioDesktop = [
 
 /** Lens installs that are being worked on. Nothing here is downloadable yet. */
 const lensInProgress = [
-  { name: 'Signed for macOS', note: 'Signed with a Developer ID and notarized by Apple, so it opens like any other app.' },
+  { name: 'Microsoft Store', note: 'Submitted for a Store listing. Lens will be available there shortly, alongside this direct download.' },
   { name: 'Signed for Windows', note: 'A code-signed installer, without the SmartScreen warning.' },
-  { name: 'Microsoft Store', note: 'A Store listing, alongside this direct download.' },
 ];
 
 const breadcrumbs = [
@@ -76,20 +78,18 @@ const breadcrumbs = [
           </span>
         </div>
         <p class="mt-3 text-xs leading-relaxed text-fg-dim">
-          These installers aren&rsquo;t code-signed yet. We&rsquo;re working on signed versions and
-          will release them soon. Until then your system asks before the first run:
+          The macOS app is signed and notarized by Apple, so it opens like any other app. The Windows
+          installer isn&rsquo;t code-signed yet.
         </p>
         <ul class="mt-2 space-y-1.5 text-xs leading-relaxed text-fg-dim">
           <li>
-            <strong class="text-fg-muted">Windows:</strong> SmartScreen warns. Choose
-            <strong class="text-fg-muted">More info → Run anyway</strong>.
+            <strong class="text-fg-muted">Windows:</strong> SmartScreen warns before the first run. Choose
+            <strong class="text-fg-muted">More info → Run anyway</strong>. Lens has been submitted to the
+            Microsoft Store and will be available there shortly.
           </li>
           <li>
-            <strong class="text-fg-muted">macOS:</strong> open <strong class="text-fg-muted">System
-            Settings → Privacy &amp; Security</strong> and choose <strong class="text-fg-muted">Open
-            Anyway</strong>. If macOS says the app is damaged, run this in Terminal:
-            {/* One line that scrolls on a phone: broken mid-word, it reads as two commands. */}
-            <code class="mt-1 block overflow-x-auto whitespace-nowrap rounded bg-surface px-2 py-1 text-[11px] text-fg-muted">xattr -dr com.apple.quarantine "/Applications/API Circle Lens.app"</code>
+            <strong class="text-fg-muted">macOS:</strong> open the .dmg for your Mac and drag API Circle Lens
+            into Applications.
           </li>
           <li>
             <strong class="text-fg-muted">Linux:</strong> install the .deb on Debian or Ubuntu, or make the
@@ -102,7 +102,7 @@ const breadcrumbs = [
             <span class="inline-flex items-center rounded-full border border-node-amber/40 bg-node-amber/10 px-2 py-0.5 text-[0.6875rem] font-semibold uppercase tracking-wide text-node-amber">
               In progress
             </span>
-            Signed builds aren&rsquo;t ready to download yet.
+            Not ready to download yet.
           </p>
           <dl class="mt-3 grid gap-x-4 gap-y-2 sm:grid-cols-[9rem_1fr]">
             {
