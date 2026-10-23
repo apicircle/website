@@ -12,12 +12,12 @@
  * code-signed, and the page says how to get past SmartScreen. Offering a
  * download that does not exist is worse than saying it is not ready.
  *
- * Lens for Windows has been submitted to the Microsoft Store, and a signed
- * Windows installer is in progress: `lensInProgress` says so. Each entry
- * leaves that list only once a PUBLISHED release (or a live Store listing)
- * carries it: a draft release, or a submission still in certification, is
- * invisible to visitors. Never print a date, and no Store link until the
- * listing is live.
+ * Lens for Windows is also on the Microsoft Store (`SITE.links.lensStore`).
+ * The Store signs its own package, so that install has no SmartScreen step;
+ * the installer downloaded from here still does. A signed direct installer is
+ * in progress: `lensInProgress` says so. It leaves that list only once a
+ * PUBLISHED release carries it: a draft release is invisible to visitors.
+ * Never print a date.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Section from '../components/Section.astro';
@@ -34,8 +34,7 @@ const studioDesktop = [
 
 /** Lens installs that are being worked on. Nothing here is downloadable yet. */
 const lensInProgress = [
-  { name: 'Microsoft Store', note: 'Submitted for a Store listing. Lens will be available there shortly, alongside this direct download.' },
-  { name: 'Signed for Windows', note: 'A code-signed installer, without the SmartScreen warning.' },
+  { name: 'Signed for Windows', note: 'A code-signed installer for the direct download, without the SmartScreen warning.' },
 ];
 
 const breadcrumbs = [
@@ -45,7 +44,7 @@ const breadcrumbs = [
 ---
 <BaseLayout
   title="Download"
-  description="Get API Circle Lens for Windows, macOS and Linux, or the free API workspace — in the browser, on the desktop for Windows, macOS and Linux, or inside VS Code."
+  description="Get API Circle for Windows, macOS and Linux, or the free API workspace — in the browser, on the desktop for Windows, macOS and Linux, or inside VS Code."
   breadcrumbs={breadcrumbs}
 >
   <Section
@@ -61,35 +60,40 @@ const breadcrumbs = [
         <Icon name="workflow" size={24} />
       </span>
       <div class="flex-1">
-        <h2 class="text-xl font-semibold text-fg">{SITE.lensName}</h2>
+        <h2 class="text-xl font-semibold text-fg">{SITE.name}</h2>
         <p class="mt-2 text-sm leading-relaxed text-fg-muted">
           The whole API workspace, plus the panels a paid plan unlocks: the Code graph, PR Review,
           the AI Assistant and MCP setup. Every plan starts with a {TRIAL_DAYS}-day free trial, so
           you can index a repository and review a pull request before you decide.
           <a href="/features#lens" class="text-brand hover:underline">What each panel does →</a>
         </p>
-        <div class="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
-          <a href={SITE.links.lensReleases} target="_blank" rel="noopener" class="btn-primary">
+        <div class="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+          <a href={SITE.links.lensReleases} target="_blank" rel="noopener" class="btn-primary whitespace-nowrap">
             <Icon name="download" size={16} />
             Download Lens
+          </a>
+          <a href={SITE.links.lensStore} target="_blank" rel="noopener" class="btn-secondary whitespace-nowrap">
+            <Icon name="monitor" size={16} />
+            Microsoft Store
           </a>
           <span class="text-xs leading-relaxed text-fg-dim">
             Windows 10 or later (x64), macOS (Apple silicon and Intel), Linux (x64).
           </span>
         </div>
         <p class="mt-3 text-xs leading-relaxed text-fg-dim">
-          The macOS app is signed and notarized by Apple, so it opens like any other app. The Windows
-          installer isn&rsquo;t code-signed yet.
+          The macOS app is signed and notarized by Apple, so it opens like any other app. On Windows,
+          the Microsoft Store signs its own version; the installer downloaded from here isn&rsquo;t
+          code-signed yet.
         </p>
         <ul class="mt-2 space-y-1.5 text-xs leading-relaxed text-fg-dim">
           <li>
-            <strong class="text-fg-muted">Windows:</strong> SmartScreen warns before the first run. Choose
-            <strong class="text-fg-muted">More info → Run anyway</strong>. Lens has been submitted to the
-            Microsoft Store and will be available there shortly.
+            <strong class="text-fg-muted">Windows:</strong> the Microsoft Store version installs like any
+            other Store app. For the downloaded installer, SmartScreen warns before the first run: choose
+            <strong class="text-fg-muted">More info → Run anyway</strong>.
           </li>
           <li>
-            <strong class="text-fg-muted">macOS:</strong> open the .dmg for your Mac and drag API Circle Lens
-            into Applications.
+            <strong class="text-fg-muted">macOS:</strong> open the .dmg for your Mac and drag API Circle into
+            Applications.
           </li>
           <li>
             <strong class="text-fg-muted">Linux:</strong> install the .deb on Debian or Ubuntu, or make the

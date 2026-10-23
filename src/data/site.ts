@@ -31,6 +31,12 @@ export const SITE = {
      * only Lens desktop releases; if that changes, pin the tag instead.
      */
     lensReleases: 'https://github.com/apicircle/.github/releases/latest',
+    /**
+     * Lens on the Microsoft Store (product 9NVQ181SZ9DL), live since 2026-10-24.
+     * The Store signs its own package, so this install has no SmartScreen step;
+     * the direct `.exe` above still has one.
+     */
+    lensStore: 'https://apps.microsoft.com/detail/9nvq181sz9dl',
     vscode: 'https://marketplace.visualstudio.com/items?itemName=apicircle.apicircle-vscode',
     openVsx: 'https://open-vsx.org/extension/apicircle/apicircle-vscode',
     peerlist: 'https://peerlist.io/devaprakash0927/project/api-circle-studio',
