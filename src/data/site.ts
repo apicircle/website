@@ -21,20 +21,21 @@ export const SITE = {
     issues: 'https://github.com/apicircle/studio/issues',
     releases: 'https://github.com/apicircle/studio/releases/latest',
     /**
-     * The current Lens desktop release, on the public org repo.
+     * The current desktop release, on the public org repo: the macOS and Linux
+     * channel. From 2.1.9 it carries no Windows installer (`lensStore` is the
+     * Windows channel), so never offer it as a Windows download.
      *
-     * `/releases/latest`, not the release list and not a direct `.exe` link. It
+     * `/releases/latest`, not the release list and not a direct file link. It
      * follows each new published version without an edit here (drafts and
      * pre-releases are skipped), and it lands on the release page, where the
-     * SmartScreen steps and the SHA-256 sit next to the installer — which
-     * matters while the installer is unsigned. It assumes this repo publishes
+     * SHA-256 of each installer sits next to it. It assumes this repo publishes
      * only Lens desktop releases; if that changes, pin the tag instead.
      */
     lensReleases: 'https://github.com/apicircle/.github/releases/latest',
     /**
-     * Lens on the Microsoft Store (product 9NVQ181SZ9DL), live since 2026-10-24.
-     * The Store signs its own package, so this install has no SmartScreen step;
-     * the direct `.exe` above still has one.
+     * The desktop app on the Microsoft Store (product 9NVQ181SZ9DL), live since
+     * 2026-10-24: the only Windows channel. The Store signs its own package and
+     * keeps the installed app up to date.
      */
     lensStore: 'https://apps.microsoft.com/detail/9nvq181sz9dl',
     vscode: 'https://marketplace.visualstudio.com/items?itemName=apicircle.apicircle-vscode',

@@ -76,11 +76,9 @@ export const FOOTER_NAV: { title: string; items: NavItem[] }[] = [
       // This column used to link the studio repo's MCP docs, which now only
       // point at Lens: the MCP server moved there and became part of Pro. The
       // Features column already links the MCP page, so these are guides instead.
-      {
-        label: 'Installing the desktop app',
-        href: 'https://github.com/apicircle/studio/blob/main/docs/installing.md',
-        external: true,
-      },
+      // The studio repo's installing.md is not one of them: it walks through the
+      // unsigned Studio desktop's first launch, and the desktop app this site
+      // offers is signed (Product → Download).
       {
         label: 'Mock server guide',
         href: 'https://github.com/apicircle/studio/blob/main/docs/mock-server.md',

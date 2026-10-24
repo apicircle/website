@@ -17,7 +17,9 @@ const groups = [
     title: 'Getting started',
     icon: 'play',
     docs: [
-      { label: 'Installing the desktop app', href: `${d}/installing.md`, body: 'Download, first-launch prompt, and one-time setup.' },
+      // Not the studio repo's installing.md: that is the unsigned Studio desktop's
+      // first-launch guide, and the desktop app offered here is signed.
+      { label: 'Download the desktop app', href: '/download', body: 'Windows from the Microsoft Store, macOS and Linux from the latest release.' },
       // The studio repo's MCP docs now only point at Lens, where the MCP server moved.
       { label: 'Connect your AI client', href: '/features/mcp-ai', body: 'The Lens MCP server: the clients it installs into, and what it gives them.' },
       { label: 'README & quick start', href: `${SITE.links.github}#quick-start`, body: 'The 60-second tour of both usage modes.' },

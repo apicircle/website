@@ -210,6 +210,13 @@ export const RULES = [
     pattern: /\bOpen Anyway\b|\bcom\.apple\.quarantine\b|\bxattr -d/i,
     use: 'nothing. The Lens macOS app is signed and notarized, so it needs no first-run steps',
   },
+  {
+    // /download offered a Windows .exe that was not code-signed, with the
+    // SmartScreen step to get past it, and a signed one "in progress". From
+    // 2.1.9 Windows gets the app from the Microsoft Store only, which signs it.
+    pattern: /\bSmartScreen\b|\bRun anyway\b|\.exe installer\b/i,
+    use: 'SITE.links.lensStore. Windows installs the app from the Microsoft Store, which signs it',
+  },
 ];
 
 const SKIP_DIRS = new Set(['node_modules', 'dist', '.astro', '.git', '.screenshots-raw']);

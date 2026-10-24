@@ -7,10 +7,9 @@ import type { PlanId, Product } from './feature-types';
  * published for Windows (x64), macOS (Apple silicon and Intel) and Linux (x64),
  * and it does not update itself; Studio desktop ships for all three and does
  * (studio `apps/desktop/src/main/autoUpdater.ts`). Since 2.1.8 the macOS app is
- * signed and notarized. On Windows the app is also on the Microsoft Store, which
- * signs its own package, but the installer downloaded from the site is not
- * code-signed yet. `where` may say exactly that, and must not call the direct
- * download signed until a published release carries one.
+ * signed and notarized. Windows gets Lens from the Microsoft Store only, which
+ * signs its own package; from 2.1.9 the release carries no Windows installer,
+ * so `where` must not offer one.
  * The web app cannot run a mock server, because a browser tab cannot listen on
  * a port (studio `helpContent.ts`, "Mock runtime").
  */
@@ -30,7 +29,7 @@ export const SURFACES: Surface[] = [
     name: 'Lens desktop',
     product: 'lens',
     plan: 'basic',
-    where: 'Windows 10 or later (x64, also on the Microsoft Store), macOS (Apple silicon and Intel, notarized), Linux (x64). The Windows installer downloaded from this site is not code-signed yet',
+    where: 'Windows 10 or later (x64, from the Microsoft Store), macOS (Apple silicon and Intel, notarized), Linux (x64)',
     note: 'The whole workspace plus the Code graph, Review, Assistant and MCP panels. It does not update itself yet.',
     href: '/download',
   },
