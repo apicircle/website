@@ -5,8 +5,8 @@
  *
  * Every fact here comes from a data module that says where it was transcribed
  * from — `frameworks.ts`, `findings.ts`, `lens-ui.ts`, `studio-ui.ts`, `hosts.ts`,
- * `cli-docs.ts` or the generated `pricing.ts` — so a page cannot state a number
- * its source file does not.
+ * `cli-docs.ts`, or the generated `pricing.ts` and `parser-scores.ts` — so a page
+ * cannot state a number its source file does not.
  */
 import DriftDiff from './DriftDiff.astro';
 import FrameworksTable from './FrameworksTable.astro';
@@ -15,6 +15,7 @@ import Icon from './Icon.astro';
 import PlanBadge from './PlanBadge.astro';
 import Rich from './Rich.astro';
 import { CLI_DOCS, CLI_PIPELINE } from '../data/cli-docs.ts';
+import { SCORES, count, longDate, share } from '../data/parser-scores-view.ts';
 import { FINDINGS } from '../data/findings.ts';
 import { ACCOUNT_TABS, CONTEXT_GRAPH, PROMPT_LIBRARY, SCAFFOLD_DB_ADAPTERS, SCAFFOLD_EMITTERS } from '../data/lens-ui.ts';
 import { GIT_FLOW } from '../data/studio-ui.ts';
@@ -48,6 +49,23 @@ const lead = 'mt-3 max-w-3xl text-[15px] leading-relaxed text-fg-muted';
               and response types.
             </p>
             <FrameworksTable class="!mx-0 mt-8" />
+          </>
+        )}
+
+        {extra === 'parser-scores' && (
+          <>
+            <h2 class={heading}>How well it reads</h2>
+            <p class={lead}>
+              In {SCORES.realProjects.projects} open-source projects, Lens found
+              {' '}{count(SCORES.realProjects.matched)} of the {count(SCORES.realProjects.truth)} endpoints
+              they document ({share(SCORES.realProjects.matched, SCORES.realProjects.truth)}), and typed
+              {' '}{count(SCORES.realProjects.leaves.typed)} of the {count(SCORES.realProjects.leaves.comparable)}
+              {' '}contract fields it found a counterpart for. Measured on {longDate(SCORES.measuredOn)}.
+            </p>
+            <a href="/lens/parser" class="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-brand hover:underline">
+              How we chose the projects, and what the numbers leave out
+              <Icon name="arrow-right" size={15} />
+            </a>
           </>
         )}
 

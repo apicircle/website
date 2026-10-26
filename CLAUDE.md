@@ -30,6 +30,26 @@ plan's own name from its id. In a data string, use `planName('pro')` from
 A hard-coded `$18.99` in a comparison table is the single most likely mistake on
 this site, because a table feels like page content rather than data.
 
+## Never type a parser score
+
+`src/data/parser-scores.ts` is **generated** the same way:
+`pnpm export:parser-scores -- --write ../website/src/data/parser-scores.ts` in the
+Lens repo runs the parser against the fixture suite, the hand-labelled call
+graphs and every pinned real project, and writes counts only. Lens's
+`pnpm guard:parser-scores` fails its build when the parser changes and this file
+is not regenerated, so the `measuredOn` date is the parser's. Commit the
+regenerated file when it arrives.
+
+Read figures through `src/data/parser-scores-view.ts`: `share(n, d)` for a
+percentage (it never rounds a shortfall up to 100%), `count()`, `longDate()`. The
+claims guard fails on a percentage typed beside "recall", "precision",
+"accuracy", "endpoints found" or "fields typed".
+
+`/lens/parser` explains the method in prose around those figures. Prose does not
+regenerate, so when an export moves a figure a long way, re-read the sentence
+around it. The page names **no project** in the corpus: it says how projects were
+chosen and what each number counts, and that is the line to hold.
+
 ## Terminology
 
 - **Code graph**, always sentence case. Never "Code Graph", "Index map",
@@ -44,8 +64,11 @@ this site, because a table feels like page content rather than data.
 - Project generation, greenfield or serverless migration. The Build pillar is
   hidden in the initial release.
 - Workspace sharing, a marketplace, releases, or repo topics. All hard-disabled.
-- "100% accurate." The public benchmark is two FastAPI repositories and covers
-  discovery only. If you cite it, cite its scope in the same sentence.
+- "100% accurate", or any parser figure without what it counts. Cite one from
+  `PARSER_SCORES` with its scope in the same sentence, and link `/lens/parser`.
+  The fixture suite's full marks are on fixtures written together with their
+  specs, and the real-project figures exclude fields the code side never had:
+  say which one you mean.
 - That GitLab, Bitbucket or Azure DevOps have been exercised against a live
   host. They are covered against an emulator. Safe phrasing: *"Lens speaks
   GitLab, Bitbucket Cloud and Azure DevOps through each host's own review API."*

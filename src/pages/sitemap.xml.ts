@@ -16,6 +16,8 @@ const entries: Entry[] = [
   { path: '/features/', changefreq: 'weekly', priority: '0.9' },
   { path: '/git-backed-api-client/', changefreq: 'weekly', priority: '0.9' },
   { path: '/lens/', changefreq: 'monthly', priority: '0.9' },
+  // Regenerated whenever the parser changes, so it moves more often than /lens.
+  { path: '/lens/parser/', changefreq: 'weekly', priority: '0.7' },
   { path: '/pricing/', changefreq: 'monthly', priority: '0.8' },
   { path: '/security/', changefreq: 'yearly', priority: '0.4' },
   { path: '/download/', changefreq: 'weekly', priority: '0.8' },

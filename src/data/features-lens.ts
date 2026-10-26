@@ -76,7 +76,7 @@ export const LENS_FEATURES: Feature[] = [
         },
       ],
     },
-    extras: ['frameworks'],
+    extras: ['frameworks', 'parser-scores'],
   },
   {
     slug: 'pr-review-drift',

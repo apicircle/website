@@ -68,6 +68,7 @@ export interface ClosingCta {
 /** Page sections beyond the highlights, rendered by `FeatureExtras.astro`. */
 export type FeatureExtra =
   | 'frameworks'
+  | 'parser-scores'
   | 'drift-findings'
   | 'scaffold-targets'
   | 'prompt-library'

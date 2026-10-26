@@ -3,6 +3,7 @@ import { FAQS } from '../data/faqs';
 import { FEATURES } from '../data/features';
 import { PLANS, PRICE_CURRENCY_NOTE, TRIAL_DAYS } from '../data/pricing';
 import { SITE } from '../data/site';
+import { SCORES, count, longDate, share } from '../data/parser-scores-view';
 
 // llms.txt — the overview AI answer engines read. Generated, not hand-written.
 //
@@ -36,6 +37,7 @@ const keyFacts: string[] = [
   `Free, and no account: the whole API workspace — request editor, environments, run history, local mock servers, execution plans, imports, and GitHub-backed sync. ${workspaces(PLANS[0].workspaces)} is included.`,
   `Paid: API Circle Lens, which reads your repository. Every plan starts with a ${TRIAL_DAYS}-day trial.`,
   'Code graph: Lens reads the source, not the spec, and maps every endpoint to the handler and the functions it calls. It is written into your repository as a codegraph/ sidecar, so it is versioned and reviewable like any other file. Where an operation cannot be read with confidence it reports unknown rather than guessing.',
+  `Parser measurement: in ${SCORES.realProjects.projects} open-source projects across ${SCORES.realProjects.languages.length} languages, each pinned to a commit and marked against an answer key, Lens found ${count(SCORES.realProjects.matched)} of ${count(SCORES.realProjects.truth)} documented endpoints (${share(SCORES.realProjects.matched, SCORES.realProjects.truth)}); ${share(SCORES.realProjects.matched, SCORES.realProjects.listed)} of the endpoints it listed were documented. Measured ${longDate(SCORES.measuredOn)}. Method and limits: ${abs('/lens/parser/')}.`,
   'PR Review drift: two comparisons and one verdict — the head of a pull request against its base, and against your OpenAPI spec. Findings are concrete: auth middleware dropped from an endpoint, a 204 that became a 200, a new write inside a shared helper. Nothing is posted to your host until you press Submit.',
   'Spec alignment: pick a workspace Spec and the Code graph marks every endpoint that is undocumented, not implemented or a stub. "Verify schema" corrects what the parser misread, and keeps an append-only audit of who changed what.',
   'Refinements: add an endpoint the parser missed, map a function to an endpoint, or block a false positive with a reason. Each correction is committed beside the Code graph and survives a reindex.',
@@ -61,6 +63,7 @@ const planLines = PLANS.map(
 const pages: Array<[string, string, string]> = [
   ['/', 'Home', 'what Lens does, what the workspace costs, and how the two fit together.'],
   ['/lens/', SITE.lensName, 'what Lens is, what each plan adds, and how you receive it.'],
+  ['/lens/parser/', 'How the Lens parser is measured', 'how it reads an endpoint, how the test projects were chosen, and what each score counts.'],
   ['/pricing/', 'Pricing', 'the four plans, what each adds, and the currency note.'],
   ['/features/', 'Features', 'every capability, Lens first, with the plan that carries it.'],
   ...FEATURES.map(
