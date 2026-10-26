@@ -30,7 +30,7 @@ export const LEGAL = {
   legalName: 'Deva Prakash',
   entityDescription:
     'a sole proprietorship registered in India',
-  address: 'No. 66/1, South Street, Vasanakuppam, Cuddalore, Tamil Nadu 607301, India',
+  address: 'West Tambaram, Greater Chennai Area, Tamil Nadu 600045, India',
   tradingName: 'API Circle',
 
   supportEmail: 'support@apicircle.dev',
@@ -41,7 +41,7 @@ export const LEGAL = {
 
   /** Governing law and courts for business customers. Consumers keep their local-law protections. */
   governingLaw: 'the laws of India',
-  courts: 'Cuddalore, Tamil Nadu, India',
+  courts: 'Chennai, Tamil Nadu, India',
 
   /** GDPR Art. 27 / UK GDPR Art. 27 representatives. Take advice on whether one is required; if not, say so. */
   euRepresentative: 'Not appointed',
