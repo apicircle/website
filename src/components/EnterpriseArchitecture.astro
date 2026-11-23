@@ -1,0 +1,229 @@
+---
+/**
+ * Where API Circle sits in an enterprise architecture: an illustrative bank.
+ *
+ * Three planes, top to bottom. The request path (customers and partners through
+ * the edge, the API gateway and six domain services) carries a callout that API
+ * Circle is NOT in it. The contract (one OpenAPI Spec per service) feeds the
+ * gateway, the portal and partner SDKs. The change path, read bottom to top,
+ * runs each service's pull request through its own API Circle gate, and only
+ * what passed reaches merge and deploy.
+ *
+ * The six columns line up across all three planes, so each gate sits under the
+ * service it protects. The figure is laid out at a fixed width and scrolls
+ * sideways on a phone, like the workflow figure; the key below it reflows.
+ *
+ * Services, verdicts and grades come from `BANK_GATES`, the same records the
+ * gate-by-gate board uses, so the two cannot tell the story differently.
+ */
+import Rich from './Rich.astro';
+import { BANK_GATES, BANK_CONSUMERS, BANK_BACKENDS, SPEC_FEEDS, ARCH_KEY, type Severity, type Verdict } from '../data/enterprise';
+
+const six = 'grid grid-cols-6 gap-2.5';
+
+const GRADE: Record<Severity, string> = {
+  critical: 'Critical',
+  warning: 'Warning',
+  info: 'Info',
+  diffracting: 'Diffracting',
+  'in-focus': 'In focus',
+};
+
+const VERDICT: Record<Verdict, { label: string; cls: string }> = {
+  blocked: { label: 'Blocked', cls: 'bg-node-red/10 text-node-red' },
+  commented: { label: 'Commented', cls: 'bg-node-amber/10 text-node-amber' },
+  passed: { label: 'Passed', cls: 'bg-node-green/10 text-node-green' },
+};
+
+const short = (service: string) => service.replace(/ API$/, '');
+
+const splitEndpoint = (endpoint: string): [string, string] | null => {
+  const m = /^(GET|POST|PUT|PATCH|DELETE)\s+(.+)$/.exec(endpoint);
+  return m ? [m[1], m[2]] : null;
+};
+
+const badge = 'inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent text-xs font-bold text-accent-fg';
+const label = 'text-[0.6875rem] font-bold uppercase tracking-[0.15em]';
+---
+<figure class="flex flex-col gap-6">
+  <div class="overflow-x-auto rounded-2xl border border-edge bg-bg">
+    <div
+      class="flex min-w-[1080px] flex-col gap-3 p-5"
+      role="img"
+      aria-label="An illustrative bank architecture. Customers and partners call the request path: an edge, an API gateway whose policies are built from the Spec, identity, and six services (Payments, Open Banking, Accounts, Onboarding, Cards, Loans) with core banking and payment networks behind them. API Circle is not in the request path. One OpenAPI Spec per service feeds the gateway, the developer portal and partner SDKs. On the change path, each service's pull request passes through its own API Circle gate: four are blocked, one merges with a comment and one passes, and only what passed is merged and deployed."
+    >
+      <!-- Customers and partners -->
+      <div class="flex flex-wrap items-center gap-2 px-1">
+        <span class:list={[label, 'mr-1 text-fg-dim']}>Customers &amp; partners</span>
+        {BANK_CONSUMERS.map((c) => <span class="rounded-lg border border-edge-strong bg-panel px-2.5 py-1 text-sm font-medium text-fg">{c}</span>)}
+      </div>
+
+      <!-- Request path -->
+      <div class="flex flex-col gap-2.5 rounded-2xl border border-edge bg-panel p-4">
+        <div class="flex items-center justify-between gap-3">
+          <span class:list={[label, 'text-fg-dim']}><span class="text-fg">Request path</span> · runtime</span>
+          <span class="inline-flex items-center gap-2 rounded-full border-[1.5px] border-dashed border-edge-strong py-1 pl-1.5 pr-3 text-xs font-semibold text-fg-muted">
+            <span class="inline-flex h-5 w-5 items-center justify-center rounded-full border-[1.5px] border-fg-dim text-[0.625rem] font-bold text-fg" aria-hidden="true">✕</span>
+            API Circle is not here: no proxy, no agent, no production traffic
+          </span>
+        </div>
+        <div class="grid grid-cols-[120px_minmax(0,1fr)_150px] gap-2.5">
+          <div class="flex flex-col justify-center rounded-lg border border-edge-strong bg-bg px-3 py-2">
+            <b class="text-sm font-semibold text-fg">Edge</b><span class="text-xs text-fg-muted">WAF, CDN</span>
+          </div>
+          <div class="flex flex-col justify-center rounded-lg border border-edge-strong bg-bg px-3 py-2">
+            <b class="text-sm font-semibold text-fg">API gateway <span class="font-medium text-node-sky">· policies built from the Spec</span></b>
+            <span class="text-xs text-fg-muted">routes, OAuth scopes, rate limits, request validation</span>
+          </div>
+          <div class="flex flex-col justify-center rounded-lg border border-edge-strong bg-bg px-3 py-2">
+            <b class="text-sm font-semibold text-fg">Identity</b><span class="text-xs text-fg-muted">login, consent</span>
+          </div>
+        </div>
+        <div class={six}>
+          {
+            BANK_GATES.map((g) => (
+              <div class="min-w-0 rounded-lg border border-edge-strong bg-bg px-3 py-2">
+                <b class="block truncate text-sm font-semibold text-fg">{short(g.service)}</b>
+                <span class="block truncate text-xs text-fg-muted">{g.stack}</span>
+              </div>
+            ))
+          }
+        </div>
+        <div class="flex items-center gap-3 rounded-lg border border-edge bg-bg px-3 py-1.5 text-xs text-fg-muted">
+          <b class="font-semibold text-fg">Behind them</b>
+          {BANK_BACKENDS.map((b, i) => (<>{i > 0 && <span aria-hidden="true">·</span>}<span>{b}</span></>))}
+        </div>
+      </div>
+
+      <!-- The contract -->
+      <div class="flex items-center gap-4 whitespace-nowrap rounded-2xl border-[1.5px] border-node-sky/40 bg-node-sky/[0.07] px-4 py-3">
+        <span class:list={[label, 'text-node-sky']}>The contract</span>
+        <span class="text-sm font-semibold text-fg">One OpenAPI Spec per service</span>
+        <span class="flex items-center gap-1.5 text-xs text-fg-muted">
+          feeds
+          {SPEC_FEEDS.map((f) => <span class="rounded-md border border-node-sky/40 bg-node-sky/10 px-2 py-0.5 font-medium text-fg">{f}</span>)}
+        </span>
+        <span class="ml-auto inline-flex items-center gap-2 text-xs font-semibold text-brand">
+          <span class={badge}>4</span>API platform team keeps it true
+        </span>
+      </div>
+
+      <!-- Change path -->
+      <div class="flex flex-col gap-1.5 rounded-2xl border border-edge bg-panel p-4">
+        <span class:list={[label, 'text-fg-dim']}><span class="text-fg">Change path</span> · delivery, read bottom to top</span>
+        <div class="mt-1 flex items-center gap-3 rounded-lg border border-edge-strong bg-bg px-3 py-2 text-sm">
+          <b class="font-semibold text-fg">Merge → CI/CD → deploy to the request path</b>
+          <span class="ml-auto text-xs font-semibold text-node-green">only changes that passed their gate</span>
+        </div>
+
+        <div class:list={[six, 'h-6 items-center']} aria-hidden="true">
+          {
+            BANK_GATES.map((g) =>
+              g.verdict === 'blocked' ? (
+                <span class="flex items-center justify-center gap-1.5 text-[0.6875rem] font-bold uppercase tracking-wider text-node-red">
+                  <span class="inline-flex h-4 w-4 items-center justify-center rounded-full border-[1.5px] border-node-red text-[0.5625rem]">✕</span>
+                  Held
+                </span>
+              ) : (
+                <span class="flex flex-col items-center">
+                  <span class:list={['border-x-[6px] border-b-[9px] border-x-transparent', g.verdict === 'commented' ? 'border-b-node-amber' : 'border-b-node-green']}></span>
+                  <span class:list={['h-[11px] w-[2.5px]', g.verdict === 'commented' ? 'bg-node-amber' : 'bg-node-green']}></span>
+                </span>
+              ),
+            )
+          }
+        </div>
+
+        <div class="flex flex-col gap-2 rounded-xl border-[1.5px] border-brand/50 bg-brand/[0.1] px-2 pb-2.5 pt-2 shadow-glow">
+          <div class="flex items-center gap-2 px-1">
+            <span class={badge}>2</span><span class={badge}>3</span>
+            <span class:list={[label, 'text-brand']}>API Circle · a contract gate per service</span>
+            <span class="ml-auto text-xs text-fg-muted">code vs base, code vs Spec · on the PR and in CI</span>
+          </div>
+          <div class={six}>
+            {
+              BANK_GATES.map((g) => (
+                <div class="flex min-w-0 flex-col gap-1 rounded-lg border border-brand/30 bg-bg/70 p-2.5">
+                  <span class="truncate text-[0.6875rem] font-bold uppercase tracking-wider text-brand">{short(g.service)}</span>
+                  <span class:list={['self-start rounded px-1.5 py-0.5 text-[0.6875rem] font-bold uppercase tracking-wider', VERDICT[g.verdict].cls]}>{VERDICT[g.verdict].label}</span>
+                  <span class="truncate font-mono text-xs text-fg">{g.flag ?? 'no drift'}</span>
+                  <span class="truncate text-xs text-fg-muted">{GRADE[g.severity]}{g.note && ` · ${g.note}`}</span>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+
+        <div class:list={[six, 'h-6 items-center']} aria-hidden="true">
+          {BANK_GATES.map(() => (
+            <span class="flex flex-col items-center">
+              <span class="border-x-[6px] border-b-[9px] border-x-transparent border-b-brand"></span>
+              <span class="h-[11px] w-[2.5px] bg-brand"></span>
+            </span>
+          ))}
+        </div>
+
+        <div class={six}>
+          {
+            BANK_GATES.map((g) => {
+              const ep = splitEndpoint(g.endpoint);
+              return (
+                <div class="flex min-w-0 flex-col gap-0.5 rounded-lg border border-edge-strong bg-bg px-2.5 py-2">
+                  <span class="truncate text-[0.625rem] font-bold uppercase tracking-wider text-fg-dim">PR · {short(g.service)}</span>
+                  <span class="truncate font-mono text-xs font-semibold text-fg">
+                    {ep ? (<><span class="text-brand">{ep[0]}</span> {ep[1]}</>) : g.endpoint}
+                  </span>
+                  <span class="truncate text-xs text-fg-muted"><Rich text={g.brief} /></span>
+                </div>
+              );
+            })
+          }
+        </div>
+
+        <div class:list={[six, 'h-6 items-center']} aria-hidden="true">
+          {BANK_GATES.map(() => (
+            <span class="flex flex-col items-center">
+              <span class="border-x-[6px] border-b-[9px] border-x-transparent border-b-brand"></span>
+              <span class="h-[11px] w-[2.5px] bg-brand"></span>
+            </span>
+          ))}
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <div class="flex items-center gap-3 rounded-lg border border-edge-strong bg-bg px-3 py-2">
+            <span class={badge}>1</span>
+            <span class="flex min-w-0 flex-col">
+              <b class="text-sm font-semibold text-fg">Developer workstation</b>
+              <span class="text-xs text-fg-muted">API Circle desktop app; AI assistant over MCP</span>
+            </span>
+          </div>
+          <div class="flex flex-col justify-center rounded-lg border border-edge-strong bg-bg px-3 py-2">
+            <b class="text-sm font-semibold text-fg">Git host · one repo per service</b>
+            <span class="text-xs text-fg-muted">code + OpenAPI Spec + <code class="font-mono text-fg">.apicircle/</code> Code graph</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <figcaption class="flex flex-col gap-5">
+    <span class="text-sm text-fg-dim xl:hidden">Scroll sideways to see the whole architecture.</span>
+    <dl class="grid gap-x-8 gap-y-5 md:grid-cols-2">
+      {
+        ARCH_KEY.map((k) => (
+          <div class:list={['flex gap-3', k.mark === 'x' && 'md:col-span-2']}>
+            {k.mark === 'x' ? (
+              <span class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-[1.5px] border-fg-dim text-[0.6875rem] font-bold text-fg" aria-hidden="true">✕</span>
+            ) : (
+              <span class={badge} aria-hidden="true">{k.mark}</span>
+            )}
+            <div class="flex flex-col gap-1">
+              <dt class:list={['text-base font-semibold', k.primary ? 'text-brand' : 'text-fg']}>{k.title}</dt>
+              <dd class="text-[15px] leading-relaxed text-fg-muted"><Rich text={k.body} /></dd>
+            </div>
+          </div>
+        ))
+      }
+    </dl>
+  </figcaption>
+</figure>

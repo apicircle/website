@@ -1,0 +1,290 @@
+---
+/**
+ * /enterprise: where API Circle sits in an enterprise API workflow, and why.
+ *
+ * For an engineering leader or an architect deciding where a tool goes in their
+ * delivery pipeline. It answers three questions in order: where it sits (the
+ * workflow figure), why there (the pull request is the one point where code and
+ * contract meet before merge), and what that looks like across many services
+ * (an illustrative bank, one gate per service).
+ *
+ * Copy lives in `src/data/enterprise.ts`; plan names come from `PlanBadge`, never
+ * typed, so the page cannot promise a capability on the wrong plan.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/Section.astro';
+import Icon from '../components/Icon.astro';
+import Rich from '../components/Rich.astro';
+import PlanBadge from '../components/PlanBadge.astro';
+import DriftDiff from '../components/DriftDiff.astro';
+import CodeBlock from '../components/CodeBlock.astro';
+import CTA from '../components/CTA.astro';
+import EnterpriseArchitecture from '../components/EnterpriseArchitecture.astro';
+import EnterpriseWorkflow from '../components/EnterpriseWorkflow.astro';
+import ServiceGates from '../components/ServiceGates.astro';
+import { FINDINGS } from '../data/findings';
+import { TRIAL_LINE } from '../data/feature-types';
+import { GLANCE, REASONS, COMPARISONS, TOUCHPOINTS, ROLLOUT, CONSTRAINTS } from '../data/enterprise';
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Enterprise', url: '/enterprise' },
+];
+
+const toneClass = {
+  never: 'text-node-amber',
+  late: 'text-node-red',
+  early: 'font-semibold text-brand',
+} as const;
+---
+<BaseLayout
+  title="API Circle in the enterprise"
+  description="Where API Circle sits in an enterprise API workflow: a contract gate on every service's pull requests that checks the code against its OpenAPI Spec before the change merges."
+  breadcrumbs={breadcrumbs}
+  lens
+>
+  <Section
+    headingLevel="h1"
+    eyebrow="For enterprise API teams"
+    eyebrowIcon="shield-check"
+    title="A contract gate on every service's pull requests"
+    subtitle="Every enterprise API moves along two tracks: the contract, written as an OpenAPI Spec, and the code that implements it. Today the two are usually compared only after merge, by tests in staging or by traffic in production. API Circle sits at the pull request and compares them there, endpoint by endpoint, before the change merges."
+  >
+    <div class="flex flex-col items-center justify-center gap-3 sm:flex-row">
+      <a href="/features/pr-review-drift" class="btn-primary w-full sm:w-auto">
+        How PR Review drift works
+        <Icon name="arrow-right" size={16} />
+      </a>
+      <a href="/pricing" class="btn-secondary w-full sm:w-auto">See plans and pricing</a>
+    </div>
+    <dl class="mx-auto mt-14 grid max-w-5xl gap-0 border-y border-edge md:grid-cols-3">
+      {
+        GLANCE.map((g, i) => (
+          <div class:list={['flex flex-col gap-2 py-5 md:px-6', i > 0 && 'border-t border-edge md:border-l md:border-t-0', i === 0 && 'md:pl-0']}>
+            <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-fg-dim">{g.label}</dt>
+            <dd class="text-[15px] leading-relaxed text-fg">{g.body}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </Section>
+
+  <Section
+    class="!pt-0"
+    eyebrow="Where it sits in your architecture"
+    eyebrowIcon="server"
+    title={'Not in the request path. A gate on every change path.'}
+    align="left"
+    subtitle="An illustrative bank. Customers and partners reach six services through the gateway, and every one of those services trusts its OpenAPI Spec. API Circle stays out of that path, and gates each service's pull requests against its Spec instead."
+  >
+    <EnterpriseArchitecture />
+  </Section>
+
+  <Section
+    eyebrow="When it runs"
+    eyebrowIcon="workflow"
+    title="In the delivery workflow, at the pull request"
+    align="left"
+    subtitle="The same placement, seen along the workflow: between the Spec and the code, before the merge."
+  >
+    <figure class="flex flex-col gap-4">
+      <div class="overflow-x-auto rounded-2xl border border-edge bg-bg">
+        <EnterpriseWorkflow />
+      </div>
+      <figcaption class="flex max-w-3xl flex-col gap-3">
+        <span class="text-sm text-fg-dim xl:hidden">Scroll sideways to see the whole workflow.</span>
+        <span class="text-[15px] leading-relaxed text-fg-muted">
+          The contract track and the code track run side by side and, today, meet only after merge. API Circle sits
+          between them. The numbers mark its four touchpoints, described further down: the developer's machine (1), the
+          pull request (2), the CI pipeline (3) and the Spec owners (4).
+        </span>
+        <span class="flex flex-wrap gap-x-5 gap-y-2 text-sm text-fg-muted">
+          <span class="inline-flex items-center gap-2"><span class="h-3 w-3 rounded bg-accent" aria-hidden="true"></span>API Circle</span>
+          <span class="inline-flex items-center gap-2"><span class="h-2.5 w-2.5 rounded-full bg-node-red" aria-hidden="true"></span>Where drift is usually found today</span>
+          <span class="inline-flex items-center gap-2"><span class="h-2.5 w-2.5 rounded-full bg-node-amber" aria-hidden="true"></span>The gap API Circle fills</span>
+          <span class="inline-flex items-center gap-2"><span class="w-4 border-t-2 border-dashed border-fg-dim" aria-hidden="true"></span>The merge</span>
+        </span>
+      </figcaption>
+    </figure>
+  </Section>
+
+  <Section eyebrow="Why this position" eyebrowIcon="git-pull-request" title="Why the pull request" align="left" subtitle="It is the one point in the workflow where all five of these hold at once.">
+    <div class="border-t border-edge">
+      {
+        REASONS.map((r) => (
+          <div class="grid gap-2 border-b border-edge py-5 md:grid-cols-[minmax(0,0.42fr)_minmax(0,1fr)] md:gap-8">
+            <h3 class="text-base font-semibold text-fg">{r.title}</h3>
+            <p class="text-[15px] leading-relaxed text-fg-muted"><Rich text={r.body} /></p>
+          </div>
+        ))
+      }
+    </div>
+  </Section>
+
+  <Section
+    eyebrow="Many services, one gate each"
+    eyebrowIcon="boxes"
+    title="The six pull requests, gate by gate"
+    align="left"
+    subtitle="The bank from the architecture above: six services, six teams, six stacks, each with its own OpenAPI Spec and its own Code graph. Here is each pull request in full, and what its gate does with it."
+  >
+    <ServiceGates />
+    <p class="mt-6 text-sm text-fg-dim">
+      Illustrative example. The bank, its services and the pull requests are made up; the findings use API Circle's own flags and grades.
+    </p>
+  </Section>
+
+  <Section
+    eyebrow="What is new"
+    eyebrowIcon="aperture"
+    title="A check nobody runs today"
+    align="left"
+    subtitle="Enterprises already run several checks around their APIs. Each one looks at something different, and none of them compares the code with the contract before merge."
+  >
+    <div class="overflow-x-auto rounded-2xl border border-edge">
+      <table class="w-full min-w-[760px] border-collapse text-left text-[14.5px]">
+        <thead class="bg-panel text-xs font-semibold uppercase tracking-[0.1em] text-fg-dim">
+          <tr>
+            <th scope="col" class="px-4 py-3">Check</th>
+            <th scope="col" class="px-4 py-3">What it compares</th>
+            <th scope="col" class="px-4 py-3">When API drift surfaces</th>
+            <th scope="col" class="px-4 py-3">What it needs</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            COMPARISONS.map((c) => {
+              const us = c.tone === 'early';
+              return (
+                <tr class:list={['border-t border-edge align-top', us && 'bg-brand/[0.08]']}>
+                  <th scope="row" class:list={['w-[22%] px-4 py-3.5 font-semibold', us ? 'text-brand' : 'text-fg']}>{c.check}</th>
+                  <td class:list={['px-4 py-3.5', us ? 'text-fg' : 'text-fg-muted']}>{c.compares}</td>
+                  <td class:list={['px-4 py-3.5', toneClass[c.tone]]}>{c.when}</td>
+                  <td class:list={['px-4 py-3.5', us ? 'text-fg' : 'text-fg-muted']}>{c.needs}</td>
+                </tr>
+              );
+            })
+          }
+        </tbody>
+      </table>
+    </div>
+    <p class="mt-5 max-w-3xl text-[15px] leading-relaxed text-fg-muted">
+      API Circle complements these checks and replaces none of them. Linting keeps the Spec well formed, SAST finds
+      vulnerabilities, contract tests prove behaviour against a running service, and monitoring watches production. API
+      Circle makes sure the code and the contract agree before any of the later checks run.
+    </p>
+  </Section>
+
+  <Section
+    eyebrow="What it does there"
+    eyebrowIcon="layers"
+    title="The four touchpoints"
+    align="left"
+    subtitle="The numbers match the workflow figure. The pull request (2) is the primary placement; the other three feed it or act on its result."
+  >
+    <div class="grid gap-5 md:grid-cols-2">
+      {
+        TOUCHPOINTS.map((t) => (
+          <article class:list={['card flex flex-col gap-4', t.primary && 'border-brand/60 shadow-glow']}>
+            <div class="flex items-start gap-3">
+              <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent text-sm font-bold text-accent-fg">{t.n}</span>
+              <div class="flex flex-col gap-1">
+                <h3 class="text-lg font-semibold text-fg">{t.title}</h3>
+                <span class="text-sm text-fg-dim">{t.who}</span>
+              </div>
+            </div>
+            <ul class="flex flex-1 flex-col gap-2.5 text-sm leading-relaxed text-fg-muted">
+              {t.points.map((p) => (
+                <li class="flex gap-2.5">
+                  <span class="mt-1 shrink-0 text-brand"><Icon name="check" size={14} /></span>
+                  <span><Rich text={p} /></span>
+                </li>
+              ))}
+            </ul>
+            <div class="flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-edge pt-4 text-xs text-fg-dim">
+              <span class="inline-flex items-center gap-1.5">From <PlanBadge plan={t.plan} /></span>
+              {t.extras?.map((e) => (
+                <span class="inline-flex items-center gap-1.5">{e.label}: <PlanBadge plan={e.plan} /></span>
+              ))}
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </Section>
+
+  <Section
+    eyebrow="Worked example"
+    eyebrowIcon="git-merge"
+    title="One pull request, end to end"
+    align="left"
+    subtitle="Two one-line edits that read like a tidy-up. Neither the diff nor the usual CI checks mention the contract. These are the findings the Review panel reports for them."
+  >
+    <div class="grid gap-5 lg:grid-cols-2">
+      {FINDINGS.map((f) => <DriftDiff {...f} />)}
+    </div>
+    <div class="mt-8 max-w-3xl">
+      <p class="mb-3 text-[15px] leading-relaxed text-fg-muted">In the pipeline, the same pull request trips the gate:</p>
+      <CodeBlock
+        prompt
+        lang="In your pipeline"
+        code="apicircle-lens review --pull-request 412 --repo acme/widgets-api --openapi openapi.json --comment --fail-on breaking"
+      />
+      <p class="mt-3 text-[15px] leading-relaxed text-fg-muted">
+        It exits 1: removing the guard is Critical, which <code class="rounded bg-surface px-1 py-0.5 font-mono text-[0.88em] text-fg">--fail-on breaking</code>
+        gates on. The author restores the guard and either returns 204 or updates the Spec, and the next run passes.
+      </p>
+    </div>
+  </Section>
+
+  <Section
+    eyebrow="Adoption"
+    eyebrowIcon="play"
+    title="How an enterprise rolls it out"
+    align="left"
+    subtitle="Start with one service, and earn the team's trust before the gate blocks anyone."
+  >
+    <ol class="grid gap-6 md:grid-cols-3">
+      {
+        ROLLOUT.map((s, i) => (
+          <li class="flex flex-col gap-2 border-t-2 border-brand pt-4">
+            <span class="text-xs font-semibold uppercase tracking-[0.12em] text-brand">Step {i + 1}</span>
+            <h3 class="text-lg font-semibold text-fg">{s.title}</h3>
+            <p class="text-[15px] leading-relaxed text-fg-muted"><Rich text={s.body} /></p>
+          </li>
+        ))
+      }
+    </ol>
+    <p class="mt-6 max-w-3xl text-sm leading-relaxed text-fg-dim">
+      A pull request should commit its Code graph. If one does not, <code class="rounded bg-surface px-1 py-0.5 font-mono text-[0.88em] text-fg">--local-fallback</code>
+      indexes the CI checkout at the pull request's commits instead.
+    </p>
+  </Section>
+
+  <Section eyebrow="Enterprise constraints" eyebrowIcon="lock" title="Built for how enterprises handle code" align="left">
+    <div class="grid gap-x-8 border-t border-edge sm:grid-cols-2 lg:grid-cols-3">
+      {
+        CONSTRAINTS.map((c) => (
+          <div class="flex flex-col gap-2 border-b border-edge py-5">
+            <span class="inline-flex items-center gap-2 text-base font-semibold text-fg">
+              <span class="text-brand"><Icon name={c.icon} size={18} /></span>
+              {c.title}
+            </span>
+            <p class="text-[15px] leading-relaxed text-fg-muted"><Rich text={c.body} /></p>
+          </div>
+        ))
+      }
+    </div>
+    <p class="mt-6 text-sm text-fg-muted">
+      Supported stacks, and how well the parser reads them, are on <a class="font-semibold text-brand hover:underline" href="/lens">the Lens page</a>
+      and <a class="font-semibold text-brand hover:underline" href="/lens/parser">its measurements</a>.
+    </p>
+  </Section>
+
+  <CTA
+    title="Put a gate on one service first"
+    subtitle={`Install API Circle, index one repository, choose its Spec and review a pull request. ${TRIAL_LINE}`}
+    primary={{ label: 'Download API Circle', href: '/download', icon: 'download' }}
+    secondary={{ label: 'See plans and pricing', href: '/pricing' }}
+  />
+</BaseLayout>

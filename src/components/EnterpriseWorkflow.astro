@@ -1,0 +1,249 @@
+---
+/**
+ * The enterprise API workflow, with API Circle's four touchpoints numbered.
+ *
+ * Two tracks run through it: the contract (the OpenAPI Spec, out to the portal
+ * and the API's consumers) and the code (each change, out to production). Today
+ * they meet only after the merge line, in staging tests or production traffic.
+ * API Circle sits between them, and the arrow along the bottom is the point of
+ * the drawing: the same drift, caught at the pull request instead.
+ *
+ * Every arrow that crosses between lanes carries its label as a pill on the
+ * line, with the page's background behind the text, so a label never sits on a
+ * lane border or on the lane's tint. The gaps between lanes are wide enough to
+ * hold those pills.
+ *
+ * Colours come from the site's theme tokens through Tailwind's fill/stroke
+ * utilities, so the figure follows the light/dark toggle like everything else.
+ * The numbers match the touchpoint cards on /enterprise.
+ */
+interface Props {
+  class?: string;
+}
+const { class: className = '' } = Astro.props;
+
+const stages = [
+  { x: 218, name: 'Design', role: 'API owners' },
+  { x: 374, name: 'Develop', role: 'developers, AI tools' },
+  { x: 530, name: 'Pull request', role: 'API Circle sits here', here: true },
+  { x: 686, name: 'CI pipeline', role: 'platform team' },
+  { x: 842, name: 'Test & staging', role: 'QA' },
+  { x: 998, name: 'Release', role: 'release, docs' },
+  { x: 1154, name: 'Production', role: 'operations, consumers' },
+];
+
+// Lane geometry. The gaps between lanes (188→228 and 380→420) hold the arrow labels.
+const API_Y = 228;
+const CODE_Y = 420;
+const BOX_Y = API_Y + 16;
+const CODE_BOX_Y = CODE_Y + 14;
+
+const codeBoxes = [
+  { x: 374, title: 'Write code', sub: 'people + AI tools' },
+  { x: 530, title: 'Pull request', sub: 'line-by-line review' },
+  { x: 686, title: 'CI checks', sub: 'build, tests, SAST' },
+  { x: 842, title: 'Contract tests', sub: 'need a live service' },
+  { x: 998, title: 'Deploy', sub: 'gateway config' },
+  { x: 1154, title: 'Production', sub: 'monitoring, traffic' },
+];
+
+const gates = [
+  { n: 4, x: 152, title: 'Spec alignment', lines: ['undocumented', 'not implemented', 'drifted fields', 'human-verified'] },
+  { n: 1, x: 308, title: 'Code graph', lines: ['route → guard →', 'handler → calls', 'pre-push review', 'MCP for AI tools'] },
+  { n: 2, x: 464, title: 'PR Review drift', lines: ['head vs base', 'head vs Spec', 'comments pinned', 'to the diff line'], hero: true },
+  { n: 3, x: 620, title: 'CI gate', lines: ['apicircle-lens', 'review --fail-on', 'exit 1 blocks', 'the merge'], mono: 2 },
+];
+
+/** A label's pill width, from its length: Inter averages a little over half an em a character. */
+const pillWidth = (text: string, size = 13) => Math.round(text.length * size * 0.56) + 22;
+
+// Labels on the arrows that cross between lanes, centred on the arrow. The two
+// arrows under the Code graph sit apart (x 322 and 422) so their pills do not touch.
+const gapTop = (188 + API_Y) / 2;
+const gapBottom = (API_Y + 152 + CODE_Y) / 2;
+const arrowLabels = [
+  { x: 218, y: gapTop, text: 'flags Spec gaps' },
+  { x: 530, y: gapTop, text: 'reads the Spec' },
+  { x: 322, y: gapBottom, text: 'indexes code' },
+  { x: 422, y: gapBottom, text: 'MCP' },
+  { x: 530, y: gapBottom, text: 'PR comments' },
+  { x: 686, y: gapBottom, text: 'pass / fail' },
+];
+
+const MARK_Y = CODE_Y + 88 + 15;
+const SHIFT_Y = MARK_Y + 67;
+const shiftText = 'With API Circle, the same drift is caught at the pull request, before merge';
+const shiftW = Math.round(shiftText.length * 12.5 * 0.55) + 32;
+const HEIGHT = SHIFT_Y + 50;
+---
+<svg
+  class:list={['block h-auto w-full min-w-[1060px] font-sans', className]}
+  viewBox={`0 0 1240 ${HEIGHT}`}
+  role="img"
+  aria-label="An enterprise API workflow in seven stages: Design, Develop, Pull request, CI pipeline, Test and staging, Release, Production. A contract track carries the OpenAPI Spec to the portal and API consumers; a code track carries each change from code to production. Today API drift is found after merge, in staging tests or in production. API Circle sits between the two tracks: it indexes the code into a Code graph on the developer's machine and gives AI tools the same map over MCP, reads the Spec and comments on each pull request, returns an exit code to CI that can block the merge, and flags gaps to Spec owners. It moves drift detection to the pull request, before merge."
+>
+  <defs>
+    <marker id="ew-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" class="fill-fg-dim"></path>
+    </marker>
+    <marker id="ew-ahv" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" class="fill-brand"></path>
+    </marker>
+  </defs>
+
+  <!-- Before / after merge -->
+  <text x="452" y="18" text-anchor="middle" font-size="11" font-weight="600" letter-spacing="1.3" class="fill-fg-dim">BEFORE MERGE · CHEAP TO FIX</text>
+  <path d="M146,34 V27 H758 V34" fill="none" stroke-width="1.2" class="stroke-edge-strong"></path>
+  <text x="998" y="18" text-anchor="middle" font-size="11" font-weight="600" letter-spacing="1.3" class="fill-fg-dim">AFTER MERGE · DRIFT HAS SHIPPED</text>
+  <path d="M770,34 V27 H1226 V34" fill="none" stroke-width="1.2" class="stroke-edge-strong"></path>
+
+  <!-- The primary placement column -->
+  <rect x="455" y="40" width="150" height={SHIFT_Y - 50} rx="10" stroke-width="1" stroke-dasharray="4 4" class="fill-brand/[0.07] stroke-brand/40"></rect>
+
+  {
+    stages.map((s) => (
+      <g>
+        <text x={s.x} y="64" text-anchor="middle" font-size="14" font-weight="650" class="fill-fg">{s.name}</text>
+        <text x={s.x} y="82" text-anchor="middle" font-size="12" font-weight={s.here ? 600 : 400} class={s.here ? 'fill-accent' : 'fill-fg-dim'}>{s.role}</text>
+      </g>
+    ))
+  }
+
+  <!-- Lane: contract -->
+  <rect x="8" y="100" width="1224" height="88" rx="10" stroke-width="1" class="fill-panel stroke-edge"></rect>
+  <text x="20" y="139" font-size="11.5" font-weight="700" letter-spacing="1.4" class="fill-fg">CONTRACT</text>
+  <text x="20" y="156" font-size="11.5" class="fill-fg-dim">the OpenAPI Spec</text>
+
+  <rect x="154" y="114" width="128" height="60" rx="8" stroke-width="1" class="fill-bg stroke-edge-strong"></rect>
+  <text x="218" y="138" text-anchor="middle" font-size="13" font-weight="650" class="fill-fg">OpenAPI Spec</text>
+  <text x="218" y="155" text-anchor="middle" font-size="11.5" class="fill-fg-muted">designed, linted,</text>
+  <text x="218" y="169" text-anchor="middle" font-size="11.5" class="fill-fg-muted">approved</text>
+
+  <rect x="934" y="114" width="128" height="60" rx="8" stroke-width="1" class="fill-bg stroke-edge-strong"></rect>
+  <text x="998" y="138" text-anchor="middle" font-size="13" font-weight="650" class="fill-fg">Portal &amp; SDKs</text>
+  <text x="998" y="155" text-anchor="middle" font-size="11.5" class="fill-fg-muted">generated from</text>
+  <text x="998" y="169" text-anchor="middle" font-size="11.5" class="fill-fg-muted">the Spec</text>
+
+  <rect x="1090" y="114" width="128" height="60" rx="8" stroke-width="1" class="fill-bg stroke-edge-strong"></rect>
+  <text x="1154" y="138" text-anchor="middle" font-size="13" font-weight="650" class="fill-fg">API consumers</text>
+  <text x="1154" y="155" text-anchor="middle" font-size="11.5" class="fill-fg-muted">partner teams,</text>
+  <text x="1154" y="169" text-anchor="middle" font-size="11.5" class="fill-fg-muted">apps, SDK users</text>
+
+  <path d="M282,144 H931" fill="none" stroke-width="1.5" class="stroke-fg-dim" marker-end="url(#ew-ah)"></path>
+  <path d="M1062,144 H1087" fill="none" stroke-width="1.5" class="stroke-fg-dim" marker-end="url(#ew-ah)"></path>
+  <rect x={852 - pillWidth('published as written', 12) / 2} y="132" width={pillWidth('published as written', 12)} height="24" rx="12" stroke-width="1.2" class="fill-bg stroke-edge-strong"></rect>
+  <text x="852" y="148.4" text-anchor="middle" font-size="12" font-weight="600" class="fill-fg-muted">published as written</text>
+
+  <!-- Lane: API Circle -->
+  <rect x="8" y={API_Y} width="1224" height="152" rx="10" stroke-width="1" class="fill-brand/[0.08] stroke-brand/40"></rect>
+  <text x="20" y={API_Y + 62} font-size="11.5" font-weight="700" letter-spacing="1.4" class="fill-accent">API CIRCLE</text>
+  <text x="20" y={API_Y + 80} font-size="11.5" class="fill-fg-dim">one Code graph,</text>
+  <text x="20" y={API_Y + 95} font-size="11.5" class="fill-fg-dim">committed with</text>
+  <text x="20" y={API_Y + 110} font-size="11.5" class="fill-fg-dim">the code</text>
+
+  {
+    gates.map((g) => (
+      <g>
+        <rect
+          x={g.x}
+          y={BOX_Y}
+          width="132"
+          height="120"
+          rx="10"
+          stroke-width="1.5"
+          class={g.hero ? 'fill-brand stroke-brand' : 'fill-bg stroke-brand'}
+        ></rect>
+        <text x={g.x + 14} y={BOX_Y + 30} font-size="13" font-weight={g.hero ? 700 : 650} class={g.hero ? 'fill-white' : 'fill-fg'}>{g.title}</text>
+        {g.lines.map((line, i) => (
+          <text
+            x={g.x + 14}
+            y={BOX_Y + 52 + i * 16}
+            font-size={g.mono && i < g.mono ? 10.5 : 11.5}
+            class:list={[
+              g.hero ? 'fill-white' : 'fill-fg-muted',
+              g.mono && i < g.mono && 'font-mono',
+            ]}
+          >
+            {line}
+          </text>
+        ))}
+        <circle cx={g.x} cy={BOX_Y} r="12" stroke-width="2.5" class="fill-brand stroke-bg"></circle>
+        <text x={g.x} y={BOX_Y + 4.5} text-anchor="middle" font-size="12" font-weight="700" class="fill-white">{g.n}</text>
+      </g>
+    ))
+  }
+
+  <!-- The committed Code graph flows along the lane -->
+  <path d={`M307,${BOX_Y + 60} H288`} fill="none" stroke-width="2" class="stroke-brand" marker-end="url(#ew-ahv)"></path>
+  <path d={`M441,${BOX_Y + 60} H460`} fill="none" stroke-width="2" class="stroke-brand" marker-end="url(#ew-ahv)"></path>
+  <path d={`M597,${BOX_Y + 60} H616`} fill="none" stroke-width="2" class="stroke-brand" marker-end="url(#ew-ahv)"></path>
+
+  <text x="998" y={API_Y + 70} text-anchor="middle" font-size="12" font-style="italic" class="fill-fg-dim">reads source and Spec only:</text>
+  <text x="998" y={API_Y + 88} text-anchor="middle" font-size="12" font-style="italic" class="fill-fg-dim">no running service, no traffic</text>
+
+  <!-- Between the contract and API Circle -->
+  <path d={`M218,${BOX_Y - 2} V178`} fill="none" stroke-width="2" class="stroke-brand" marker-end="url(#ew-ahv)"></path>
+  <circle cx="530" cy="144" r="5" class="fill-brand"></circle>
+  <path d={`M530,150 V${BOX_Y - 4}`} fill="none" stroke-width="2" class="stroke-brand" marker-end="url(#ew-ahv)"></path>
+
+  <!-- Between API Circle and the code -->
+  <path d={`M322,${CODE_BOX_Y - 2} V${BOX_Y + 124}`} fill="none" stroke-width="2" class="stroke-brand" marker-end="url(#ew-ahv)"></path>
+  <path d={`M422,${BOX_Y + 122} V${CODE_BOX_Y - 4}`} fill="none" stroke-width="2" class="stroke-brand" marker-end="url(#ew-ahv)"></path>
+  <path d={`M530,${BOX_Y + 122} V${CODE_BOX_Y - 4}`} fill="none" stroke-width="2" class="stroke-brand" marker-end="url(#ew-ahv)"></path>
+  <path d={`M686,${BOX_Y + 122} V${CODE_BOX_Y - 4}`} fill="none" stroke-width="2" class="stroke-brand" marker-end="url(#ew-ahv)"></path>
+
+  <!-- Arrow labels: a pill on the line, with the page background behind the text -->
+  {
+    arrowLabels.map((l) => {
+      const w = pillWidth(l.text);
+      return (
+        <g>
+          <rect x={l.x - w / 2} y={l.y - 12} width={w} height="24" rx="12" stroke-width="1.5" class="fill-bg stroke-brand"></rect>
+          <text x={l.x} y={l.y + 4.6} text-anchor="middle" font-size="13" font-weight="600" class="fill-accent">{l.text}</text>
+        </g>
+      );
+    })
+  }
+
+  <!-- Lane: code -->
+  <rect x="8" y={CODE_Y} width="1224" height="88" rx="10" stroke-width="1" class="fill-panel stroke-edge"></rect>
+  <text x="20" y={CODE_Y + 39} font-size="11.5" font-weight="700" letter-spacing="1.4" class="fill-fg">CODE</text>
+  <text x="20" y={CODE_Y + 56} font-size="11.5" class="fill-fg-dim">every change</text>
+
+  {
+    codeBoxes.map((b) => (
+      <g>
+        <rect x={b.x - 64} y={CODE_BOX_Y} width="128" height="60" rx="8" stroke-width="1" class="fill-bg stroke-edge-strong"></rect>
+        <text x={b.x} y={CODE_BOX_Y + 25} text-anchor="middle" font-size="13" font-weight="650" class="fill-fg">{b.title}</text>
+        <text x={b.x} y={CODE_BOX_Y + 43} text-anchor="middle" font-size="11.5" class="fill-fg-muted">{b.sub}</text>
+      </g>
+    ))
+  }
+  {
+    codeBoxes.slice(1).map((b) => (
+      <path d={`M${b.x - 92},${CODE_BOX_Y + 30} H${b.x - 67}`} fill="none" stroke-width="1.5" class="stroke-fg-dim" marker-end="url(#ew-ah)"></path>
+    ))
+  }
+
+  <!-- The merge -->
+  <line x1="764" y1="27" x2="764" y2={SHIFT_Y - 10} stroke-width="1.4" stroke-dasharray="6 5" class="stroke-fg-dim"></line>
+
+  <!-- Where drift is found today -->
+  <circle cx="530" cy={MARK_Y} r="5" class="fill-node-amber"></circle>
+  <text x="530" y={MARK_Y + 20} text-anchor="middle" font-size="11.5" font-weight="500" class="fill-fg-muted">reviewers see lines,</text>
+  <text x="530" y={MARK_Y + 35} text-anchor="middle" font-size="11.5" font-weight="500" class="fill-fg-muted">not the contract</text>
+
+  <circle cx="842" cy={MARK_Y} r="5" class="fill-node-red"></circle>
+  <text x="842" y={MARK_Y + 20} text-anchor="middle" font-size="11.5" font-weight="500" class="fill-node-red">drift found here today,</text>
+  <text x="842" y={MARK_Y + 35} text-anchor="middle" font-size="11.5" font-weight="500" class="fill-node-red">if a test covers it</text>
+
+  <circle cx="1154" cy={MARK_Y} r="5" class="fill-node-red"></circle>
+  <text x="1154" y={MARK_Y + 20} text-anchor="middle" font-size="11.5" font-weight="500" class="fill-node-red">or here, once a</text>
+  <text x="1154" y={MARK_Y + 35} text-anchor="middle" font-size="11.5" font-weight="500" class="fill-node-red">consumer hits it</text>
+
+  <!-- The shift -->
+  <path d={`M1154,${MARK_Y + 43} V${SHIFT_Y} H530 V${MARK_Y + 46}`} fill="none" stroke-width="2.2" stroke-linejoin="round" class="stroke-brand" marker-end="url(#ew-ahv)"></path>
+  <path d={`M842,${MARK_Y + 43} V${SHIFT_Y}`} fill="none" stroke-width="2.2" class="stroke-brand"></path>
+  <rect x={842 - shiftW / 2} y={SHIFT_Y + 12} width={shiftW} height="26" rx="13" class="fill-brand"></rect>
+  <text x="842" y={SHIFT_Y + 29.5} text-anchor="middle" font-size="12.5" font-weight="650" class="fill-white">{shiftText}</text>
+</svg>

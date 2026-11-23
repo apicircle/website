@@ -1,0 +1,164 @@
+---
+/**
+ * One contract gate per service: an illustrative bank's six services, each
+ * pull request passing through its own API Circle gate.
+ *
+ * On wide screens it reads as a board: service, pull request, the gate (a band
+ * that runs down every row), and the `main` rail that only passing changes join.
+ * Blocked rows stop at the band's edge. Below `lg` each row stacks into one card,
+ * the verdict carried by the gate's own text, because a band and a rail mean
+ * nothing in a single column.
+ *
+ * Content and grades live in `src/data/enterprise.ts`.
+ */
+import Rich from './Rich.astro';
+import { BANK_GATES, BANK_CONSUMERS, type Severity, type Verdict } from '../data/enterprise';
+
+// One template for the header, every row and the tail, so the band and the rail
+// line up. Written out in full so Tailwind sees the class.
+const cols = 'lg:grid-cols-[minmax(0,1fr)_26px_minmax(0,1.22fr)_28px_minmax(0,1.42fr)_40px_76px]';
+
+const SEVERITY: Record<Severity, { label: string; cls: string }> = {
+  critical: { label: 'Critical', cls: 'bg-node-red/10 text-node-red' },
+  warning: { label: 'Warning', cls: 'bg-node-amber/10 text-node-amber' },
+  info: { label: 'Info', cls: 'bg-surface text-fg-muted' },
+  diffracting: { label: 'Diffracting', cls: 'bg-node-red/10 text-node-red' },
+  'in-focus': { label: 'In focus', cls: 'bg-node-green/10 text-node-green' },
+};
+
+const VERDICT: Record<Verdict, { label: string; text: string; dot: string }> = {
+  blocked: { label: 'Blocked', text: 'text-node-red', dot: 'bg-node-red' },
+  commented: { label: 'Commented', text: 'text-node-amber', dot: 'bg-node-amber' },
+  passed: { label: 'Passed', text: 'text-node-green', dot: 'bg-node-green' },
+};
+
+const last = BANK_GATES.length - 1;
+const blockedCount = BANK_GATES.filter((g) => g.verdict === 'blocked').length;
+const blocked = ['no', 'one', 'two', 'three', 'four', 'five', 'six'][blockedCount] ?? String(blockedCount);
+
+/** Split `METHOD /path` so the method can be coloured. */
+const splitEndpoint = (endpoint: string): [string, string] | null => {
+  const m = /^(GET|POST|PUT|PATCH|DELETE)\s+(.+)$/.exec(endpoint);
+  return m ? [m[1], m[2]] : null;
+};
+---
+<div class="relative">
+  <div class:list={['hidden items-end pb-3 text-[0.6875rem] font-semibold uppercase tracking-[0.13em] text-fg-dim lg:grid', cols]}>
+    <div>Service</div>
+    <div></div>
+    <div>Pull request</div>
+    <div></div>
+    <div class="pl-4 text-brand">API Circle gate</div>
+    <div></div>
+    <div class="relative flex justify-center">
+      <span class="relative z-10 rounded-full border-[1.5px] border-node-green bg-bg px-3 py-0.5 text-node-green">main</span>
+      <span class="absolute left-1/2 top-full h-3 w-[3px] -translate-x-1/2 bg-node-green" aria-hidden="true"></span>
+    </div>
+  </div>
+
+  <ol class="flex flex-col gap-4 lg:gap-0">
+    {
+      BANK_GATES.map((g, i) => {
+        const sev = SEVERITY[g.severity];
+        const v = VERDICT[g.verdict];
+        const ep = splitEndpoint(g.endpoint);
+        const joins = g.verdict !== 'blocked';
+        return (
+          <li
+            class:list={[
+              'grid grid-cols-1 gap-2 rounded-2xl border border-edge bg-panel p-3 lg:gap-0 lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0',
+              cols,
+            ]}
+          >
+            <div class="flex flex-col justify-center gap-0.5 px-1 pt-1 lg:my-2 lg:rounded-xl lg:border lg:border-edge lg:bg-panel lg:px-4 lg:py-3">
+              <span class="text-base font-semibold text-fg">{g.service}</span>
+              <span class="text-sm text-fg-muted">{g.stack}</span>
+              <span class="text-xs text-fg-dim">{g.role}</span>
+            </div>
+
+            <div class="relative hidden lg:block" aria-hidden="true">
+              <span class="absolute inset-x-1 top-1/2 h-0.5 -translate-y-1/2 bg-edge-strong"></span>
+              <span class="absolute right-0 top-1/2 -translate-y-1/2 border-y-[5px] border-l-[7px] border-y-transparent border-l-edge-strong"></span>
+            </div>
+
+            <div class="flex min-w-0 flex-col justify-center gap-1 rounded-xl bg-surface p-3 lg:my-2 lg:border lg:border-edge lg:bg-panel lg:px-4">
+              <span class="truncate text-xs text-fg-dim">"{g.pr}"</span>
+              <span class="truncate font-mono text-[0.8125rem] font-semibold text-fg">
+                {ep ? (<><span class="text-brand">{ep[0]}</span> {ep[1]}</>) : g.endpoint}
+              </span>
+              <span class="text-sm text-fg-muted"><Rich text={g.change} /></span>
+            </div>
+
+            <div class="relative hidden lg:block" aria-hidden="true">
+              <span class="absolute inset-x-1 top-1/2 h-0.5 -translate-y-1/2 bg-brand"></span>
+              <span class="absolute right-0 top-1/2 -translate-y-1/2 border-y-[5px] border-l-[7px] border-y-transparent border-l-brand"></span>
+            </div>
+
+            <div
+              class:list={[
+                'flex min-w-0 flex-col justify-center gap-1.5 rounded-xl border border-brand/40 bg-brand/[0.08] p-3',
+                'lg:rounded-none lg:border-y-0 lg:px-4 lg:py-4',
+                i === 0 && 'lg:rounded-t-2xl lg:border-t lg:pt-5',
+                i === last && 'lg:rounded-b-2xl lg:border-b lg:pb-5',
+              ]}
+            >
+              <span class="flex flex-wrap items-center gap-2">
+                <span class:list={['rounded-md px-2 py-0.5 text-[0.6875rem] font-bold uppercase tracking-wider', sev.cls]}>{sev.label}</span>
+                {g.flag && <span class="font-mono text-[0.8125rem] text-fg">{g.flag}</span>}
+              </span>
+              <span class="text-sm text-fg-muted">{g.finding}</span>
+              <span class:list={['flex flex-wrap items-center gap-x-2 text-sm font-semibold', v.text]}>
+                <span class:list={['h-2 w-2 shrink-0 rounded-full', v.dot]} aria-hidden="true"></span>
+                {v.label}
+                {g.policy && <span class="font-mono text-xs font-normal text-fg-dim">{g.policy}</span>}
+              </span>
+            </div>
+
+            <div class="relative hidden lg:block" aria-hidden="true">
+              {
+                joins ? (
+                  <span
+                    class:list={[
+                      'absolute left-0 top-1/2 h-[3px] w-[calc(100%+38px)] -translate-y-1/2 rounded',
+                      g.verdict === 'commented' ? 'bg-gradient-to-r from-node-amber to-node-green' : 'bg-node-green',
+                    ]}
+                  ></span>
+                ) : (
+                  <span class="absolute left-1 top-1/2 h-11 w-[5px] -translate-y-1/2 rounded bg-node-red"></span>
+                )
+              }
+            </div>
+
+            <div class="relative hidden lg:block" aria-hidden="true">
+              <span class="absolute inset-y-0 left-1/2 w-[3px] -translate-x-1/2 bg-node-green"></span>
+              {joins && (
+                <span class="absolute left-1/2 top-1/2 h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-[3px] border-node-green bg-bg"></span>
+              )}
+            </div>
+          </li>
+        );
+      })
+    }
+  </ol>
+
+  <div class:list={['hidden h-7 lg:grid', cols]} aria-hidden="true">
+    <div class="relative col-start-7">
+      <span class="absolute inset-y-0 left-1/2 w-[3px] -translate-x-1/2 bg-node-green"></span>
+    </div>
+  </div>
+
+  <div class="mt-4 flex flex-col gap-4 rounded-2xl border border-edge bg-panel p-5 sm:flex-row sm:items-center lg:mt-0">
+    <div class="flex shrink-0 flex-col sm:border-r sm:border-edge sm:pr-5">
+      <span class="text-base font-semibold text-fg">Production</span>
+      <span class="text-sm text-fg-dim">behind the API gateway</span>
+    </div>
+    <ul class="flex flex-wrap gap-2">
+      {BANK_CONSUMERS.map((c) => <li class="chip text-sm text-fg">{c}</li>)}
+    </ul>
+  </div>
+  <p class="mt-4 max-w-3xl text-[15px] leading-relaxed text-fg-muted">
+    <strong class="font-semibold text-fg">Only changes that pass their gate merge.</strong> The {blocked} blocked pull requests
+    go back to their authors with a file and a line, before any customer or partner sees them. Each service sets its own
+    bar with <code class="rounded bg-surface px-1 py-0.5 font-mono text-[0.88em] text-fg">--fail-on</code>.
+  </p>
+</div>

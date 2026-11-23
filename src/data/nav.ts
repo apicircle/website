@@ -59,6 +59,7 @@ export const FOOTER_NAV: { title: string; items: NavItem[] }[] = [
     items: [
       { label: 'Features', href: '/features' },
       { label: 'Lens', href: '/lens' },
+      { label: 'For enterprise teams', href: '/enterprise' },
       { label: 'Pricing', href: '/pricing' },
       { label: 'Git-backed API client', href: '/git-backed-api-client' },
       { label: 'Download', href: '/download' },

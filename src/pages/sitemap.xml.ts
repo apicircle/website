@@ -19,6 +19,7 @@ const entries: Entry[] = [
   // Regenerated whenever the parser changes, so it moves more often than /lens.
   { path: '/lens/parser/', changefreq: 'weekly', priority: '0.7' },
   { path: '/pricing/', changefreq: 'monthly', priority: '0.8' },
+  { path: '/enterprise/', changefreq: 'monthly', priority: '0.8' },
   { path: '/security/', changefreq: 'yearly', priority: '0.4' },
   { path: '/download/', changefreq: 'weekly', priority: '0.8' },
   { path: '/docs/', changefreq: 'monthly', priority: '0.7' },

@@ -66,6 +66,7 @@ const pages: Array<[string, string, string]> = [
   ['/lens/', SITE.lensName, 'what Lens is, what each plan adds, and how you receive it.'],
   ['/lens/parser/', 'How the Lens parser is measured', 'how it reads an endpoint, how the test projects were chosen, and what each score counts.'],
   ['/pricing/', 'Pricing', 'the four plans, what each adds, and the currency note.'],
+  ['/enterprise/', 'API Circle in the enterprise', "where it sits in an enterprise API workflow: a contract gate on every service's pull requests, before merge."],
   ['/features/', 'Features', 'every capability, Lens first, with the plan that carries it.'],
   ...FEATURES.map(
     (f): [string, string, string] => [
