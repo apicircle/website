@@ -9,6 +9,9 @@
 
 export type AnswerKey = 'own' | 'hand-verified' | 'shared-spec';
 
+/** Why a position was not compared: a reader stopped there (see Lens `contractCoverage`). */
+export type UncomparedReason = 'code-unknown' | 'dynamic' | 'depth' | 'cycle' | 'missing' | 'external-ref' | 'transformed' | 'open' | 'spec-unknown';
+
 export interface LeafTotals {
   /** Spec positions with a counterpart in the code that is not runtime-dynamic. */
   comparable: number;
@@ -69,7 +72,16 @@ export interface ParserScores {
     deep: number;
     /** Contradictions with the answer key, by kind of key. */
     codeWrong: Record<AnswerKey, number>;
+    /** Findings of any kind, by kind of key. Against the project's own spec every one is false. */
+    findings: Record<AnswerKey, number>;
+    /** Answer-key positions on matched endpoints that were not compared, by reason. */
+    uncompared: Partial<Record<UncomparedReason, number>>;
     byLanguage: LanguageRow[];
+  };
+  /** Apps whose spec is exactly what they do: the comparison must report nothing on them. */
+  mustNotFire: {
+    cells: number;
+    findings: number;
   };
   fixtures: {
     cells: number;
@@ -91,7 +103,7 @@ export interface ParserScores {
 }
 
 export const PARSER_SCORES: ParserScores = {
-  "measuredOn": "2026-10-26",
+  "measuredOn": "2026-11-21",
   "realProjects": {
     "projects": 26,
     "languages": [
@@ -131,24 +143,35 @@ export const PARSER_SCORES: ParserScores = {
     "listed": 448,
     "matched": 422,
     "leaves": {
-      "comparable": 2444,
-      "typed": 2337,
-      "dynamic": 205,
-      "missing": 1983
+      "comparable": 2602,
+      "typed": 2514,
+      "dynamic": 223,
+      "missing": 1807
     },
     "missingIn": {
-      "success": 932,
-      "error": 881,
-      "request": 74,
-      "params": 96
+      "success": 776,
+      "error": 879,
+      "request": 58,
+      "params": 94
     },
     "contracts": 422,
-    "captured": 345,
-    "deep": 284,
+    "captured": 352,
+    "deep": 288,
     "codeWrong": {
       "own": 0,
       "hand-verified": 0,
       "shared-spec": 11
+    },
+    "findings": {
+      "own": 84,
+      "hand-verified": 14,
+      "shared-spec": 1267
+    },
+    "uncompared": {
+      "code-unknown": 240,
+      "dynamic": 163,
+      "spec-unknown": 22,
+      "open": 48
     },
     "byLanguage": [
       {
@@ -165,12 +188,12 @@ export const PARSER_SCORES: ParserScores = {
         "matched": 104,
         "leaves": {
           "comparable": 548,
-          "typed": 466,
+          "typed": 475,
           "dynamic": 4,
           "missing": 633
         },
         "contracts": 104,
-        "captured": 95,
+        "captured": 93,
         "codeWrong": 10
       },
       {
@@ -186,10 +209,10 @@ export const PARSER_SCORES: ParserScores = {
         "listed": 105,
         "matched": 104,
         "leaves": {
-          "comparable": 622,
-          "typed": 619,
-          "dynamic": 21,
-          "missing": 300
+          "comparable": 653,
+          "typed": 650,
+          "dynamic": 39,
+          "missing": 251
         },
         "contracts": 104,
         "captured": 96,
@@ -208,10 +231,10 @@ export const PARSER_SCORES: ParserScores = {
         "listed": 82,
         "matched": 69,
         "leaves": {
-          "comparable": 579,
-          "typed": 576,
+          "comparable": 576,
+          "typed": 573,
           "dynamic": 82,
-          "missing": 155
+          "missing": 158
         },
         "contracts": 69,
         "captured": 67,
@@ -235,7 +258,7 @@ export const PARSER_SCORES: ParserScores = {
         },
         "contracts": 38,
         "captured": 19,
-        "codeWrong": 1
+        "codeWrong": 0
       },
       {
         "language": "C#",
@@ -247,10 +270,10 @@ export const PARSER_SCORES: ParserScores = {
         "listed": 28,
         "matched": 28,
         "leaves": {
-          "comparable": 205,
-          "typed": 205,
+          "comparable": 195,
+          "typed": 195,
           "dynamic": 0,
-          "missing": 92
+          "missing": 102
         },
         "contracts": 28,
         "captured": 23,
@@ -268,19 +291,23 @@ export const PARSER_SCORES: ParserScores = {
         "listed": 81,
         "matched": 79,
         "leaves": {
-          "comparable": 277,
-          "typed": 262,
+          "comparable": 417,
+          "typed": 412,
           "dynamic": 35,
-          "missing": 621
+          "missing": 481
         },
         "contracts": 79,
-        "captured": 45,
-        "codeWrong": 0
+        "captured": 54,
+        "codeWrong": 1
       }
     ]
   },
+  "mustNotFire": {
+    "cells": 20,
+    "findings": 0
+  },
   "fixtures": {
-    "cells": 60,
+    "cells": 76,
     "languages": [
       "TypeScript and JavaScript",
       "Python",
@@ -313,8 +340,8 @@ export const PARSER_SCORES: ParserScores = {
       "actix-web"
     ],
     "orms": 22,
-    "truth": 120,
-    "matched": 119,
+    "truth": 140,
+    "matched": 139,
     "leaves": {
       "comparable": 448,
       "typed": 448,
@@ -324,7 +351,7 @@ export const PARSER_SCORES: ParserScores = {
     "codeWrong": 0
   },
   "trace": {
-    "cases": 8,
+    "cases": 16,
     "endpointPrecision": 1,
     "endpointRecall": 1,
     "tracePrecision": 1,
