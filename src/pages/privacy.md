@@ -51,6 +51,8 @@ We collect personal data from you when you create and use an account. We also re
 | **Licences, devices and keys** | Seat assignments; device activations and the device's name (your computer's hostname); command-line (CLI) key names, a one-way hash of each key, and when keys were created, last used and revoked; counts of how often paid features are used | To issue and check licences, enforce plan limits and prevent misuse | Contract; legitimate interests (preventing licence abuse) |
 | **Teams and single sign-on** | Organisation membership and roles; the email addresses of people invited to a Team; your organisation's SSO settings (issuer, client ID, endpoints, encrypted client secret); verified domains | To run Team plans and single sign-on | Contract; legitimate interests of the organisation |
 | **Security records** | Sign-ins, session activity, and account, billing and administrative actions, each with your IP address truncated to its network (/24 for IPv4, /48 for IPv6) | To keep the service secure, investigate incidents and prevent fraud | Legitimate interests (security) |
+| **Promo codes** | The referral partner's promo code you used at checkout, which partner it belongs to, and the payments and refunds of the subscription you bought with it | To apply the discount, and to pay the partner who referred you | Contract; legitimate interests (paying our referral partners) |
+| **Referral partners** | If you are one of our referral partners: your name, the email address you sign in with, your commission terms, and when you last signed in | To run our partner programme and pay you | Contract |
 | **Support** | What you tell us when you email us | To answer you | Contract; legitimate interests |
 
 **India.** Under the Digital Personal Data Protection Act, 2023 we process your personal data:
@@ -102,7 +104,7 @@ We share personal data only as described here. **We do not sell personal data**,
 
 | Provider | What they do for us | Data involved |
 | --- | --- | --- |
-| Google (Firebase Authentication / Identity Platform) | Signs you in, sends sign-in emails, stores authenticator setup, connects Team single sign-on | Email address, sign-in method, verification and authenticator status, sign-in times |
+| Google (Firebase Authentication / Identity Platform) | Signs you in, sends sign-in emails, stores authenticator setup, connects Team single sign-on. Referral partners sign in through a separate project, used for partners only | Email address, sign-in method, verification and authenticator status, sign-in times |
 | Cloudflare | Hosts our services and database; protects them from attack | Account, subscription, licence and security data |
 | Resend | Sends some transactional emails, such as trial licences | Email address, email content |
 
@@ -111,6 +113,7 @@ We share personal data only as described here. **We do not sell personal data**,
 - **Paddle,** as an independent controller for payments (section 6).
 - **Your organisation.** If you hold a seat in a Team, its administrators can see your email address, your role, and whether and on which devices your seat is activated.
 - **Your identity provider,** if your organisation uses single sign-on.
+- **A referral partner,** if you subscribe with their promo code - and then only totals: how many customers their codes brought in each month and what those customers paid in all. A partner never sees your name, your email address or your account.
 - **Professional advisers and authorities,** where the law requires it or where it is needed to establish, exercise or defend legal claims.
 - **A buyer or successor,** if our business is reorganised or sold. They will be bound by this policy.
 
@@ -129,6 +132,8 @@ Where EU or UK law applies to a transfer, we rely on appropriate safeguards, suc
 | Agreements (acceptance of Terms, and subscription renewal agreements) | For the life of our contract with you, plus the period in which legal claims can be brought. |
 | Security records | 400 days |
 | Device, seat and CLI key records | Until revoked, or until you delete your account |
+| Promo code and referral records | As subscription and billing records |
+| Referral partner accounts | Until the partner deletes their partner account, which they can do themselves in the partner app. Their name, email address and sign-in are then erased; the totals their codes brought in, which name nobody, are kept so that commission already earned can be paid. |
 | Support emails | For as long as needed to deal with your request, then deleted |
 
 **Deleting your account also cancels a paid subscription**, with immediate effect — see section 6 of the [Terms](/terms). It does not reach the records Paddle keeps as merchant of record (your invoices and payment record), which tax and accounting law requires it to keep, nor data you control elsewhere: your repositories (including the `.apicircle` folder and its history), or anything you sent to an AI provider.
