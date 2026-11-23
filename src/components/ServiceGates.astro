@@ -22,7 +22,6 @@ const SEVERITY: Record<Severity, { label: string; cls: string }> = {
   critical: { label: 'Critical', cls: 'bg-node-red/10 text-node-red' },
   warning: { label: 'Warning', cls: 'bg-node-amber/10 text-node-amber' },
   info: { label: 'Info', cls: 'bg-surface text-fg-muted' },
-  diffracting: { label: 'Diffracting', cls: 'bg-node-red/10 text-node-red' },
   'in-focus': { label: 'In focus', cls: 'bg-node-green/10 text-node-green' },
 };
 
@@ -158,7 +157,7 @@ const splitEndpoint = (endpoint: string): [string, string] | null => {
   </div>
   <p class="mt-4 max-w-3xl text-[15px] leading-relaxed text-fg-muted">
     <strong class="font-semibold text-fg">Only changes that pass their gate merge.</strong> The {blocked} blocked pull requests
-    go back to their authors with a file and a line, before any customer or partner sees them. Each service sets its own
+    go back to their authors with their findings, before any customer or partner sees them. Each service sets its own
     bar with <code class="rounded bg-surface px-1 py-0.5 font-mono text-[0.88em] text-fg">--fail-on</code>.
   </p>
 </div>

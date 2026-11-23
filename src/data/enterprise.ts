@@ -2,10 +2,16 @@
  * Copy for `/enterprise`: where API Circle sits in an enterprise API workflow.
  *
  * Every capability named here is one the shipped product has, worded the way the
- * Lens feature pages word it (`features-lens.ts`). Severities are the drift
- * engine's own grades (lens `packages-lens/contract/src/drift.ts`): a response
- * type change is Warning, a status-code change is Info, and removing a guard
- * from a route's middleware chain is Critical (`auth-removed`).
+ * Lens feature pages word it (`features-lens.ts`). Severities are the Review's
+ * own grades (lens `packages-lens/pr-review/src/review.ts`, with per-detail
+ * grades from `packages-lens/contract/src/drift.ts`): a response type change is
+ * Warning, a status-code change is Info, a route the Spec does not document is
+ * `openapi-drift` (Warning), and removing a guard from a route's middleware
+ * chain or removing a route is Critical. "In focus" and "Diffracting" are the
+ * pull request's verdict, never a finding's grade.
+ *
+ * CLI behaviour (exit codes, the public-repository refusal, `--use-verified`)
+ * is the released `@apicircle-lens/cli`'s: lens `apps/cli/src/review/`.
  *
  * The bank is illustrative. Its services, stacks and pull requests are made up to
  * show one gate per service; no customer, incident or result is implied, and the
@@ -29,7 +35,7 @@ export const GLANCE: GlanceItem[] = [
   },
   {
     label: 'What changes',
-    body: 'API drift is found before merge, with a file and a line, instead of in staging or by a consumer in production.',
+    body: 'API drift is found before merge, at the endpoint and the code behind it, instead of in staging or by a consumer in production.',
   },
 ];
 
@@ -61,7 +67,8 @@ export const REASONS: Reason[] = [
   },
 ];
 
-export type Severity = 'critical' | 'warning' | 'info' | 'diffracting' | 'in-focus';
+/** A finding's grade, or `in-focus` for a pull request with no finding at all. */
+export type Severity = 'critical' | 'warning' | 'info' | 'in-focus';
 export type Verdict = 'blocked' | 'commented' | 'passed';
 
 export interface ServiceGate {
@@ -154,9 +161,10 @@ export const BANK_GATES: ServiceGate[] = [
     endpoint: 'POST /cards/unblock',
     change: 'a new route, not in the Spec',
     brief: 'new, not in the Spec',
-    severity: 'diffracting',
-    flag: 'undocumented',
-    finding: 'A route the Spec never documented',
+    note: 'new route',
+    severity: 'warning',
+    flag: 'openapi-drift',
+    finding: 'Not in the Spec, so the pull request is Diffracting',
     verdict: 'blocked',
     policy: '--fail-on diffracting',
   },
@@ -200,7 +208,7 @@ export const ARCH_KEY: ArchKeyItem[] = [
   {
     mark: 2,
     title: "On every service's pull request",
-    body: 'Head against base, head against the Spec. Each finding names a file and a line.',
+    body: 'Head against base, head against the Spec. Each finding in the code names a file and a line.',
     primary: true,
   },
   {
@@ -211,7 +219,7 @@ export const ARCH_KEY: ArchKeyItem[] = [
   {
     mark: 4,
     title: 'For the API platform team',
-    body: 'Spec alignment per service: undocumented, not implemented, drifted. Verified schemas are what the gate checks.',
+    body: 'Spec alignment per service: undocumented, not implemented, drifted. With `--use-verified`, the gate checks the schemas the team verified.',
   },
   {
     mark: 'x',
@@ -311,7 +319,7 @@ export const TOUCHPOINTS: Touchpoint[] = [
     primary: true,
     points: [
       'Two comparisons: head against base shows what the change did; head against the Spec shows whether the API still matches its contract.',
-      'Findings carry flags such as `auth-removed`, `endpoint-removed`, `new-side-effect` and `shared-impact`, filed as Critical, Warning or Info, each with a file and a line.',
+      'Findings carry flags such as `auth-removed`, `endpoint-removed`, `openapi-drift`, `new-side-effect` and `shared-impact`, filed as Critical, Warning or Info. Each finding in the code names a file and a line.',
       'Contract drift covers parameters, cookies, bodies, response headers, status codes, nullable, format, enum and auth.',
       'One verdict per pull request: "In focus", or "Diffracting" when a route appears that the Spec does not document, or a documented one disappears.',
       'Comments are pinned to the diff line. In the app, nothing is posted until you press "Submit review".',
@@ -324,10 +332,10 @@ export const TOUCHPOINTS: Touchpoint[] = [
     who: 'Platform and DevOps teams',
     plan: 'team',
     points: [
-      '`apicircle-lens review` runs the same check with no desktop app and no seat. CI signs in with a CLI key.',
-      '`--fail-on` picks what fails the build: `breaking`, `warning`, `info` or `diffracting`. Exit 0 passes, 1 trips the gate, and 2 means a flag, the map or the Spec could not be read.',
+      '`apicircle-lens review` runs both comparisons in CI, with no desktop app and no seat. CI signs in with a CLI key.',
+      '`--fail-on` picks what fails the build: `breaking`, `warning`, `info` or `diffracting`. Exit 0 passes. 1 means the gate tripped, the plan does not allow the review, or the comment could not be posted. 2 means the review could not run, for example because a flag, the Code graph or the Spec could not be read. With `--require-fresh-index`, 3 means the committed Code graph is out of date.',
       '`--comment` keeps one summary comment current on the pull request, so a busy pull request does not collect a new one on every run.',
-      'On a public repository, security findings such as "auth removed" are held back unless the pipeline explicitly allows them.',
+      'On a public repository, the CLI refuses to post a review that holds security findings, such as removed auth or a route missing from the Spec, and exits 2. `--omit-security-findings` posts the rest; `--allow-public-security-findings` posts them all.',
     ],
   },
   {
@@ -355,7 +363,7 @@ export const ROLLOUT: Step[] = [
   },
   {
     title: 'Report before you block',
-    body: 'Add `apicircle-lens review` with `--comment` and no `--fail-on`. It keeps one comment current on each pull request and never fails the build, so the team sees real findings first.',
+    body: 'Add `apicircle-lens review` with `--comment` and no `--fail-on`. It keeps one comment current on each pull request and never fails the build on a finding, so the team sees real findings first.',
   },
   {
     title: 'Make it a required check',
@@ -367,6 +375,8 @@ export interface Constraint {
   icon: string;
   title: string;
   body: string;
+  /** The plan the card's paid capability needs, shown with `PlanBadge`. */
+  plan?: { label: string; plan: Exclude<PlanId, 'free'> };
 }
 
 export const CONSTRAINTS: Constraint[] = [
@@ -384,6 +394,7 @@ export const CONSTRAINTS: Constraint[] = [
     icon: 'key',
     title: 'Your keys, your providers',
     body: 'Git host tokens stay on the device. The in-app Assistant uses your own Anthropic, OpenAI or Google Gemini key, directly from the machine.',
+    plan: { label: 'Assistant', plan: 'pro' },
   },
   {
     icon: 'aperture',
@@ -393,11 +404,13 @@ export const CONSTRAINTS: Constraint[] = [
   {
     icon: 'lock',
     title: 'AI tools stay local by default',
-    body: 'MCP tools that reach beyond the machine, such as submitting a review, opening a pull request or running a plan, stay off unless the server starts with `--allow-egress`.',
+    body: 'MCP tools that publish or send data out, such as submitting a review, opening a pull request or running a plan, stay off unless the server starts with `--allow-egress` or `APICIRCLE_LENS_MCP_ALLOW_EGRESS=1`.',
+    plan: { label: 'MCP server', plan: 'pro' },
   },
   {
     icon: 'users',
     title: 'Seats and sign-in',
     body: 'Seats with per-device activation, single sign-on through your identity provider over OIDC, and CI keys that do not take a seat.',
+    plan: { label: 'Seats, SSO and CI keys', plan: 'team' },
   },
 ];

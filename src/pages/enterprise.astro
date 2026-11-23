@@ -223,6 +223,10 @@ const toneClass = {
     <div class="grid gap-5 lg:grid-cols-2">
       {FINDINGS.map((f) => <DriftDiff {...f} />)}
     </div>
+    <p class="mt-4 max-w-3xl text-sm leading-relaxed text-fg-dim">
+      The second change is a Warning because of its <code class="rounded bg-surface px-1 py-0.5 font-mono text-[0.88em] text-fg">new-side-effect</code>
+      flag. A status change on its own is Info, as on the Onboarding service above.
+    </p>
     <div class="mt-8 max-w-3xl">
       <p class="mb-3 text-[15px] leading-relaxed text-fg-muted">In the pipeline, the same pull request trips the gate:</p>
       <CodeBlock
@@ -271,6 +275,9 @@ const toneClass = {
               {c.title}
             </span>
             <p class="text-[15px] leading-relaxed text-fg-muted"><Rich text={c.body} /></p>
+            {c.plan && (
+              <span class="inline-flex items-center gap-1.5 text-xs text-fg-dim">{c.plan.label}: <PlanBadge plan={c.plan.plan} /></span>
+            )}
           </div>
         ))
       }

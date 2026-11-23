@@ -46,8 +46,8 @@ website/
 │   ├── components/               # Astro components (Header, Hero, Spotlight, …)
 │   ├── data/                     # site.ts · nav.ts · features*.ts · pricing.ts and parser-scores.ts (both generated) …
 │   ├── layouts/                  # BaseLayout.astro (<head>/SEO, theme boot, header + footer) · LegalLayout.astro
-│   ├── pages/                    # index, lens, lens/parser, features/, pricing, download, docs, security,
-│   │                             # contact, account (noindex redirect), git-backed-api-client,
+│   ├── pages/                    # index, lens, lens/parser, enterprise, features/, pricing, download, docs,
+│   │                             # security, contact, account (noindex redirect), git-backed-api-client,
 │   │                             # privacy/terms/refunds (.md), 404, sitemap.xml.ts, llms.txt.ts
 │   └── styles/global.css         # theme tokens (:root = light, html.dark = dark)
 ├── scripts/                      # check-claims.mjs (claims guard) · image generation / capture (see below)
