@@ -3,15 +3,25 @@ import type { PlanId, Product } from './feature-types';
 /**
  * Where each part of API Circle runs, for the table on `/features`.
  *
- * Platforms are the easiest thing on this site to overstate. Lens desktop is
- * published for Windows (x64), macOS (Apple silicon and Intel) and Linux (x64),
- * and it does not update itself; Studio desktop ships for all three and does
- * (studio `apps/desktop/src/main/autoUpdater.ts`). Since 2.1.8 the macOS app is
- * signed and notarized. Windows gets Lens from the Microsoft Store only, which
- * signs its own package; from 2.1.9 the release carries no Windows installer,
- * so `where` must not offer one.
+ * Platforms are the easiest thing on this site to overstate. The API Circle
+ * desktop app is ONE app: the free workspace with no account, and the Lens
+ * panels a paid plan unlocks. It is published for Windows (x64), macOS 13 or
+ * later (Apple silicon and Intel; Electron 44 since 2.1.7) and Linux (x64), and
+ * it does not update itself (lens `apps/lens-desktop` has no updater); on
+ * Windows the Microsoft Store keeps it current. Since 2.1.8 the macOS app is
+ * signed and notarized. Windows gets it from the Microsoft Store only, which
+ * signs its own package, so `where` must not offer a Windows installer.
+ *
+ * The studio repository also builds a standalone desktop app that updates
+ * itself. This site does not offer it: `/download` offers the API Circle app for
+ * the free workspace too, so a row describing the standalone build here would
+ * describe something `/download` does not hand out.
+ *
  * The web app cannot run a mock server, because a browser tab cannot listen on
  * a port (studio `helpContent.ts`, "Mock runtime").
+ *
+ * `product` is the half a row mainly serves; the desktop row serves both, and is
+ * listed at the plan that first uses it, which is Free.
  */
 export interface Surface {
   name: string;
@@ -26,11 +36,11 @@ export interface Surface {
 
 export const SURFACES: Surface[] = [
   {
-    name: 'Lens desktop',
+    name: 'API Circle desktop app',
     product: 'lens',
-    plan: 'basic',
-    where: 'Windows 10 or later (x64, from the Microsoft Store), macOS (Apple silicon and Intel, notarized), Linux (x64)',
-    note: 'The whole workspace plus the Code graph, Review, Assistant and MCP panels. It does not update itself yet.',
+    plan: 'free',
+    where: 'Windows 10 or later (x64, from the Microsoft Store), macOS 13 or later (Apple silicon and Intel, notarized), Linux (x64)',
+    note: 'The free workspace with no account: it runs mock servers and keeps secrets in the OS keychain. A paid plan adds the Code graph, Review, Assistant and MCP panels, and the Code editor once Code changes is on. It does not update itself; on Windows the Microsoft Store keeps it current.',
     href: '/download',
   },
   {
@@ -50,15 +60,7 @@ export const SURFACES: Surface[] = [
     href: '/features/cli',
   },
   {
-    name: 'Studio desktop',
-    product: 'studio',
-    plan: 'free',
-    where: 'Windows, macOS and Linux',
-    note: 'Runs mock servers and keeps secrets in the OS keychain. Updates itself.',
-    href: '/download',
-  },
-  {
-    name: 'Studio web',
+    name: 'Web app',
     product: 'studio',
     plan: 'free',
     where: 'studio.apicircle.dev, any modern browser',

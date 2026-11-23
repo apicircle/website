@@ -1,9 +1,9 @@
 ---
 /**
- * API Circle Lens — the paid product.
+ * Lens: the paid features of the API Circle app.
  *
- * The rest of this site describes API Circle Studio, the free, open API workspace.
- * Lens is what the pricing page sells, so this page says plainly what it is, what
+ * Much of the rest of this site describes the free API workspace, whose source is
+ * available. Lens is what the pricing page sells, so this page says plainly what it is, what
  * each plan delivers and how it is delivered: Paddle's domain review asks for
  * exactly that, and so does anyone deciding whether to buy.
  *
@@ -19,11 +19,12 @@ import AppFrame from '../components/AppFrame.astro';
 import Screenshot from '../components/Screenshot.astro';
 import HostMatrix from '../components/HostMatrix.astro';
 import FrameworksTable from '../components/FrameworksTable.astro';
-import { PLANS, TRIAL_DAYS } from '../data/pricing.ts';
+import { PLANS } from '../data/pricing.ts';
+import { TRIAL_LINE } from '../data/feature-types.ts';
 
 const breadcrumbs = [
   { name: 'Home', url: '/' },
-  { name: 'API Circle Lens', url: '/lens' },
+  { name: 'Lens', url: '/lens' },
 ];
 
 const accountUrl = 'https://account.apicircle.dev';
@@ -78,14 +79,14 @@ const paid = PLANS.filter((p) => p.monthly !== null);
 ---
 
 <BaseLayout
-  title="API Circle Lens"
-  description="API Circle Lens maps every endpoint in your codebase to the code that implements it, and checks each pull request against your OpenAPI Spec to catch API drift before it merges."
+  title="Lens"
+  description="Lens, the paid part of API Circle, maps every endpoint in your codebase to the code that implements it, and checks each pull request against your OpenAPI Spec to catch API drift before it merges."
   breadcrumbs={breadcrumbs}
   lens
 >
   <Section
     headingLevel="h1"
-    eyebrow="API Circle Lens"
+    eyebrow="Lens, in API Circle"
     eyebrowIcon="layers"
     title="Catch API drift before it merges."
     subtitle="Lens builds a Code graph of your API from its source, with every endpoint mapped to the code that implements it. It uses the Code graph and your OpenAPI Spec to show where a pull request moves your API away from its contract."
@@ -101,7 +102,7 @@ const paid = PLANS.filter((p) => p.monthly !== null);
       </a>
     </div>
     <p class="mt-4 text-center text-sm text-fg-muted">
-      Every paid plan starts with a {TRIAL_DAYS}-day free trial. The API workspace itself stays free, with no account.
+      {TRIAL_LINE} The API workspace itself stays free, with no account.
     </p>
   </Section>
 
@@ -189,7 +190,7 @@ const paid = PLANS.filter((p) => p.monthly !== null);
       <div class="card">
         <h3 class="text-base font-semibold text-fg">No telemetry</h3>
         <p class="mt-2 text-sm leading-relaxed text-fg-muted">
-          The Lens apps collect no analytics or telemetry. See the <a class="text-brand hover:underline" href="/privacy">Privacy Policy</a>.
+          The API Circle desktop app and the command line collect no analytics or telemetry. See the <a class="text-brand hover:underline" href="/privacy">Privacy Policy</a>.
         </p>
       </div>
     </div>
@@ -243,7 +244,7 @@ const paid = PLANS.filter((p) => p.monthly !== null);
       </li>
       <li class="card">
         <strong class="text-fg">2. Access is immediate.</strong> Your plan is attached to your account the moment
-        checkout completes. Nothing is shipped: sign in to the Lens app with the same account and your plan's features
+        checkout completes. Nothing is shipped: sign in to the API Circle desktop app with the same account and your plan's features
         unlock.
       </li>
       <li class="card">

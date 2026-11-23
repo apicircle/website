@@ -4,8 +4,11 @@ import { planName, type Feature } from './feature-types';
 /**
  * Studio: the free API workspace, after Lens on every list.
  *
- * Every fact below was checked against the studio source at 2.0.0 and names
- * its noun: a UI label in quotes, a count, a file name. The free workspace has
+ * Every fact below was checked against the studio source (re-checked against
+ * the copy the API Circle desktop app 2.1.9 ships) and names its noun: a UI
+ * label in quotes, a count, a file name. On the desktop, the free workspace is
+ * the API Circle desktop app with no account; the studio repository's own
+ * standalone desktop build is not offered here. The free workspace has
  * no HAR import and no code generation (both are Lens MCP tools), no workspace
  * sharing, releases or marketplace, and its web app cannot run a mock server.
  * CLAUDE.md and `scripts/check-claims.mjs` keep those out.
@@ -79,7 +82,7 @@ export const STUDIO_FEATURES: Feature[] = [
     highlights: [
       {
         title: 'Every part of a request',
-        body: 'GET, POST, PUT, PATCH, DELETE, HEAD and OPTIONS. The body is none, JSON with "Prettify", text, XML, urlencoded, form-data with files, GraphQL with "Variables (JSON)", or binary. The Params tab splits Query, Path and Cookie, and "Effective URL" shows the URL that will actually go out.',
+        body: 'GET, POST, PUT, PATCH, DELETE, HEAD and OPTIONS. The body is none, JSON with "Prettify", text, XML, urlencoded, form-data with files, GraphQL with "Variables (JSON)", or binary. The Params tab splits Query, Path and Cookie, and "Effective URL" shows the URL that will actually go out. A request’s or a folder’s row menu has "Move to…", which moves it, with everything in it, into another folder.',
       },
       {
         title: 'Help while you type',
@@ -91,7 +94,7 @@ export const STUDIO_FEATURES: Feature[] = [
       },
       {
         title: 'A response viewer that sizes the body',
-        body: 'Status, time in milliseconds and size, with Body, Headers and Assertions tabs. A JSON body previews as TOON, YAML or CSV with how much smaller each is than minified JSON. A failure is named (Aborted, Network error, Timeout or TLS error) and has a "Retry" button.',
+        body: 'Status, time in milliseconds and size, with Body, Headers and Assertions tabs. "Copy" copies the body and "Save" downloads it as it was received. A JSON body previews as TOON, YAML or CSV with how much smaller each is than minified JSON. A failure is named (Aborted, Network error, Timeout or TLS error) and has a "Retry" button.',
       },
     ],
     cta: webApp,
@@ -196,7 +199,7 @@ export const STUDIO_FEATURES: Feature[] = [
     highlights: [
       {
         title: 'Which value wins',
-        body: 'A placeholder resolves from the request’s context variables first, then the environments in priority order, then the Secret Vault, and the first match wins. "Move up in priority" reorders a layer, each one shows its "Layer position", and the Variables inspector shows where a value came from.',
+        body: 'A placeholder resolves from the request’s context variables first, then the environments in priority order, then the Secret Vault, and the first match wins. "Move up" and "Move down" reorder the layers, each one shows where it stands ("Used when sending · 1 of 2"), and the Variables inspector shows where a value came from.',
       },
       {
         title: 'Chain requests with extractors',
@@ -282,14 +285,14 @@ export const STUDIO_FEATURES: Feature[] = [
     title: 'Serve your OpenAPI contract on localhost',
     tagline: 'Turn an OpenAPI, Postman or Insomnia source into a running localhost mock, with rules, delays and validation.',
     summary:
-      'Give Studio a spec and it builds a mock with an endpoint for every operation, then runs it on 127.0.0.1. Studio desktop and the VS Code extension run mock servers; the web app creates and edits the definitions but cannot run one, because a browser tab cannot listen on a port.',
+      'Give Studio a spec and it builds a mock with an endpoint for every operation, then runs it on 127.0.0.1. The API Circle desktop app and the VS Code extension run mock servers; the web app creates and edits the definitions but cannot run one, because a browser tab cannot listen on a port.',
     metaDescription:
-      'Turn an OpenAPI, Postman or Insomnia source into a localhost mock with response rules, request validation and delays. Runs in Studio desktop and VS Code.',
+      'Turn an OpenAPI, Postman or Insomnia source into a localhost mock with rules, validation and delays. Runs in the API Circle desktop app and VS Code.',
     bullets: [
       'From a spec, a spec asset, or empty',
       'Response rules, delays and multipliers',
       'Nine kinds of request validation',
-      'Runs in Studio desktop and VS Code',
+      'Runs in the desktop app and VS Code',
     ],
     highlights: [
       {
@@ -313,7 +316,7 @@ export const STUDIO_FEATURES: Feature[] = [
     secondaryCta: { label: 'Get the VS Code extension', href: SITE.links.vscode },
     closingCta: {
       title: 'Run your first mock',
-      subtitle: 'Studio desktop and the VS Code extension run mock servers, free and with no account.',
+      subtitle: 'The API Circle desktop app and the VS Code extension run mock servers, free and with no account.',
       primary: { label: 'Download for desktop', href: '/download', icon: 'download' },
       secondary: { label: 'Get the VS Code extension', href: SITE.links.vscode },
     },

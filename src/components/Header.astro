@@ -5,6 +5,7 @@ import Icon from './Icon.astro';
 import PlanBadge from './PlanBadge.astro';
 import { PRIMARY_NAV, FEATURE_GROUPS } from '../data/nav.ts';
 import { SITE } from '../data/site.ts';
+import { DOWNLOAD_APP } from '../data/feature-types.ts';
 
 /**
  * The desktop nav is DRIVEN by `PRIMARY_NAV`, not hand-written.
@@ -127,7 +128,7 @@ const isCurrent = (href: string): boolean => here === href || here.startsWith(`$
       }
       <a href="/download" class="btn-primary hidden sm:inline-flex">
         <Icon name="download" size={16} />
-        Download Lens
+        {DOWNLOAD_APP}
       </a>
 
       <!-- Mobile menu button -->
@@ -186,7 +187,7 @@ const isCurrent = (href: string): boolean => here === href || here.startsWith(`$
       }
       <a href="/download" class="btn-primary mt-2 w-full">
         <Icon name="download" size={16} />
-        Download Lens
+        {DOWNLOAD_APP}
       </a>
     </nav>
   </div>

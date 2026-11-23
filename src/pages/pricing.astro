@@ -3,8 +3,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Section from '../components/Section.astro';
 import PlanTable from '../components/PlanTable.astro';
 import Icon from '../components/Icon.astro';
-import { ANNUAL_DISCOUNT_PERCENT, PLANS, PRICE_CURRENCY_NOTE, TRIAL_DAYS } from '../data/pricing.ts';
+import { ANNUAL_DISCOUNT_PERCENT, PLANS, PRICE_CURRENCY_NOTE } from '../data/pricing.ts';
 import { SITE } from '../data/site.ts';
+import { LEGAL } from '../data/legal.ts';
+import { TRIAL_LINE } from '../data/feature-types.ts';
 
 // Every plan fact on this page comes from src/data/pricing.ts, which is
 // GENERATED from the Lens entitlement catalog and checked against the gate
@@ -110,8 +112,8 @@ const accountUrl = 'https://account.apicircle.dev';
          renewal terms a purchaser agrees to before checkout. -->
     <div class="mx-auto mt-8 max-w-3xl space-y-2 text-center text-sm text-fg-muted">
       <p>
-        Every paid plan starts with a {TRIAL_DAYS}-day free trial. Subscriptions renew automatically until you
-        cancel, and you can cancel at any time from your account.
+        {TRIAL_LINE} Anybody who has subscribed before is charged from the first day. Subscriptions renew
+        automatically until you cancel, and you can cancel at any time from your account.
       </p>
       <p>{PRICE_CURRENCY_NOTE}</p>
       <p>
@@ -122,8 +124,8 @@ const accountUrl = 'https://account.apicircle.dev';
     </div>
 
     <p class="mt-8 text-center text-sm text-fg-muted">
-      Need invoicing, SSO or an air-gapped licence?
-      <a class="text-brand hover:underline" href={`mailto:${SITE.email}`}>Talk to us</a>.
+      Need invoicing, SSO or an air-gapped licence? Email
+      <a class="text-brand hover:underline" href={`mailto:${LEGAL.supportEmail}`}>{LEGAL.supportEmail}</a>.
     </p>
   </Section>
 
@@ -131,7 +133,7 @@ const accountUrl = 'https://account.apicircle.dev';
     eyebrow="Side by side"
     eyebrowIcon="layers"
     title="What each plan adds"
-    subtitle="Everything in the API Circle interface is free and needs no account. What you pay for is the map of your codebase, and the surfaces that use it without you."
+    subtitle="The API workspace is free and needs no account. What you pay for is Lens: the map of your codebase, the review built on it, and the surfaces that use it without you."
     align="left"
   >
     {/* Generated from the same catalogue as the cards above. The three hand-written

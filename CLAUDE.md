@@ -59,6 +59,26 @@ chosen and what each number counts, and that is the line to hold.
 - `@apicircle-lens/rest-code-graph` only in code formatting, never in prose.
 - **Endpoint context graph** is a different feature. Always write it in full.
 
+### Naming (user decision, 2026-11-21)
+
+- The product, the company and the one desktop app are **API Circle**. Write
+  "the API Circle desktop app" for the app, and "Download API Circle"
+  (`DOWNLOAD_APP` in `src/data/feature-types.ts`) on a download button.
+- The free part is **the free API workspace**. **Lens** is the name of the paid
+  features inside the same app (the Code graph, Review, the Assistant, MCP, the
+  CLI), never of an app: "Lens is the paid half" stands.
+- Never "API Circle Studio", "API Circle Lens", "Lens desktop" or "Download Lens".
+  The claims guard enforces it everywhere but the legal pages (renamed with
+  their next version) and `scripts/`, which drives the shipped apps that still
+  carry the old names. `SITE.alternateNames` keeps them for search, marked
+  `claims: history`. Internal keys such as `product: 'studio'` stay.
+- Shipped things that still carry an old name are named as they ship: GitHub
+  desktop releases up to 2.1.8 ("API Circle Lens", which `/download` says in one
+  line), and the VS Code extension's Marketplace display name.
+- Severities read **Critical, Warning and Info** in every GUI sentence: the
+  engine's `breaking` is labelled "Critical" on every Lens screen. Keep `breaking`
+  only beside `--fail-on`.
+
 ## Must not claim
 
 - Project generation, greenfield or serverless migration. The Build pillar is
@@ -77,7 +97,19 @@ chosen and what each number counts, and that is the line to hold.
 - "17 auth schemes". The picker has 17 entries, but two are "No Auth" and
   "Inherit (parent folder)". Use `SITE.stats.authSchemes`.
 - That the web app runs mock servers. A browser tab cannot listen on a port: it
-  edits definitions, and Studio desktop or VS Code runs them.
+  edits definitions, and the API Circle desktop app or VS Code runs them.
+- A standalone Studio desktop, or that the desktop app updates itself. The free
+  workspace on the desktop is the API Circle desktop app with no account, and it
+  does not update itself (on Windows the Microsoft Store updates it).
+- "Every paid plan starts with a trial". `TRIAL_DAYS` is the trial of a
+  customer's FIRST paid subscription, one per customer. Use `TRIAL_LINE` from
+  `src/data/feature-types.ts`.
+- "No automatic posting" without its scope. The desktop app posts nothing until
+  you press Submit; the CLI posts when a pipeline passes `--comment` or
+  `--submit`.
+- "Open-source" for the free workspace. Its licence is source-available.
+- That the desktop app lists open pull requests. Since 2.1.6 it opens one by its
+  number or link; listing them is the MCP tool `lens.pr_review.list_pull_requests`.
 - `.req.yaml` files, a "release ledger", "auto-created" working branches, or
   cross-workspace environments. None of them is true of Studio 2.0.
 - That the Code graph panel shows trace folders or marks database writes. The
@@ -85,14 +117,17 @@ chosen and what each number counts, and that is the line to hold.
 - SAML. The catalogue sells single sign-on over OIDC.
 - A direct Windows download, SmartScreen steps, a hosted Lens web app, or the
   VS Code Lens extension. The desktop app is published for Windows (x64), macOS
-  (Apple silicon and Intel) and Linux (x64, AppImage and .deb), one channel
-  each. **Windows: the Microsoft Store only** (`SITE.links.lensStore`), which
-  signs its own package; from 2.1.9 the GitHub release carries no `.exe`.
-  **macOS and Linux: the GitHub release** (`SITE.links.lensReleases`). Since
-  2.1.8 the macOS app is signed with a Developer ID and notarized by Apple: it
-  needs no first-run steps, so don't print any. Both cards on `/download` (the
-  app, and the free workspace's "On the desktop") link each system to its own
-  channel.
+  13 or later (Apple silicon and Intel; Electron 44 since 2.1.7) and Linux (x64,
+  AppImage and .deb), one channel each. **Windows: the Microsoft Store only**
+  (`SITE.links.lensStore`), which signs its own package; from 2.1.9 the GitHub
+  release carries no `.exe`, and the releases before it carry an unsigned one
+  the site never offers. **macOS and Linux: the GitHub release**
+  (`SITE.links.lensReleases`). Since 2.1.8 the macOS app is signed with a
+  Developer ID and notarized by Apple: it needs no first-run steps, so don't
+  print any. Both cards on `/download` (the app, and the free workspace's "On
+  the desktop") link each system to its own channel. Don't claim a release is
+  published until `gh release list --repo apicircle/.github` says Latest: a
+  draft is not out.
 
 **GitHub works on every plan, including free.** Only the other three hosts are
 the paid `git-providers` capability. "GitHub is paid" would be badly wrong to
@@ -142,7 +177,8 @@ homepage moves toward their voice. They never move toward the homepage's.**
 
 `public/screenshots/{dark,light}/<name>.webp`, captured by
 `lens/regression/capture_marketing.py`, which drives the real app over CDP.
-Studio screens come from the same Lens desktop app in Studio mode.
+Free-workspace screens come from the same API Circle desktop app in its Studio
+mode.
 `<Screenshot>` renders **both** variants and CSS-toggles them, so a name missing
 from one theme would break only in the other — and dark is the default, so a
 missing dark file is invisible to whoever added it. `Screenshot.astro` now

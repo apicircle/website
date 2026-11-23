@@ -52,8 +52,11 @@ const {
  * reports, not a live reading of it. Every instance on the site must be written
  * from something the product genuinely finds.
  */
+// `breaking` is the engine's value; every Lens screen labels it "Critical" (lens
+// `packages-lens/ui-lens/src/ui/status.ts`, `SEVERITY_LABEL`). Only the CLI's
+// `--fail-on breaking` still says the word.
 const SEVERITY: Record<string, { label: string; chip: string }> = {
-  breaking: { label: 'Breaking', chip: 'border-node-red/40 bg-node-red/10 text-node-red' },
+  breaking: { label: 'Critical', chip: 'border-node-red/40 bg-node-red/10 text-node-red' },
   warning: { label: 'Warning', chip: 'border-node-amber/40 bg-node-amber/10 text-node-amber' },
   info: { label: 'Info', chip: 'border-edge bg-surface text-fg-dim' },
 };

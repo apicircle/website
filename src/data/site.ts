@@ -1,10 +1,15 @@
 /** Site-wide configuration and canonical product facts. */
 export const SITE = {
   name: 'API Circle',
-  /** The free app: the API workspace, named where we offer a download. */
-  productName: 'API Circle Studio',
-  /** The paid app: the same workspace with the Code graph, Review and Assistant panels. */
-  lensName: 'API Circle Lens',
+  /**
+   * The product and the one desktop app (renamed from "API Circle Lens" in lens (claims: history)
+   * desktop 2.1.9). Its free part is "the free API workspace"; the name the
+   * studio repository and the VS Code extension still carry is not a product
+   * name any more (user decision, 2026-11-21).
+   */
+  productName: 'API Circle',
+  /** The paid features inside the same app (the Code graph, Review, Assistant, MCP, CLI). Never the app. */
+  lensName: 'Lens',
   shortName: 'API Circle',
   domain: 'apicircle.dev',
   url: 'https://apicircle.dev',
@@ -22,14 +27,16 @@ export const SITE = {
     releases: 'https://github.com/apicircle/studio/releases/latest',
     /**
      * The current desktop release, on the public org repo: the macOS and Linux
-     * channel. From 2.1.9 it carries no Windows installer (`lensStore` is the
-     * Windows channel), so never offer it as a Windows download.
+     * channel. `lensStore` is the Windows channel, so never offer this as a
+     * Windows download: 2.1.9 carries no Windows installer, and the releases
+     * before it carry an unsigned one from before the Store listing.
      *
      * `/releases/latest`, not the release list and not a direct file link. It
      * follows each new published version without an edit here (drafts and
      * pre-releases are skipped), and it lands on the release page, where the
      * SHA-256 of each installer sits next to it. It assumes this repo publishes
-     * only Lens desktop releases; if that changes, pin the tag instead.
+     * only desktop app releases; if that changes, pin the tag instead. Releases
+     * up to 2.1.8 carry the app's earlier name, and /download says so.
      */
     lensReleases: 'https://github.com/apicircle/.github/releases/latest',
     /**
@@ -108,7 +115,8 @@ export const SITE = {
   /** Keyword-rich default <title> for the home page and untitled routes. */
   defaultTitle: 'API Circle — Catch API drift in every pull request',
   /** Other names people search the product by — feeds schema `alternateName`. */
-  alternateNames: ['APICircle', 'API Circle Studio', 'API Circle Lens', 'apicircle.dev', 'apicircle'],
+  // The retired names stay here so searches for them still find the site. (claims: history)
+  alternateNames: ['APICircle', 'API Circle Studio', 'API Circle Lens', 'apicircle.dev', 'apicircle'], // claims: history
   /** Target search keywords — used for the keywords meta tag and schema. */
   keywords: [
     'API drift detection',

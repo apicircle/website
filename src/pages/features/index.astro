@@ -20,7 +20,7 @@ import CTA from '../../components/CTA.astro';
 import Icon from '../../components/Icon.astro';
 import { FEATURES } from '../../data/features.ts';
 import { SURFACES } from '../../data/surfaces.ts';
-import { TRIAL_DAYS } from '../../data/pricing.ts';
+import { DOWNLOAD_APP, TRIAL_LINE } from '../../data/feature-types.ts';
 import { SITE } from '../../data/site.ts';
 
 const breadcrumbs = [
@@ -39,7 +39,7 @@ const extras = [
   },
   {
     term: 'Keyboard shortcuts',
-    body: 'Ctrl/Cmd+Enter sends. Ctrl/Cmd+N starts a request in the editor, Ctrl/Cmd+1 to 7 switch panels, and Ctrl/Cmd+K opens the Secret Vault.',
+    body: 'Ctrl/Cmd+Enter sends. Ctrl/Cmd+N starts a request in the editor, Ctrl/Cmd+1 to 9 pick the tabs on screen from the left, and Ctrl/Cmd+K opens the Secret Vault.',
   },
   {
     term: 'A Help Center that searches',
@@ -83,8 +83,7 @@ const extras = [
       <p class="mt-4 max-w-3xl text-pretty text-lg leading-relaxed text-fg-muted">
         Lens builds a Code graph of your API from its source, with every endpoint mapped to the
         code that implements it. Using the Code graph and your OpenAPI Spec, it shows where a pull
-        request moves the API away from its contract. Every plan starts with a {TRIAL_DAYS}-day
-        trial.
+        request moves the API away from its contract. {TRIAL_LINE}
       </p>
       <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {lens.map((feature) => <FeatureCard feature={feature} />)}
@@ -133,7 +132,9 @@ const extras = [
     <div class="container-page">
       <h2 class="text-3xl font-bold tracking-tight text-fg">Where each one runs</h2>
       <p class="mt-4 max-w-3xl text-[15px] leading-relaxed text-fg-muted">
-        Lens is one desktop app, on Windows for now, plus two headless surfaces. Studio runs in three places.
+        One desktop app, for Windows, macOS and Linux, carries both halves: the free workspace with
+        no account, and the Lens panels on a paid plan. Lens adds two headless surfaces. The free
+        workspace also runs in a browser and in VS Code.
       </p>
       <table class="mt-8 w-full border-collapse text-left">
         <caption class="sr-only">Where each API Circle surface runs, and the plan it needs</caption>
@@ -188,8 +189,8 @@ const extras = [
 
   <CTA
     title="Two ways in"
-    subtitle={`Download Lens for Windows and point it at a repository, or open the free workspace in a browser with nothing to install. Every paid plan starts with a ${TRIAL_DAYS}-day trial.`}
-    primary={{ label: 'Download Lens', href: '/download', icon: 'download' }}
+    subtitle={`Download API Circle for Windows, macOS or Linux and point Lens at a repository, or open the free workspace in a browser with nothing to install. ${TRIAL_LINE}`}
+    primary={{ label: DOWNLOAD_APP, href: '/download', icon: 'download' }}
     secondary={{ label: 'Open the web app', href: SITE.appUrl, external: true }}
   />
 </BaseLayout>

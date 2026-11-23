@@ -23,7 +23,7 @@ export interface Faq {
 export const FAQS: Faq[] = [
   {
     q: 'What is API Circle?',
-    a: 'API Circle is one app with two halves. The API workspace is free and needs no account: write requests, manage environments, run collections, and start local mock servers, with your collections stored as plain JSON in your own Git repository. API Circle Lens is the paid half. It reads your repository, maps every API endpoint to the code that implements it, and tells you when a pull request moves your API away from its OpenAPI spec.',
+    a: 'API Circle is one app with two halves. The API workspace is free and needs no account: write requests, manage environments, run collections, and start local mock servers, with your collections stored as plain JSON in your own Git repository. Lens is the paid half. It reads your repository, maps every API endpoint to the code that implements it, and tells you when a pull request moves your API away from its OpenAPI spec.',
   },
   {
     q: 'What is free?',
@@ -39,7 +39,7 @@ export const FAQS: Faq[] = [
   },
   {
     q: 'Will it comment on my pull requests automatically?',
-    a: 'No. Nothing is sent to your Git host until you press Submit, and there is no automatic posting. Drafts stay on your machine, and before anything is posted you see exactly what will appear on the pull request. On a public repository, findings that map security weaknesses are held back unless you explicitly opt in.',
+    a: 'Not from the desktop app. There, nothing is sent to your Git host until you press Submit: drafts stay on your machine, and before anything is posted you see exactly what will appear on the pull request. The command line, on the Team plan, is the one place that posts by itself, and only when your pipeline passes --comment or --submit. On a public repository, findings that map security weaknesses are held back unless you explicitly opt in.',
   },
   {
     q: 'Which languages and frameworks can it read?',
@@ -58,8 +58,8 @@ export const FAQS: Faq[] = [
     a: 'Not for the API workspace. It creates your first workspace on launch and never asks who you are. An account is needed only for a paid plan, which unlocks the Code graph, PR Review and the headless surfaces on the machines you activate.',
   },
   {
-    q: 'What is the difference between API Circle Studio and API Circle Lens?',
-    a: 'Studio is the free API workspace. Lens is the same app with four more panels: the Code graph, PR Review, the AI Assistant, and the MCP server setup. You do not install something different — you sign in, and the panels your plan includes appear.',
+    q: 'What is the difference between the free workspace and Lens?',
+    a: 'The free API workspace is what the API Circle desktop app, the web app and the VS Code extension give you with no account. Lens is the paid features of the same desktop app: the Code graph, Review, the AI Assistant and the MCP setup, plus the Code editor once Code changes is turned on in your account. You do not install something different — you sign in, and the panels your plan includes appear.',
   },
   {
     q: 'How is API Circle different from Postman and Insomnia?',

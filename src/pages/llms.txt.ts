@@ -1,9 +1,10 @@
 import type { APIRoute } from 'astro';
 import { FAQS } from '../data/faqs';
 import { FEATURES } from '../data/features';
-import { PLANS, PRICE_CURRENCY_NOTE, TRIAL_DAYS } from '../data/pricing';
+import { PLANS, PRICE_CURRENCY_NOTE } from '../data/pricing';
 import { SITE } from '../data/site';
 import { SCORES, count, longDate, share } from '../data/parser-scores-view';
+import { TRIAL_LINE } from '../data/feature-types';
 
 // llms.txt — the overview AI answer engines read. Generated, not hand-written.
 //
@@ -35,22 +36,22 @@ const abs = (path: string): string => new URL(path, SITE.url).href;
 const keyFacts: string[] = [
   'Category: API client, API testing tool, local mock server, and pull-request API review.',
   `Free, and no account: the whole API workspace — request editor, environments, run history, local mock servers, execution plans, imports, and GitHub-backed sync. ${workspaces(PLANS[0].workspaces)} is included.`,
-  `Paid: API Circle Lens, which reads your repository. Every plan starts with a ${TRIAL_DAYS}-day trial.`,
+  `Paid: Lens, the features of the same API Circle desktop app that read your repository. ${TRIAL_LINE}`,
   'Code graph: Lens reads the source, not the spec, and maps every endpoint to the handler and the functions it calls. It is written into your repository as a codegraph/ sidecar, so it is versioned and reviewable like any other file. Where an operation cannot be read with confidence it reports unknown rather than guessing.',
   `Parser measurement: in ${SCORES.realProjects.projects} open-source projects across ${SCORES.realProjects.languages.length} languages, each pinned to a commit and marked against an answer key, Lens found ${count(SCORES.realProjects.matched)} of ${count(SCORES.realProjects.truth)} documented endpoints (${share(SCORES.realProjects.matched, SCORES.realProjects.truth)}); ${share(SCORES.realProjects.matched, SCORES.realProjects.listed)} of the endpoints it listed were documented. Measured ${longDate(SCORES.measuredOn)}. Method and limits: ${abs('/lens/parser/')}.`,
-  'PR Review drift: two comparisons and one verdict — the head of a pull request against its base, and against your OpenAPI spec. Findings are concrete: auth middleware dropped from an endpoint, a 204 that became a 200, a new write inside a shared helper. Nothing is posted to your host until you press Submit.',
-  'Spec alignment: pick a workspace Spec and the Code graph marks every endpoint that is undocumented, not implemented or a stub. "Verify schema" corrects what the parser misread, and keeps an append-only audit of who changed what.',
-  'Refinements: add an endpoint the parser missed, map a function to an endpoint, or block a false positive with a reason. Each correction is committed beside the Code graph and survives a reindex.',
+  'PR Review drift: two comparisons and one verdict — the head of a pull request against its base, and against your OpenAPI spec. Findings are concrete: auth middleware dropped from an endpoint, a 204 that became a 200, a new write inside a shared helper. The desktop app posts nothing to your host until you press Submit; the command line posts only when a pipeline passes --comment or --submit.',
+  'Spec alignment: pick a workspace Spec and the Code graph marks every endpoint with drift, not implemented, undocumented, a stub, or one it found and could not trace. "Verify schema" corrects what the parser misread, and keeps an append-only audit of who changed what.',
+  'Refinements: map an endpoint the parser missed to its handler, map a function to an endpoint, or block a false positive with a reason. Each correction is committed beside the Code graph and survives a reindex.',
   `Send to Studio Editor: turn an endpoint from the Code graph into a real request in the free workspace, pre-filled from the code contract, with response assertions on by default. At "Contract test" depth the response shape becomes one JSON Schema assertion (from the Spec, or from the code where the Spec declares no body), and \`apicircle-lens run\` (${planName.get('team')}) grades it in CI, failing the endpoints whose responses no longer match.`,
   'Drift-infill scaffolding: for an endpoint the Spec declares and the code lacks, the Code editor drafts framework-native code, and optionally a test stub, for you to review before it is applied. It needs the account setting Code changes (Security → Code changes), which starts off.',
-  `AI Assistant (${planName.get('pro')}): answers questions about your API from the Code graph, inside Lens desktop, using your own Anthropic, OpenAI or Google key.`,
+  `AI Assistant (${planName.get('pro')}): answers questions about your API from the Code graph, inside the API Circle desktop app, using your own Anthropic, OpenAI or Google key.`,
   'Git hosts: GitHub works on every plan, including Free. GitLab, Bitbucket Cloud and Azure DevOps are reached through the native review API of each host, and are a paid capability.',
   'Git-native: collections, environments, and mock definitions are plain JSON pushed to your own GitHub repository — branch, diff, open pull requests, and resolve conflicts with a visual three-way merge.',
-  'Mock servers: turn an OpenAPI, Swagger, Postman, or Insomnia spec into a localhost mock with response rules, request validation, delays and multipliers. Studio desktop and VS Code run it; the web app edits mock definitions but cannot run one.',
+  'Mock servers: turn an OpenAPI, Swagger, Postman, or Insomnia spec into a localhost mock with response rules, request validation, delays and multipliers. The API Circle desktop app and VS Code run it; the web app edits mock definitions but cannot run one.',
   `Authentication: ${SITE.stats.authSchemes} schemes — Bearer, Basic, API key, custom header, six OAuth 2.0 grants (with PKCE, device code and auto-refresh), AWS Signature v4, Digest, NTLM, Hawk and JWT Bearer — and folder-level inheritance.`,
   `Imports into the free workspace: ${SITE.importFormats.join(', ')}.`,
   `MCP server (${planName.get('pro')}): started with \`apicircle-lens mcp\`, it gives an AI client your Code graph, PR Review and the Endpoint context graph, plus MCP-only tools: HAR import, and code generation to ${SITE.mcpCodegenTargets.join(', ')}.`,
-  `MCP clients: the MCP panel installs the server into ${SITE.mcpClients.installable.join(', ')}; ${SITE.mcpClients.manual.join(', ')} and any other MCP client take a pasted snippet.`,
+  `MCP clients: the MCP panel adds the server to ${SITE.mcpClients.installable.join(', ')} with one button each ("Add to Claude Desktop" and the like); ${SITE.mcpClients.manual.join(', ')} and any other MCP client take a pasted snippet.`,
   `Command-line interface (${planName.get('team')}): the \`apicircle-lens\` binary from ${SITE.links.npmCli.replace('https://www.npmjs.com/package/', '')}. Runs execution plans and reviews headlessly, and fails a build on the drift you choose.`,
   'Your code stays on your machine. Indexing runs locally and uploads nothing. The one exception is "Index with AI", which asks first and uses a key you supply.',
   'Source: the free workspace is developed in the open and source-available on GitHub.',
@@ -81,7 +82,8 @@ const pages: Array<[string, string, string]> = [
 
 const resources: Array<[string, string, string]> = [
   [SITE.links.github, 'GitHub', 'source-available repository and issues.'],
-  [SITE.links.lensReleases, 'Lens releases', 'desktop installers.'],
+  [SITE.links.lensStore, 'Microsoft Store', 'the API Circle desktop app for Windows.'],
+  [SITE.links.lensReleases, 'Desktop releases', 'the API Circle desktop app for macOS and Linux.'],
   [SITE.links.npmCli, 'CLI on npm', 'the Lens CLI, with the MCP server inside it.'],
   [SITE.links.vscode, 'VS Code Marketplace', 'the extension.'],
   [SITE.links.openVsx, 'Open VSX', 'the same extension, for editors that do not use the Marketplace.'],

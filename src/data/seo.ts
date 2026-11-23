@@ -173,16 +173,18 @@ function lensNode() {
   return {
     '@type': 'SoftwareApplication',
     '@id': LENS_ID,
-    name: SITE.lensName,
+    // Lens is the paid features of the API Circle app, not an app of its own.
+    name: `${SITE.lensName} (paid features of ${SITE.name})`,
+    alternateName: ['API Circle Lens'], // the app's name up to 2.1.8. claims: history
     applicationCategory: 'DeveloperApplication',
     applicationSubCategory: 'API Development',
     // What a visitor can install today: the systems a PUBLISHED release
-    // carries (2.1.0: all three, unsigned). Never one that is still a draft.
+    // carries (all three since 2.1.0). Never one that is still a draft.
     operatingSystem: 'Windows, macOS, Linux',
     url: abs('/lens'),
     downloadUrl: abs('/download'),
     description:
-      'API Circle Lens reads your repository and maps every endpoint to the code that implements it, then reports what a pull request changes against that map and your OpenAPI spec.',
+      'Lens, the paid part of API Circle, reads your repository and maps every endpoint to the code that implements it, then reports what a pull request changes against that map and your OpenAPI spec.',
     // Straight from the catalogue: what each paid plan adds, minus the chaining
     // lines and the workspace counts, which say nothing about capability.
     featureList: PLANS.filter((p) => p.monthly !== null)

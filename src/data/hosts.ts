@@ -13,6 +13,11 @@
  * are copied by hand and must be re-checked against those four files whenever a
  * host gains or loses a capability.
  *
+ * The desktop app opens a pull request by its number or link and lists none
+ * (lens desktop 2.1.6; `ui-lens/src/review/PullRequestList.tsx`, "number or
+ * link…"). Listing your open requests across repositories is the MCP server's
+ * `lens.pr_review.list_pull_requests`, which is where `viewerSearch` is used.
+ *
  * The differences are published rather than smoothed over. A matrix with a tick
  * in every cell tells a reader nothing and is usually a lie; the two rows where
  * a host genuinely falls short are the rows that make the rest believable.
@@ -52,7 +57,7 @@ export const HOSTS: Host[] = [
 
 export const HOST_CAPABILITIES: HostCapability[] = [
   {
-    label: 'Reads open requests',
+    label: 'Opens one by its number or link',
     values: {
       github: 'Pull requests',
       gitlab: 'Merge requests',
@@ -80,14 +85,14 @@ export const HOST_CAPABILITIES: HostCapability[] = [
     },
   },
   {
-    label: 'Finds your open requests across every repo',
+    label: 'MCP lists your open requests across repos',
     values: {
       github: true,
       gitlab: true,
-      // Neither host offers a viewer-scoped search, so you pick the repository
-      // first. Everything after that point is identical.
-      bitbucket: 'Pick the repository first',
-      azure: 'Pick the repository first',
+      // Neither host offers a viewer-scoped search, so the MCP tool needs the
+      // repository named. Everything after that point is identical.
+      bitbucket: 'Name the repository first',
+      azure: 'Name the repository first',
     },
   },
 ];

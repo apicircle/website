@@ -58,7 +58,7 @@ export const FOOTER_NAV: { title: string; items: NavItem[] }[] = [
     title: 'Product',
     items: [
       { label: 'Features', href: '/features' },
-      { label: 'API Circle Lens', href: '/lens' },
+      { label: 'Lens', href: '/lens' },
       { label: 'Pricing', href: '/pricing' },
       { label: 'Git-backed API client', href: '/git-backed-api-client' },
       { label: 'Download', href: '/download' },
@@ -77,8 +77,8 @@ export const FOOTER_NAV: { title: string; items: NavItem[] }[] = [
       // point at Lens: the MCP server moved there and became part of Pro. The
       // Features column already links the MCP page, so these are guides instead.
       // The studio repo's installing.md is not one of them: it walks through the
-      // unsigned Studio desktop's first launch, and the desktop app this site
-      // offers is signed (Product → Download).
+      // first launch of that repo's own unsigned desktop build, and the desktop
+      // app this site offers is signed (Product → Download).
       {
         label: 'Mock server guide',
         href: 'https://github.com/apicircle/studio/blob/main/docs/mock-server.md',

@@ -3,7 +3,7 @@ import Icon from './Icon.astro';
 import AppFrame from './AppFrame.astro';
 import Screenshot from './Screenshot.astro';
 import { SITE } from '../data/site.ts';
-import { TRIAL_DAYS } from '../data/pricing.ts';
+import { DOWNLOAD_APP, TRIAL_LINE } from '../data/feature-types.ts';
 
 /**
  * The homepage hero.
@@ -55,17 +55,17 @@ import { TRIAL_DAYS } from '../data/pricing.ts';
       <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
         <a href="/download" class="btn-primary w-full sm:w-auto">
           <Icon name="download" size={16} />
-          Download Lens
+          {DOWNLOAD_APP}
         </a>
         <a href={SITE.appUrl} target="_blank" rel="noopener" class="btn-secondary w-full sm:w-auto">
-          Start free with Studio
+          Start free in the browser
           <Icon name="arrow-up-right" size={16} />
         </a>
       </div>
 
       <p class="mx-auto mt-5 max-w-xl text-sm leading-relaxed text-fg-dim">
         The API workspace is free and needs no account: write requests, run collections, mock an API
-        on localhost. Every paid plan starts with a {TRIAL_DAYS}-day trial.
+        on localhost. {TRIAL_LINE}
       </p>
     </div>
 
@@ -75,7 +75,7 @@ import { TRIAL_DAYS } from '../data/pricing.ts';
       <AppFrame label="Review · Working tree" class="animate-fade-up">
         <Screenshot
           name="pr-review-drift"
-          alt="The Review panel listing two changed endpoints, one of them breaking, each with its drift findings and the file and line they point to"
+          alt="The Review panel listing two changed endpoints, one of them critical, each with its drift findings and the file and line they point to"
           eager
         />
       </AppFrame>

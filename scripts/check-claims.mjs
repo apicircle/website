@@ -226,6 +226,149 @@ export const RULES = [
     pattern: /\bSmartScreen\b|\bRun anyway\b|\.exe installer\b/i,
     use: 'SITE.links.lensStore. Windows installs the app from the Microsoft Store, which signs it',
   },
+
+  // ---- Found against the production build (lens desktop 2.1.9), 2026-11-21 ----
+  // Each of these was live on the site while production said otherwise.
+  {
+    // /features said Lens was "one desktop app, on Windows for now" and offered
+    // "Download Lens for Windows", while /download and the surfaces table offered
+    // Windows, macOS and Linux, and macOS and Linux had shipped since 2.1.0.
+    pattern: /\bon Windows for now\b|\bfor Windows and point it\b/i,
+    use: 'Windows, macOS and Linux. The desktop app is published for all three (src/data/surfaces.ts)',
+  },
+  {
+    // Lens 2.1.5 renamed the severity every screen shows: the engine's `breaking`
+    // reads "Critical" (lens packages-lens/ui-lens/src/ui/status.ts, SEVERITY_LABEL).
+    // The site kept "graded `breaking`", "a breaking change" and a Breaking chip.
+    pattern: /\bgraded\s+`?breaking\b|\bone of them breaking\b|\ba breaking change on\b|label: 'Breaking'/i,
+    unless: /--fail-on/,
+    use: '"Critical", as the Review panel labels it. `breaking` is only the CLI value of `--fail-on`',
+  },
+  {
+    // Lens 2.1.7 renamed "Add endpoint" to "Map endpoint", and its submit to
+    // "Map to handler" (lens packages-lens/ui-lens/src/codegraph/AddEndpointGuide.tsx).
+    pattern: /"Add endpoint"|"Declare endpoint"/,
+    use: '"Map endpoint", which opens "Map an endpoint", and "Map to handler"',
+  },
+  {
+    // Lens 2.1.7 renamed the MCP panel's "Install <client>" to "Add to <client>"
+    // (lens packages-lens/ui-lens/src/mcp/McpPanel.tsx).
+    pattern: /"Install" writes\b|\bInstall Claude Desktop\b/,
+    use: '"Add to Claude Desktop" (or "Update …" / "Remove from …")',
+  },
+  {
+    // Lens 2.1.7 asks for a host's address once, on the session, and Azure DevOps
+    // REQUIRES its "Organisation URL" (studio packages/ui-components/src/store/hostBaseUrl.ts).
+    pattern: /\bAzure DevOps through an API base URL\b|\bself-managed host adds its API base URL\b/i,
+    use: 'GitLab\'s optional "API base URL" (self-managed only) and Azure DevOps\' required "Organisation URL"',
+  },
+  {
+    // Eight pages said "Every paid plan starts with a 30-day trial". The trial is
+    // a customer's FIRST paid subscription's, one per customer; anybody who has
+    // subscribed before is charged from day one (lens entitlements catalog.ts).
+    pattern: /\bEvery (?:paid )?plan starts with\b/i,
+    use: '`TRIAL_LINE` from src/data/feature-types.ts: the first paid subscription, one per customer',
+  },
+  {
+    // Studio ddb6955 renamed the environment controls (studio
+    // packages/ui-components/src/panels/env/EnvironmentsSidebar.tsx, EnvironmentsPanel.tsx).
+    pattern: /\bMove up in priority\b|"Layer position"/,
+    use: '"Move up" / "Move down", and "Used when sending · N of M"',
+  },
+  {
+    // Lens 2.1.4 gave Send to Studio Editor a "Base URL" picker; the site still
+    // described the old rule (the Spec's server "when that is absolute").
+    pattern: /\bserver when that is absolute\b/i,
+    use: 'the "Base URL" picker: `{{baseUrl}}`, a server the specs declare, or "Custom…"',
+  },
+  {
+    // The panel shortcuts follow the tabs on screen, 1 to 9 (studio helpContent.ts,
+    // "Keyboard Shortcuts"; lens desktop 2.1.3).
+    pattern: /Ctrl\/Cmd\s*\+\s*1 to 7\b/,
+    use: 'Ctrl/Cmd+1 to 9, which pick the tabs on screen from the left',
+  },
+  {
+    // "Open draft PR" opens on whichever Git host the workspace is connected to.
+    pattern: /draft PR"? puts the change up for review on GitHub\b/i,
+    use: 'the Git host the workspace is connected to',
+  },
+  {
+    // The homepage and the FAQ said "there is no automatic posting", while the
+    // CLI's `review --comment` posts and updates a comment from CI on its own.
+    pattern: /\bno automatic posting\b/i,
+    unless: /\bdesktop app\b|\bin the app\b/i,
+    use: 'scope it to the desktop app: the command line posts when a pipeline passes --comment or --submit',
+  },
+  {
+    // The /features table sold a "Studio desktop" that "Updates itself", linked to
+    // /download, which offers the API Circle desktop app for the free workspace,
+    // and that app does not update itself.
+    pattern: /\bStudio desktop\b/,
+    use: 'the API Circle desktop app. It runs the free workspace with no account, and does not update itself',
+  },
+  {
+    // /security and the Privacy Policy called the free workspace "open-source";
+    // its LICENSE says it is NOT an open-source licence. The legal pages are fixed
+    // with their next version (a version bump agreed with the production API).
+    pattern: /\bopen[- ]source (?:API Circle |the )?(?:Studio|API workspace|workspace)\b/i,
+    where: (p) => p !== join('src', 'pages', 'privacy.md') && p !== join('src', 'pages', 'terms.md'),
+    use: '"source-available": the studio repository\'s licence is not an open-source licence',
+  },
+  {
+    // /pricing said "Everything in the API Circle interface is free", above a table
+    // of the paid Lens panels in that interface.
+    pattern: /\bEverything in the API Circle interface is free\b/i,
+    use: 'the API workspace is free; Lens is what is paid for',
+  },
+  {
+    // /pricing sent invoicing, SSO and air-gapped-licence requests to SITE.email
+    // while /contact sent the same requests to the support address.
+    pattern: /mailto:\$\{SITE\.email\}/,
+    use: '`LEGAL.supportEmail`, the address /contact gives for the same requests',
+  },
+  {
+    // Lens 2.1.6: the desktop app opens a pull request by its number or link and
+    // lists none. Listing open requests is the MCP tool lens.pr_review.list_pull_requests.
+    pattern: /\bReads open requests\b|\bFinds your open requests across every repo\b|\bIt reads their open requests\b/i,
+    use: 'opens a request by its number or link; listing them is an MCP capability',
+  },
+  {
+    // Electron 44, since lens desktop 2.1.7, needs macOS 13 (Ventura) or later.
+    pattern: /\bmacOS \((?:Apple silicon|a dmg)/,
+    use: 'macOS 13 or later (Apple silicon and Intel)',
+  },
+  {
+    // The FAQ counted "four more panels"; the Code editor ships too, once the
+    // account's Code changes setting is on.
+    pattern: /\bfour more panels\b/i,
+    use: 'the Code graph, Review, Assistant and MCP, plus the Code editor once Code changes is on',
+  },
+  {
+    // The Spec alignment bar gained "with errors" in lens desktop 2.1.7
+    // (lens packages-lens/ui-lens/src/codegraph/alignment.ts): five counts.
+    pattern: /\bOne banner, four counts\b/i,
+    use: 'five counts: "with drift", "not implemented", "undocumented", "stubbed" and "with errors"',
+  },
+  {
+    // The illustrated finding said "Shared `requireBearer` removed, and it reaches 2
+    // endpoints" at a warning. The Review panel reports a removed guard as `auth-removed`,
+    // which is Critical (lens packages-lens/pr-review/src/review.ts, SEVERITY and
+    // `preRequestDetail`), in its own words.
+    pattern: /removed, and it reaches \d+ endpoints/i,
+    use: 'the Review panel\'s own sentence: "Auth/access-control `requireBearer` removed in the pre-request chain", severity Critical (`auth-removed`)',
+  },
+  {
+    // The product is API Circle (user decision, 2026-11-21): the desktop app was
+    // renamed from "API Circle Lens" in 2.1.9. Lens names the paid features, never
+    // the app, and the free part is "the free API workspace". The legal pages keep
+    // the old names until their next version, and `scripts/` drives and draws the
+    // shipped apps, which still carry them (the studio app's title, the VS Code
+    // extension's display name).
+    pattern: /\bAPI Circle Studio\b|\bAPI Circle Lens\b|\bLens desktop\b|\bDownload Lens\b/,
+    where: (p) =>
+      p !== join('src', 'pages', 'privacy.md') && p !== join('src', 'pages', 'terms.md') && !p.startsWith(`scripts${sep}`),
+    use: '"API Circle" or "the API Circle desktop app"; "the free API workspace"; Lens only for the paid features',
+  },
 ];
 
 const SKIP_DIRS = new Set(['node_modules', 'dist', '.astro', '.git', '.screenshots-raw']);

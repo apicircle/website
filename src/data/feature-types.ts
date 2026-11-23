@@ -137,24 +137,38 @@ export function planName(id: PlanId): string {
   return plan.name;
 }
 
+/**
+ * What the site says about the trial, everywhere it says it.
+ *
+ * `TRIAL_DAYS` is the trial of a customer's FIRST paid subscription, one per
+ * customer: anybody who has subscribed before is charged from day one (lens
+ * `packages-lens/entitlements/src/catalog.ts`, `TRIAL_DAYS`). "Every paid plan
+ * starts with a trial" was printed on eight pages and was wrong for every
+ * returning customer.
+ */
+export const TRIAL_LINE = `Your first paid subscription starts with a ${TRIAL_DAYS}-day free trial, one per customer.`;
+
+/** The download button: the app is API Circle, and Lens is the paid features inside it. */
+export const DOWNLOAD_APP = 'Download API Circle';
+
 /** The hero buttons of a Lens page: download for Basic, the plan for Pro and Team. */
 export function lensCtas(plan: Exclude<PlanId, 'free'>): Pick<Feature, 'cta' | 'secondaryCta'> {
   if (plan === 'basic') {
     return {
-      cta: { label: 'Download Lens', href: '/download', icon: 'download' },
+      cta: { label: DOWNLOAD_APP, href: '/download', icon: 'download' },
       secondaryCta: { label: 'See plans and pricing', href: '/pricing' },
     };
   }
   return {
     cta: { label: `See what ${planName(plan)} includes`, href: '/pricing' },
-    secondaryCta: { label: 'Download Lens', href: '/download', icon: 'download' },
+    secondaryCta: { label: DOWNLOAD_APP, href: '/download', icon: 'download' },
   };
 }
 
 /** How every Lens feature page ends: on the paid product, not the free one. */
 export const LENS_CLOSING_CTA: ClosingCta = {
   title: 'Point Lens at a repository',
-  subtitle: `Install it on Windows, macOS or Linux, index a repository and review a pull request. Every paid plan starts with a ${TRIAL_DAYS}-day trial.`,
-  primary: { label: 'Download Lens', href: '/download', icon: 'download' },
+  subtitle: `Install API Circle on Windows, macOS or Linux, index a repository and review a pull request. ${TRIAL_LINE}`,
+  primary: { label: DOWNLOAD_APP, href: '/download', icon: 'download' },
   secondary: { label: 'See plans and pricing', href: '/pricing' },
 };

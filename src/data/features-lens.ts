@@ -4,18 +4,20 @@ import { lensCtas, planName, type Feature } from './feature-types';
 /**
  * Lens: the paid half, first on every list.
  *
- * Every fact below was checked against the Lens source at 2.0.0 and names its
- * noun: a UI label in quotes, a flag in backticks, a file name, a count. The
- * lowest plan for each comes from the entitlement catalogue (lens
+ * Every fact below was checked against the Lens source (re-checked against the
+ * production build, lens desktop 2.1.9) and names its noun: a UI label in
+ * quotes, a flag in backticks, a file name, a count. The lowest plan for each
+ * comes from the entitlement catalogue (lens
  * `packages-lens/entitlements/src/catalog.ts`), and plan NAMES only ever come
  * from `planName()`, never typed.
  *
+ * Naming: the product and the desktop app are API Circle. Lens is the name of
+ * the paid features inside it, never of the app.
+ *
  * What these pages must not say is in CLAUDE.md: nothing from the hidden Build
- * pillar (the scaffold command's new-project flag included), no Lens download
- * for macOS or Linux (both are in progress; /download and the /features table
- * say so, and nothing else needs to), no
- * hosted Lens web app, no VS Code Lens extension, no tool counts, and no single
- * sign-on protocol beyond the catalogue's OIDC.
+ * pillar (the scaffold command's new-project flag included), no hosted Lens web
+ * app, no VS Code Lens extension, no tool counts, and no single sign-on protocol
+ * beyond the catalogue's OIDC.
  */
 export const LENS_FEATURES: Feature[] = [
   {
@@ -45,15 +47,15 @@ export const LENS_FEATURES: Feature[] = [
       },
       {
         title: 'Honest about what it cannot read',
-        body: 'Where the extractor cannot read a shape with confidence, it leaves it unresolved instead of guessing, and you can verify it by hand. A call into your framework gets a one-line summary and an "Official docs ↗" link.',
+        body: 'Where the extractor cannot read a shape with confidence, it leaves it unresolved instead of guessing, and you can verify it by hand. A route it found but could not trace stays in the list with an `error` pill, and "View log" opens what the index recorded about it. A call into your framework gets a one-line summary and an "Official docs ↗" link.',
       },
       {
         title: 'Versioned with your code',
         body: 'The map is written to `endpoints.json` and `index.json` under `.apicircle/`, so a pull request shows how the API changed. Lens also adds a `.gitignore` rule that keeps a local parser cache out of the repository. Press "Reindex" after a large change.',
       },
       {
-        title: 'Three places to read from',
-        body: 'A clone of the repository you connected, or a folder already on disk. A branch list switches the map to another branch, or back to your local working tree. The panel opens on three tabs: Endpoints, Shared and Refinements.',
+        title: 'What it reads, and what it leaves out',
+        body: 'A clone of the repository you connected, or a folder already on disk, and a branch list switches the map to another branch. The header’s Scope group says where routes are searched ("Routes: whole repository"), and "Leave files out" writes `.apicircle/.ignore` from a tree of the repository’s files. The panel opens on three tabs: Endpoints, Shared and Refinements.',
       },
     ],
     ...lensCtas('basic'),
@@ -96,16 +98,16 @@ export const LENS_FEATURES: Feature[] = [
       'Head against base, and head against the Spec',
       'Every finding names a file and a line',
       'One verdict: "In focus" or "Diffracting"',
-      'Nothing is posted until you press "Submit review"',
+      'In the app, nothing is posted until you press "Submit review"',
     ],
     highlights: [
       {
         title: 'A pull request, or your working tree',
-        body: '"Pull request" reads the change from your Git host, in the host’s own word ("merge request" on GitLab), and "Check drift" runs it. "Working tree" reviews the edits on your disk with "Run impact review". Both open a "Files changed" view.',
+        body: '"Pull request" opens one change by its number or its link, in the host’s own word ("merge request" on GitLab), and "Check drift against" your Spec runs the second comparison. "Working tree" compares two sides you pick, From and To: everything on your branch, commits and uncommitted edits, against a base branch, or only your uncommitted edits against the last commit. "Run impact review" runs it.',
       },
       {
         title: 'Findings with a name and a severity',
-        body: 'Each finding carries flags such as `endpoint-removed`, `auth-removed`, `new-side-effect` and `shared-impact`, graded `breaking`, `warning` or `info`. Contract drift covers parameters, cookies, bodies, response headers, status codes, nullable, format and enum, and auth. Response-header and nullable drift are checked in one direction only.',
+        body: 'Each finding carries flags such as `endpoint-removed`, `auth-removed`, `new-side-effect` and `shared-impact`, and the review files its changes under three tabs, Critical, Warning and Info, each with its count. Contract drift covers parameters, cookies, bodies, response headers, status codes, nullable, format and enum, and auth. Response-header and nullable drift are checked in one direction only.',
       },
       {
         title: 'One verdict per pull request',
@@ -119,7 +121,7 @@ export const LENS_FEATURES: Feature[] = [
     ...lensCtas('basic'),
     screenshot: 'pr-review-drift',
     screenshotAlt:
-      'The Review panel after a working-tree review of widgets-api: a breaking change on POST /api/v1/widgets, which lost its requireBearer guard, and a warning on DELETE /api/v1/widgets/:widgetId, whose spec documents a 204 the code no longer returns, each finding pointing at a file and line',
+      'The Review panel after a working-tree review of widgets-api: a critical change on POST /api/v1/widgets, which lost its requireBearer guard, and a warning on DELETE /api/v1/widgets/:widgetId, whose spec documents a 204 the code no longer returns, each finding pointing at a file and line',
     frameLabel: 'Review · widgets-api',
     extras: ['drift-findings'],
   },
@@ -134,16 +136,16 @@ export const LENS_FEATURES: Feature[] = [
     title: 'See where the code and the Spec disagree',
     tagline: 'Pick a Spec, and every endpoint where the code and the contract disagree gets a pill.',
     summary:
-      'Choose an OpenAPI Spec from the workspace and the Code graph lines the two up, endpoint by endpoint, then counts what the Spec declares that the code does not serve, the responses that drifted, the stubs, and the routes the Spec never documented. Where the parser could not read a shape, you verify it by hand. Nothing is guessed.',
+      'Choose an OpenAPI Spec from the workspace and the Code graph lines the two up, endpoint by endpoint, then counts what the Spec declares that the code does not serve, the endpoints whose contract drifted, the stubs, and the routes the Spec never documented. Where the parser could not read a shape, you verify it by hand. Nothing is guessed.',
     metaDescription: `Compare the Code graph with your OpenAPI Spec, see what is undocumented or not implemented, and verify schemas the parser misread. From the ${planName('basic')} plan.`,
     bullets: [
-      'A banner counts what is missing and what drifted',
+      'A bar counts what is missing, what drifted and what failed',
       '"Verify schema" corrects the parser, with an audit trail',
     ],
     highlights: [
       {
-        title: 'One banner, four counts',
-        body: 'The "Spec alignment" banner counts endpoints not implemented and responses that drifted, then adds stubbed and undocumented counts when there are any. With nothing missing and nothing drifted, it says so. If your app mounts its routes under a prefix such as `/api/v1`, you set that once.',
+        title: 'One bar, five counts',
+        body: 'The "Spec alignment" bar counts endpoints "with drift", "not implemented" and "undocumented", and adds "stubbed" and "with errors" (routes the index found but could not trace) when there are any. Each count is a filter. With nothing missing or drifting, it says the code matches the spec. If your app mounts its routes under a prefix such as `/api/v1`, you set that once.',
       },
       {
         title: 'A pill on each row that disagrees',
@@ -191,13 +193,13 @@ export const LENS_FEATURES: Feature[] = [
       'No parser reads every codebase perfectly. The Refinements tab is where you fix what Lens got wrong: declare an endpoint it did not find, tie a function to the endpoint that calls it, or block something that is not an endpoint at all. Each correction is a file in your repository, so the next reindex keeps it and your team reviews it.',
     metaDescription: `Add endpoints the parser missed, map functions and block false positives. Lens keeps each fix in files beside the Code graph. From the ${planName('basic')} plan.`,
     bullets: [
-      '"Add endpoint" and "Map function" for what the parser missed',
+      '"Map endpoint" and "Map function" for what the parser missed',
       'Block a false positive, with a reason',
     ],
     highlights: [
       {
         title: 'Declare what it missed',
-        body: '"Add endpoint" takes a method, a route path and a handler file, and "Declare endpoint" records it as yours, badged Manual. "Map function" ties a function the parser missed to an endpoint and traces its child calls in automatically.',
+        body: '"Map endpoint" opens "Map an endpoint": you pick a method and a route path, then the function that handles it, and "Map to handler" records it as yours, badged Manual. "Map function" ties a function the parser missed to an endpoint and traces its child calls in automatically.',
       },
       {
         title: 'Block what it should not see',
@@ -255,7 +257,7 @@ export const LENS_FEATURES: Feature[] = [
       },
       {
         title: 'Filled in from the code',
-        body: 'Parameters, headers and the body come from the code contract, and the Spec fills what the code does not say. The base URL is the Spec’s server when that is absolute; otherwise the request uses `{{baseUrl}}`, so an environment decides.',
+        body: 'Parameters, headers and the body come from the code contract, and the Spec fills what the code does not say. The dialog’s "Base URL" picker sets where the requests point: the `{{baseUrl}}` environment variable, any server your workspace’s specs declare, or "Custom…" for one you type.',
       },
       {
         title: 'The response shape as one JSON Schema',
@@ -335,7 +337,7 @@ export const LENS_FEATURES: Feature[] = [
       },
       {
         title: 'Stubs stay marked',
-        body: '"Open draft PR" puts the change up for review on GitHub. A scaffolded endpoint keeps its `stub` pill, and counts in the banner’s stubbed total, until its handler does real work and you reindex.',
+        body: '"Open draft PR" puts the change up for review on the Git host your workspace is connected to. A scaffolded endpoint keeps its `stub` pill, and counts in the banner’s stubbed total, until its handler does real work and you reindex.',
       },
     ],
     ...lensCtas('basic'),
@@ -369,15 +371,15 @@ export const LENS_FEATURES: Feature[] = [
     navLabel: 'AI Assistant',
     eyebrow: 'AI Assistant',
     title: 'Ask about your API, answered from the Code graph',
-    tagline: 'A chat inside Lens desktop that reads your Code graph, using your own Anthropic, OpenAI or Google key.',
+    tagline: 'A chat inside the API Circle desktop app that reads your Code graph, using your own Anthropic, OpenAI or Google key.',
     summary:
       'Ask which endpoints write to the database, what a pull request broke, or how one endpoint handles auth, and the answer comes from the Code graph of the repository you have open rather than from a guess about code the model has never seen. You bring the key.',
-    metaDescription: `Ask about your API in Lens desktop and get answers from the Code graph, using your own Anthropic, OpenAI or Google key. From the ${planName('pro')} plan.`,
+    metaDescription: `Ask about your API in the API Circle desktop app and get answers from the Code graph, with your own Anthropic, OpenAI or Google key. From ${planName('pro')}.`,
     bullets: [
       'Your own Anthropic, OpenAI or Google key',
       'Answers grounded in the Code graph',
       'Edits only when "Allow edits" is on',
-      'Inside Lens desktop',
+      'Inside the API Circle desktop app',
     ],
     highlights: [
       {
@@ -400,7 +402,7 @@ export const LENS_FEATURES: Feature[] = [
     ...lensCtas('pro'),
     screenshot: 'assistant',
     screenshotAlt:
-      'The Assistant in Lens desktop with its prompt library open, prompts grouped under Understand, Review & drift and Build & change, above the message composer',
+      'The Assistant in the API Circle desktop app with its prompt library open, prompts grouped under Understand, Review & drift and Build & change, above the message composer',
     frameLabel: 'Assistant · widgets-api',
     extras: ['prompt-library'],
   },
@@ -416,18 +418,18 @@ export const LENS_FEATURES: Feature[] = [
     title: 'Put your AI client on the same Code graph',
     tagline: 'An MCP server that gives Claude, Cursor, Copilot and other clients the endpoints, requests and drift findings you work from.',
     summary:
-      'Start it with `apicircle-lens mcp`. Any client that speaks the Model Context Protocol can then read your workspace over stdio (requests, environments, mocks and plans) together with the Code graph, PR Review and the Endpoint context graph, and the MCP panel in Lens desktop writes the client’s configuration for you.',
+      'Start it with `apicircle-lens mcp`. Any client that speaks the Model Context Protocol can then read your workspace over stdio (requests, environments, mocks and plans) together with the Code graph, PR Review and the Endpoint context graph, and the MCP panel in the API Circle desktop app writes the client’s configuration for you.',
     metaDescription: `apicircle-lens mcp gives Claude, Cursor, Copilot and other MCP clients your Code graph, PR Review and the Endpoint context graph. From the ${planName('pro')} plan.`,
     bullets: [
       'Runs as `apicircle-lens mcp`, over stdio',
-      `Installs into ${SITE.mcpClients.installable.length} clients with one click`,
+      `Adds itself to ${SITE.mcpClients.installable.length} clients with one click`,
       'Publishing stays off unless you allow it',
       'Carries the Endpoint context graph',
     ],
     highlights: [
       {
         title: `One click for ${SITE.mcpClients.installable.length} clients`,
-        body: `"Install" writes the configuration in each client's own format into ${SITE.mcpClients.installable.join(', ')}. ${SITE.mcpClients.manual.join(', ')} and any other MCP client get a snippet to paste.`,
+        body: `Three steps: choose the client, add Lens to it, restart it. "Add to Claude Desktop", and the same button for each of the others, writes the configuration in the client's own format into ${SITE.mcpClients.installable.join(', ')}. ${SITE.mcpClients.manual.join(', ')} and any other MCP client get a snippet to paste.`,
       },
       {
         title: 'Publishing is opt-in',
@@ -445,7 +447,7 @@ export const LENS_FEATURES: Feature[] = [
     ...lensCtas('pro'),
     screenshot: 'mcp-connection',
     screenshotAlt:
-      'The MCP panel set up for Claude Desktop: the server, the repository path and the generated configuration, with Copy MCP config and Install Claude Desktop buttons',
+      'The MCP panel set up for Claude Desktop: the server, the repository path and the generated configuration, with its copy button and Add to Claude Desktop',
     frameLabel: 'MCP · widgets-api',
     sample: {
       title: 'The configuration it writes',
@@ -486,16 +488,16 @@ export const LENS_FEATURES: Feature[] = [
     eyebrow: 'Git hosts',
     title: 'Review on GitLab, Bitbucket Cloud and Azure DevOps',
     tagline: 'PR Review drift on the three other hosts, through each one’s own review API. GitHub needs no add-on.',
-    summary: `Lens speaks GitLab, Bitbucket Cloud and Azure DevOps through each host's own review API. It reads their open requests, pins comments to the diff line and submits the verdicts each host allows. GitHub works on every plan, including ${planName('free')}.`,
+    summary: `Lens speaks GitLab, Bitbucket Cloud and Azure DevOps through each host's own review API. It opens a pull or merge request by its number or link, pins comments to the diff line and submits the verdicts each host allows. GitHub works on every plan, including ${planName('free')}.`,
     metaDescription: `Lens reviews pull and merge requests on GitLab, Bitbucket Cloud and Azure DevOps through each host's own API. GitHub works on every plan. From the ${planName('pro')} plan.`,
     bullets: [
       'Comments pinned to the diff line on all four hosts',
-      'Self-managed GitLab and Azure DevOps through an API base URL',
+      'Self-managed GitLab, and any Azure DevOps organisation',
     ],
     highlights: [
       {
         title: 'Connect a host once',
-        body: 'Each host takes its own kind of token, saved in the Secret Vault’s Sessions: a GitLab personal access token, a Bitbucket API token or access token, or an Azure DevOps personal access token. A self-managed host adds its API base URL.',
+        body: 'Each host takes its own kind of token, saved in the Secret Vault’s Sessions: a GitLab personal access token, a Bitbucket API token or access token, or an Azure DevOps personal access token. The address is asked once, there: GitLab’s "API base URL" only for a self-managed GitLab, and Azure DevOps always needs its "Organisation URL" (`https://dev.azure.com/your-org`).',
       },
       {
         title: 'Each host in its own words',
@@ -576,7 +578,7 @@ export const LENS_FEATURES: Feature[] = [
     title: 'Seats, device activation and single sign-on',
     tagline: 'Buy seats for a team, activate each device with a code, and let your identity provider handle sign-in.',
     summary:
-      'A team plan is billed per seat. Each person activates Lens on their own device, CI signs in with a key instead of taking a seat, and your identity provider can own sign-in for everyone on your domain. You manage all of it in one place.',
+      'A team plan is billed per seat. Each person activates the API Circle desktop app on their own device, CI signs in with a key instead of taking a seat, and your identity provider can own sign-in for everyone on your domain. You manage all of it in one place.',
     metaDescription: `Seats, per-device activation and single sign-on for Lens, managed at account.apicircle.dev, plus CLI keys for CI. From the ${planName('team')} plan.`,
     bullets: [
       'Seats, with members invited by email',
@@ -591,7 +593,7 @@ export const LENS_FEATURES: Feature[] = [
       },
       {
         title: 'One device per seat',
-        body: 'Sign in to Lens desktop with your account, or choose "or use a code" and enter the activation code your account generates. Each seat covers one device.',
+        body: 'Sign in to the API Circle desktop app with your account, or choose "or use a code" and enter the activation code your account generates. Each seat covers one device.',
       },
       {
         title: 'Single sign-on',

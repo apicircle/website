@@ -29,8 +29,8 @@ export interface Finding {
 export const FINDINGS: Finding[] = [
   {
     endpoint: 'POST /api/v1/widgets',
-    severity: 'warning',
-    tags: ['shared-impact', 'auth-changed'],
+    severity: 'breaking',
+    tags: ['auth-removed', 'auth-changed'],
     base: [
       { text: "widgetsRouter.get('/', listWidgets);" },
       { text: "widgetsRouter.post('/', requireBearer, createWidget);", changed: true },
@@ -39,7 +39,9 @@ export const FINDINGS: Finding[] = [
       { text: "widgetsRouter.get('/', listWidgets);" },
       { text: "widgetsRouter.post('/', createWidget);", changed: true },
     ],
-    finding: 'Shared `requireBearer` removed, and it reaches 2 endpoints.',
+    // lens `packages-lens/pr-review/src/review.ts` `preRequestDetail`; `auth-removed` is breaking
+    // there, which the Review panel shows as Critical.
+    finding: 'Auth/access-control `requireBearer` removed in the pre-request chain',
     source: 'src/middleware/auth.ts:8',
   },
   {
