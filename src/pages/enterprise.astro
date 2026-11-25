@@ -224,8 +224,9 @@ const toneClass = {
       {FINDINGS.map((f) => <DriftDiff {...f} />)}
     </div>
     <p class="mt-4 max-w-3xl text-sm leading-relaxed text-fg-dim">
-      The second change is a Warning because of its <code class="rounded bg-surface px-1 py-0.5 font-mono text-[0.88em] text-fg">new-side-effect</code>
-      flag. A status change on its own is Info, as on the Onboarding service above.
+      The second change is a Warning because the handler it changed, <code class="rounded bg-surface px-1 py-0.5 font-mono text-[0.88em] text-fg">deleteWidget</code>,
+      writes data, which adds the <code class="whitespace-nowrap rounded bg-surface px-1 py-0.5 font-mono text-[0.88em] text-fg">new-side-effect</code>
+      flag. A status change in a handler that only reads data is Info, as on the Onboarding service above.
     </p>
     <div class="mt-8 max-w-3xl">
       <p class="mb-3 text-[15px] leading-relaxed text-fg-muted">In the pipeline, the same pull request trips the gate:</p>
@@ -235,8 +236,13 @@ const toneClass = {
         code="apicircle-lens review --pull-request 412 --repo acme/widgets-api --openapi openapi.json --comment --fail-on breaking"
       />
       <p class="mt-3 text-[15px] leading-relaxed text-fg-muted">
-        It exits 1: removing the guard is Critical, which <code class="rounded bg-surface px-1 py-0.5 font-mono text-[0.88em] text-fg">--fail-on breaking</code>
+        On a private repository it exits 1: removing the guard is Critical, which <code class="rounded bg-surface px-1 py-0.5 font-mono text-[0.88em] text-fg">--fail-on breaking</code>
         gates on. The author restores the guard and either returns 204 or updates the Spec, and the next run passes.
+      </p>
+      <p class="mt-3 text-sm leading-relaxed text-fg-dim">
+        On a public repository, the removed guard is a security finding, so <code class="rounded bg-surface px-1 py-0.5 font-mono text-[0.88em] text-fg">--comment</code>
+        refuses to post and the CLI exits 2. Add <code class="whitespace-nowrap rounded bg-surface px-1 py-0.5 font-mono text-[0.88em] text-fg">--omit-security-findings</code>
+        to post the rest; the gate still exits 1 on the removed guard.
       </p>
     </div>
   </Section>
@@ -255,6 +261,9 @@ const toneClass = {
             <span class="text-xs font-semibold uppercase tracking-[0.12em] text-brand">Step {i + 1}</span>
             <h3 class="text-lg font-semibold text-fg">{s.title}</h3>
             <p class="text-[15px] leading-relaxed text-fg-muted"><Rich text={s.body} /></p>
+            {s.plan && (
+              <span class="inline-flex items-center gap-1.5 text-xs text-fg-dim">{s.plan.label}: <PlanBadge plan={s.plan.plan} /></span>
+            )}
           </li>
         ))
       }

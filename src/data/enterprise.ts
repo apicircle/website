@@ -10,8 +10,17 @@
  * chain or removing a route is Critical. "In focus" and "Diffracting" are the
  * pull request's verdict, never a finding's grade.
  *
+ * A changed handler is graded by its name (`effectKind` in lens
+ * `packages-lens/pr-review/src/classify.ts`): one named for a data write
+ * (`create`, `save`, `update`, `delete`, ...) adds `new-side-effect`, a Warning,
+ * to whatever else changed. So the Info row is a read handler (`GET`), never a
+ * `POST` one, whose natural name (`create_application`) would make it Warning.
+ *
  * CLI behaviour (exit codes, the public-repository refusal, `--use-verified`)
- * is the released `@apicircle-lens/cli`'s: lens `apps/cli/src/review/`.
+ * is the released `@apicircle-lens/cli`'s: lens `apps/cli/src/review/`. The CLI
+ * is Team (`apps/cli/src/cliGate.ts`), so anything here that runs it carries a
+ * Team badge. A refused post on a public repository returns before the
+ * `--fail-on` gate runs, so the job exits 2 there, not 1.
  *
  * The bank is illustrative. Its services, stacks and pull requests are made up to
  * show one gate per service; no customer, incident or result is implied, and the
@@ -142,14 +151,14 @@ export const BANK_GATES: ServiceGate[] = [
     service: 'Onboarding API',
     stack: 'Python · FastAPI',
     role: 'KYC, new customers',
-    pr: 'Simplify the create response',
-    endpoint: 'POST /applications',
-    change: 'returns 200, not 201',
-    brief: 'returns 200, not 201',
+    pr: 'Answer 202 while a check runs',
+    endpoint: 'GET /checks/{id}',
+    change: 'also returns 202 while the KYC check runs',
+    brief: '202 while it runs',
     note: 'status',
     severity: 'info',
     flag: 'contract-drift',
-    finding: 'Spec documents 201, code returns 200',
+    finding: 'Code returns 202, the Spec documents only 200',
     verdict: 'commented',
     policy: '--fail-on breaking',
   },
@@ -214,12 +223,12 @@ export const ARCH_KEY: ArchKeyItem[] = [
   {
     mark: 3,
     title: 'In CI, as a required check',
-    body: '`apicircle-lens review --fail-on` exits 1 and blocks the merge. Each team sets its own bar.',
+    body: '`apicircle-lens review --fail-on` fails the job and blocks the merge when a change meets the bar. Each team sets its own bar.',
   },
   {
     mark: 4,
     title: 'For the API platform team',
-    body: 'Spec alignment per service: undocumented, not implemented, drifted. With `--use-verified`, the gate checks the schemas the team verified.',
+    body: 'Spec alignment per service: undocumented, not implemented, drifted. With `--use-verified`, the CI gate checks the schemas the team verified.',
   },
   {
     mark: 'x',
@@ -333,7 +342,7 @@ export const TOUCHPOINTS: Touchpoint[] = [
     plan: 'team',
     points: [
       '`apicircle-lens review` runs both comparisons in CI, with no desktop app and no seat. CI signs in with a CLI key.',
-      '`--fail-on` picks what fails the build: `breaking`, `warning`, `info` or `diffracting`. Exit 0 passes. 1 means the gate tripped, the plan does not allow the review, or the comment could not be posted. 2 means the review could not run, for example because a flag, the Code graph or the Spec could not be read. With `--require-fresh-index`, 3 means the committed Code graph is out of date.',
+      '`--fail-on` picks what fails the build: `breaking`, `warning`, `info` or `diffracting`. Exit 0 passes. 1 means the gate tripped, the plan does not allow the review, the comment could not be posted, or an option name was not recognised. 2 means the review could not run, for example because a flag had a bad value, or the Code graph or the Spec could not be read. With `--require-fresh-index`, 3 means the committed Code graph is out of date.',
       '`--comment` keeps one summary comment current on the pull request, so a busy pull request does not collect a new one on every run.',
       'On a public repository, the CLI refuses to post a review that holds security findings, such as removed auth or a route missing from the Spec, and exits 2. `--omit-security-findings` posts the rest; `--allow-public-security-findings` posts them all.',
     ],
@@ -348,12 +357,15 @@ export const TOUCHPOINTS: Touchpoint[] = [
       'Where the parser cannot read a shape, it leaves it unresolved instead of guessing. A person can verify the schema, with a drift preview and an audit of who verified what, and when.',
       'Verified schemas are committed in `schema-overrides.json`, and CI with `--use-verified` gates on that same verified contract.',
     ],
+    extras: [{ label: 'CI gate on verified schemas', plan: 'team' }],
   },
 ];
 
 export interface Step {
   title: string;
   body: string;
+  /** The plan the step's paid capability needs, shown with `PlanBadge`. */
+  plan?: { label: string; plan: Exclude<PlanId, 'free'> };
 }
 
 export const ROLLOUT: Step[] = [
@@ -363,11 +375,13 @@ export const ROLLOUT: Step[] = [
   },
   {
     title: 'Report before you block',
-    body: 'Add `apicircle-lens review` with `--comment` and no `--fail-on`. It keeps one comment current on each pull request and never fails the build on a finding, so the team sees real findings first.',
+    body: 'Add `apicircle-lens review` with `--comment` and no `--fail-on`. It keeps one comment current on each pull request and, on a private repository, does not fail the build on a finding, so the team sees real findings first. On a public repository, add `--omit-security-findings`: without it, a security finding stops the post and fails the job.',
+    plan: { label: 'Command line', plan: 'team' },
   },
   {
     title: 'Make it a required check',
     body: 'Add `--fail-on breaking` and mark the job required. Lower the bar to `warning` once the team trusts the findings, and add `--use-verified` so the gate follows the schemas your team verified.',
+    plan: { label: 'Command line', plan: 'team' },
   },
 ];
 
