@@ -39,7 +39,7 @@ export const FAQS: Faq[] = [
   },
   {
     q: 'Will it comment on my pull requests automatically?',
-    a: 'Not from the desktop app. There, nothing is sent to your Git host until you press Submit: drafts stay on your machine, and before anything is posted you see exactly what will appear on the pull request. The command line, on the Team plan, is the one place that posts by itself, and only when your pipeline passes --comment or --submit. On a public repository, findings that map security weaknesses are held back unless you explicitly opt in.',
+    a: 'Not from the desktop app. There, nothing is sent to your Git host until you press Submit: drafts stay on your machine, and before anything is posted you see exactly what will appear on the pull request. The command line, on the Team plan, is the one place that posts by itself, and only when your pipeline passes --comment or --submit. On a public repository, it refuses to post a review that holds findings mapping security weaknesses, and fails the job, unless the pipeline passes --omit-security-findings to post the rest or --allow-public-security-findings to post them too.',
   },
   {
     q: 'Which languages and frameworks can it read?',

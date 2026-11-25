@@ -530,7 +530,7 @@ export const LENS_FEATURES: Feature[] = [
     highlights: [
       {
         title: 'Choose what fails the build',
-        body: '`--fail-on breaking` fails on an endpoint removed, a method changed, auth removed, or auth the Spec requires and the code lacks; `warning` and `info` lower the bar to changed auth, new side effects and the rest of contract drift. `--fail-on diffracting` fails when a route appears that the Spec does not document, or a documented one disappears. The command exits 0 when the gate passes, 1 when it trips, and 2 when a flag, the map or the Spec cannot be read.',
+        body: '`--fail-on breaking` fails on an endpoint removed, a method changed, auth removed, or auth the Spec requires and the code lacks; `warning` and `info` lower the bar to changed auth, new side effects and the rest of contract drift. `--fail-on diffracting` fails when a route appears that the Spec does not document, or a documented one disappears. The command exits 0 when the gate passes, 1 when it trips, and 2 when a flag has a bad value or the map or the Spec cannot be read. A misspelt option exits 1 before anything is reviewed.',
       },
       {
         title: 'One comment, kept current',

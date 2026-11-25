@@ -121,8 +121,10 @@ const privacy = [
           Drafts stay on your machine. Before anything reaches your pull request you see exactly
           what will appear on it, comment by comment. The desktop app never posts by itself; in CI,
           the command line posts only when your pipeline asks it to with <code class="rounded bg-surface px-1 text-[0.9em] text-fg">--comment</code>.
-          On a public repository, findings that map security weaknesses are held back unless you
-          opt in.
+          On a public repository, the app leaves out findings that map security weaknesses unless you
+          opt in. The command line refuses to post a review that holds them, and fails the job, unless your
+          pipeline passes <code class="whitespace-nowrap rounded bg-surface px-1 text-[0.9em] text-fg">--omit-security-findings</code> to post the rest
+          or <code class="whitespace-nowrap rounded bg-surface px-1 text-[0.9em] text-fg">--allow-public-security-findings</code> to post them too.
         </p>
       </div>
     </div>
